@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Your Name] | CV & Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Reset and Typography */
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #4a4a4a;
+            --background-color: #ffffff;
+            --light-gray: #f5f5f7; /* Apple-inspired light background */
+            --link-color: #0070c9;
+            --max-width: 1080px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background: var(--background-color);
+            padding-top: 60px; /* Space for fixed header */
+        }
+
+        /* Container for Centering */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Navigation Header (Minimalist & Fixed) */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        .logo a {
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+        .nav a {
+            margin-left: 25px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Hero Section (Apple Style: Large, Focused Text) */
+        .hero {
+            text-align: center;
+            padding: 120px 0;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 15px;
+        }
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .cta-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        /* General Section Styling */
+        .section {
+            padding: 80px 0;
+            border-top: 1px solid var(--light-gray);
+        }
+        .section-heading {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Experience Timeline */
+        .timeline-item {
+            margin-bottom: 40px;
+            padding-left: 120px;
+            position: relative;
+        }
+        .timeline-item:before {
+            content: attr(data-year);
+            position: absolute;
+            left: 0;
+            top: 5px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 1rem;
+            width: 100px;
+        }
+        .timeline-item h3 {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        .timeline-item p {
+            font-size: 1rem;
+            color: var(--secondary-color);
+        }
+        .timeline-item ul {
+            list-style-type: none;
+            padding: 10px 0 0 20px;
+            border-left: 2px solid var(--light-gray);
+        }
+        .timeline-item li {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+        }
+        .timeline-item li:before {
+            content: "•";
+            color: var(--link-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        .project-card {
+            background: var(--light-gray);
+            padding: 30px;
+            border-radius: 12px;
+        }
+        .project-card h4 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+        .project-card a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Footer/Contact */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+        }
+        .footer-links a {
+            margin: 0 15px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.2rem;
+            }
+            .section-heading {
+                font-size: 2rem;
+            }
+            .timeline-item {
+                padding-left: 0;
+                border-left: 2px solid var(--light-gray);
+                padding-left: 20px;
+                margin-left: 10px;
+            }
+            .timeline-item:before {
+                position: static;
+                display: block;
+                margin-bottom: 5px;
+            }
+            .timeline-item ul {
+                padding-left: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="#home">[Your Name Initials]</a></div>
+            <nav class="nav">
+                <a href="#about">About</a>
+                <a href="#experience">Experience</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Creative Product Manager & AI Enthusiast.</h1>
+            <p>I build elegant, customer-focused digital products from concept to launch. Let's create something great together.</p>
+            <a href="#projects" class="cta-button">View My Work</a>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-heading">About Me</h2>
+            <p style="font-size: 1.25rem; max-width: 800px; margin: 0 auto; text-align: center; color: var(--secondary-color);">
+                A concise summary of your professional journey and passion. Mention key skills (e.g., Python, Cloud, Product Strategy, UX) and what you are looking for next. Keep it brief and engaging, utilizing the whitespace.
+            </p>
+        </div>
+    </section>
+
+    <section id="experience" class="section">
+        <div class="container">
+            <h2 class="section-heading">Experience</h2>
+
+            <div class="timeline-item" data-year="2020 – Present">
+                <h3>Senior Product Manager / Tech Co</h3>
+                <p>Leading the development team for the flagship enterprise SaaS platform.</p>
+                <ul>
+                    <li>Launched v3.0, increasing user engagement by 30%.</li>
+                    <li>Managed a cross-functional team of 10 engineers and 3 designers.</li>
+                    <li>Defined product roadmap based on market analysis and user interviews.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="2018 – 2020">
+                <h3>Product Analyst / Startup X</h3>
+                <p>Responsible for data analysis and feature prioritization in a fast-paced environment.</p>
+                <ul>
+                    <li>Implemented A/B testing framework for core features.</li>
+                    <li>Reduced churn rate by 15% through data-driven feature improvements.</li>
+                </ul>
+            </div>
+            
+            <div class="timeline-item" data-year="2014 – 2018">
+                <h3>M.S. Computer Science / University Y</h3>
+                <p>Focused on Machine Learning and Distributed Systems.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-heading">Featured Projects</h2>
+            <div class="projects-grid">
+                
+                <div class="project-card">
+                    <h4>Cloud Deployment Tool</h4>
+                    <p>A Python script leveraging Google Cloud APIs to automate infrastructure setup. Built with simplicity in mind.</p>
+                    <a href="[Link to GitHub/Demo]" target="_blank">View on GitHub →</a>
+                </div>
+
+                <div class="project-card">
+                    <h4>UX Redesign Study</h4>
+                    <p>A comprehensive case study on improving the checkout flow for an e-commerce platform, boosting conversion.</p>
+                    <a href="[Link to Article/PDF]" target="_blank">Read Case Study →</a>
+                </div>
+
+                <div class="project-card">
+                    <h4>Personal Data Visualization</h4>
+                    <p>Utilizing JavaScript and D3.js to render complex personal data in an easy-to-digest visual format.</p>
+                    <a href="[Link to Live Demo]" target="_blank">See Live Demo →</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="footer">
+        <div class="container">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px; font-weight: 800;">Let's Connect</h2>
+            <div class="footer-links">
+                <a href="mailto:your.email@example.com">Email</a>
+                <a href="[Your LinkedIn URL]" target="_blank">LinkedIn</a>
+                <a href="[Your GitHub URL]" target="_blank">GitHub</a>
+                <a href="[Your Blog/Twitter URL]" target="_blank">Blog/X</a>
+            </div>
+            <p style="margin-top: 20px;">&copy; <span id="year">2025</span> [Your Name]. Built and hosted on Google Cloud.</p>
+            <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+        </div>
+    </footer>
+
+</body>
+</html>
