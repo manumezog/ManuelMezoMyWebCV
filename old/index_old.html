@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuel Mezo | Product Manager</title>
+    
+    <link rel="icon" type="image/jpg" href="ManuelMezo_thumbnail.jpg" sizes="32x32">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Reset and Typography */
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #4a4a4a;
+            --background-color: #ffffff;
+            --light-gray: #f5f5f7;
+            --link-color: #0070c9;
+            --max-width: 1080px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background-color: var(--background-color);
+            padding-top: 60px;
+        }
+
+        /* Fixed, subtle background for dynamism (now more visible) */
+        #galaxy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; 
+            
+            /* Slightly more visible Star/Noise Background using higher opacity gradients */
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(150, 150, 150, 0.15) 1px, transparent 1px),
+                radial-gradient(circle at 70% 80%, rgba(150, 150, 150, 0.15) 1px, transparent 1px),
+                radial-gradient(circle at 50% 50%, rgba(150, 150, 150, 0.15) 1px, transparent 1px);
+                
+            background-size: 500px 500px, 300px 300px, 700px 700px;
+            background-position: 0 0, 150px 100px, 400px 400px;
+            background-color: #fcfcfc; 
+
+            background-attachment: fixed; 
+        }
+
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .header {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        .logo a {
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+        .nav a {
+            margin-left: 25px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .nav a:hover { color: var(--primary-color); }
+
+        .hero {
+            text-align: center;
+            padding: 120px 0;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 15px;
+        }
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .cta-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-1px);
+        }
+
+        .section { padding: 80px 0; border-top: 1px solid var(--light-gray); }
+        .section-heading {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* Dynamism for Timeline Items */
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+            padding: 20px 20px 20px 120px; 
+            border-radius: 8px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid transparent; 
+        }
+        .timeline-item:hover {
+            background-color: var(--light-gray);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+        
+        .timeline-item:before {
+            content: attr(data-year);
+            position: absolute;
+            left: 0;
+            top: 5px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 1rem;
+            width: 100px;
+        }
+        .timeline-item h3 { font-weight: 600; font-size: 1.2rem; }
+        .timeline-item p { font-size: 1rem; color: var(--secondary-color); }
+        .timeline-item ul {
+            list-style-type: none;
+            padding: 10px 0 0 20px;
+            border-left: 2px solid var(--light-gray);
+        }
+        .timeline-item li {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+        }
+        .timeline-item li:before {
+            content: "•";
+            color: var(--link-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* Styling for Interests Section (Interactive Photo) */
+        #interest-photo-container {
+            text-align: center; 
+            margin-bottom: 40px; 
+            min-height: 250px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        #interest-photo {
+            max-width: 100%; 
+            max-height: 250px; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+            opacity: 0; 
+            transition: opacity 0.3s;
+        }
+        #photo-instruction {
+            color: var(--secondary-color); 
+            font-style: italic;
+        }
+        
+        .interests-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .interest-item {
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: var(--light-gray);
+            transition: background-color 0.2s;
+            cursor: pointer; 
+        }
+        .interest-item:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Styling for Profile Photo (Original) */
+        .profile-photo {
+            width: 150px;
+            height: 150px;
+            object-fit: cover; 
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: block;
+            border: 4px solid var(--light-gray);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        .project-card {
+            background: var(--light-gray);
+            padding: 30px;
+            border-radius: 12px;
+        }
+        .project-card h4 { font-size: 1.4rem; margin-bottom: 10px; }
+        .project-card a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .footer { text-align: center; padding: 40px 0; color: var(--secondary-color); font-size: 0.9rem; }
+        .footer-links a {
+            margin: 0 15px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--primary-color); }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .section-heading { font-size: 2rem; }
+            .timeline-item {
+                padding-left: 0;
+                border-left: 2px solid var(--light-gray);
+                padding: 10px 10px 10px 20px;
+                margin-left: 10px;
+            }
+            .timeline-item:before {
+                position: static;
+                display: block;
+                margin-bottom: 5px;
+            }
+            .timeline-item ul { padding-left: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="galaxy-bg"></div>
+
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="#home">Manuel Mezo</a></div>
+            <nav class="nav">
+                <a href="#about">About</a>
+                <a href="#experience">Experience</a>
+                <a href="#projects">Projects</a>
+                <a href="#interests">Interests</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Product Strategy Leader & Analytics-Driven Builder.</h1>
+            <p>I pivot strategic vision into tangible business value by building robust, data-centric products. Driving efficiency and stakeholder alignment across global operations.</p>
+            <a href="#projects" class="cta-button">View My Work</a>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-heading">About Manuel Mezo</h2>
+            
+            <img class="profile-photo" src="Manuel_Mezo_Original.png" 
+                 alt="Manuel Mezo professional profile photo" />
+                 
+            <p style="font-size: 1.25rem; max-width: 800px; margin: 0 auto; text-align: center; color: var(--secondary-color);">
+                Supply Chain & Planning leader with over <b>8 years</b> of experience in driving <b>Integrated Business Planning (IBP)</b> and <b>Sales & Operations Planning (S&OP)</b>. Proven ability to enhance forecast accuracy and streamline capacity planning, resulting in substantial savings and improved operational efficiency. Expertise includes <b>Programming (SQL, Python)</b>, <b>Business Data Analysis</b>, <b>Scenario Planning</b>, and cross-functional collaboration. Seeking a Product Manager role to leverage this experience in building innovative digital products. Bilingual in Spanish and English.
+            </p>
+        </div>
+    </section>
+
+    <section id="experience" class="section">
+        <div class="container">
+            <h2 class="section-heading">Experience</h2>
+
+            <div class="timeline-item" data-year="Sept 2023 – Present">
+                <h3>Supply Chain Planning - Senior Program Manager, Amazon (Madrid, Spain)</h3>
+                <p>Leading the development and implementation of long-range planning methodologies for EU logistics network.</p>
+                <ul>
+                    <li>Designed a new long-range forecasting methodology for EU truckload demand supporting IBP/S&OP cycles, that led to <b>$140Mn CapEx</b> in transportation equipment in 2025.</li>
+                    <li>Improved inventory transfers truck fill-rate modeling (inaccuracy reduced from 35% to 17%), cutting truck addition and cancellations rates by approx. <b>20k trucks</b> annually saving ca. <b>$1.8Mn</b>.</li>
+                    <li>Resolved recurring truck shortages in specific sites by identifying and fixing a logic defect in the automated scheduling system, protecting approx. <b>$10Mn extra cost</b> in late truck additions.</li>
+                    <li>Led cross-functional collaboration with Labor Planning, Network Design, Ops, and Finance to translate forecast signals into actionable capacity and labor strategies.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="Aug 2022 – Jul 2023">
+                <h3>Operations Consultant, McKinsey & Company (Madrid, Spain)</h3>
+                <p>Consulting for global manufacturers on optimization and capacity planning projects.</p>
+                <ul>
+                    <li>Revamped production capacity planning for a global pharmaceutical manufacturer through creation of an <b>automated, KPI-oriented model</b>, strengthening scenario planning and cross-site decision-making, across 6 plants and 13 production lines.</li>
+                    <li>Optimized production batch sizes across 9 plants for a generics manufacturer in the LATAM region, saving <b>$800k/year</b> (1.1% of conversion costs).</li>
+                    <li>Analyzed and revamped production plan of a train manufacturer recovering 2.5 months of delivery delays and cutting penalties by <b>$1Mn</b>.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="Oct 2021 – Aug 2022">
+                <h3>Sr Program Manager - Operations Excellence, Amazon (Madrid, Spain)</h3>
+                <p>Driving operational and WMS improvements across EU 3PL network.</p>
+                <ul>
+                    <li>Led the planning and implementation of <b>multi-item order shipping capability</b> across 10 3PL sites, handling 3M+ units and generating <b>$10Mn+ transport savings</b>.</li>
+                    <li>Built network-wide inventory audit program across 25+ sites, improving <b>Inventory Record Defect Rate (IRDR) by 50%</b>.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="Sept 2017 – Sept 2021">
+                <h3>3PL Operations Quality - Program Manager, Amazon (Luxembourg)</h3>
+                <p>Directed quality and inventory management programs across EU 3PL centers.</p>
+                <ul>
+                    <li>Recovered severe inventory defects crisis (from 120k to <b>&lt;10k DPMO</b> in 8 weeks) through SOP and process re-design.</li>
+                    <li>Led root-cause investigation on a <b>$7Mn disputed inventory loss</b>, eliminating approx. 50% of the original claim value.</li>
+                </ul>
+            </div>
+            
+            <div class="timeline-item" data-year="Education">
+                <h3>Master's & Bachelor's Degrees in Engineering</h3>
+                <p>Aerospace and Mechanical Engineering focus.</p>
+                <ul>
+                    <li>Master's degree in <b>Aerospace Engineering</b>, Universidad Carlos III de Madrid (Jan 2015-Jan 2017).</li>
+                    <li>Bachelor's degree in <b>Aerospace Engineering</b> (Jan 2011-Jan 2015) and <b>Mechanical Engineering</b> (Jan 2013-Jan 2016), Universidad de León.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <section id="interests" class="section">
+        <div class="container">
+            <h2 class="section-heading">Personal Interests</h2>
+
+            <div id="interest-photo-container">
+                <img id="interest-photo" src="" alt="Related photo" />
+                <p id="photo-instruction">Click an interest below to see a related photo!</p>
+            </div>
+
+            <div class="interests-grid">
+                <div class="interest-item" data-interest="space">🚀 Space & Aeronautics</div>
+                <div class="interest-item" data-interest="robotics">🤖 Robotics & AI</div>
+                <div class="interest-item" data-interest="basketball">🏀 Basketball</div>
+                <div class="interest-item" data-interest="nature">🌳 Nature & Hiking</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-heading">Featured Projects</h2>
+            <div class="projects-grid">
+
+                <div class="project-card">
+                    <h4>Medical Imaging Agent (Web App)</h4>
+                    <p>A web-based tool demonstrating capabilities in medical image analysis and agent-based functionality. Showcases full-stack development and domain integration.</p>
+                    <a href="https://medical-imaging-agent-370691863918.us-central1.run.app/" target="_blank">View Live Demo →</a>
+                </div>
+
+                <div class="project-card">
+                    <h4>FoodStats (Web App)</h4>
+                    <p>A data-driven web application for visualizing and exploring food statistics. Highlights data analysis and front-end visualization skills in a consumer-facing product.</p>
+                    <a href="https://foodstats.lovable.app/" target="_blank">See Live Demo →</a>
+                </div>
+
+                <div class="project-card">
+                    <h4>Data Modeling & Business Intelligence</h4>
+                    <p>Showcase of advanced data analysis, scenario modeling, and dashboard creation using <b>Python, SQL, Tableau, and Quicksight</b> to drive executive decision support.</p>
+                    <a href="https://github.com/manumezog" target="_blank">View GitHub →</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="footer">
+        <div class="container">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px; font-weight: 800;">Let's Connect</h2>
+            <div class="footer-links">
+                <a href="mailto:manumezog@gmail.com">manumezog@gmail.com</a>
+                <a href="https://www.linkedin.com/in/manuelmezo/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/manumezog" target="_blank">GitHub</a>
+            </div>
+            <p style="margin-top: 10px; font-weight: 600;">Based in Madrid, Spain.</p>
+            <p style="margin-top: 20px;">© <span id="year"></span> Manuel Mezo.</p>
+        </div>
+    </footer>
+
+    <script>
+        const interestsMap = {
+            'space': 'photo-space.jpg',
+            'robotics': 'photo-robotics.jpg',
+            'basketball': 'photo-basketball.jpg',
+            'nature': 'photo-nature.jpg'
+        };
+        const photoElement = document.getElementById('interest-photo');
+        const instructionElement = document.getElementById('photo-instruction');
+        const interestItems = document.querySelectorAll('.interest-item');
+        
+        // Function to handle image click and fade
+        function displayInterestPhoto(interestKey) {
+            const photoFileName = interestsMap[interestKey];
+
+            if (photoFileName) {
+                // 1. Hide current image/instruction
+                if (photoElement.style.opacity > 0) {
+                    photoElement.style.opacity = 0; // Fade out image
+                } else {
+                    instructionElement.style.display = 'none';
+                    photoElement.style.display = 'block';
+                }
+
+                // 2. Wait for fade/display change, then update src and fade in
+                setTimeout(() => {
+                    photoElement.src = photoFileName;
+                    photoElement.alt = `Manuel Mezo photo related to ${interestKey}`;
+                    
+                    // Force reflow/repaint for CSS transition to work
+                    void photoElement.offsetWidth; 
+                    
+                    photoElement.style.opacity = 1; // Fade in
+                }, 300); // Matches the 0.3s CSS transition
+            }
+        }
+
+        // Add event listeners to all interest items
+        interestItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Optional: add a temporary 'active' class for visual feedback
+                interestItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                const interestKey = this.getAttribute('data-interest');
+                displayInterestPhoto(interestKey);
+            });
+        });
+        
+        // Initialize year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+
+</body>
+</html>

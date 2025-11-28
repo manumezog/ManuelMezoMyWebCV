@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manuel Mezo | Product Manager</title>
+    
+    <link rel="icon" type="image/jpg" href="ManuelMezo_thumbnail.jpg" sizes="32x32">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================
+           SPACE THEME & VARIABLES
+           ========================================= */
+        :root {
+            /* Dark Mode Palette */
+            --primary-color: #e6e6e6;       /* Off-white for main text */
+            --secondary-color: #a0aab5;     /* Blue-grey for secondary text */
+            --background-color: #050810;    /* Deepest Black-Blue */
+            --card-bg: #101624;             /* Dark Blue for cards */
+            --hover-bg: #1c263b;            /* Lighter interaction state */
+            --link-color: #64b5f6;          /* Bright Blue/Cyan for accents */
+            --max-width: 1080px;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--primary-color);
+            background-color: var(--background-color);
+            padding-top: 60px;
+        }
+
+        /* =========================================
+           STAR BACKGROUND (Thicker & Shinier)
+           ========================================= */
+        #galaxy-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-color: var(--background-color);
+
+            /* UPDATED GRADIENTS:
+               I increased the pixel sizes (2px, 3px, 4px) to make them "thicker".
+               I adjusted positions to ensure they don't look like a grid.
+            */
+            background-image: 
+                /* Small Stars (2px) */
+                radial-gradient(2px 2px at 25px 5px, white, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 25px, white, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 125px 20px, white, rgba(0,0,0,0)),
+                
+                /* Medium Stars (3px) */
+                radial-gradient(3px 3px at 250px 90px, white, rgba(0,0,0,0)),
+                radial-gradient(3px 3px at 300px 150px, white, rgba(0,0,0,0)),
+                
+                /* Large/Bright Stars (4px with glow feel) */
+                radial-gradient(4px 4px at 400px 200px, rgba(255,255,255,0.9), rgba(0,0,0,0));
+                
+            background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px, 450px 450px, 600px 600px; 
+            background-position: 0 0, 40px 60px, 130px 270px, 70px 100px, 200px 200px, 100px 300px;
+
+            /* The Dynamic Shine Animation */
+            animation: shine 4s ease-in-out infinite alternate;
+        }
+
+        /* UPDATED ANIMATION: Greater range for "shining" effect */
+        @keyframes shine {
+            0% { 
+                opacity: 0.5; 
+                transform: scale(0.98); 
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% { 
+                opacity: 1; 
+                transform: scale(1.1); /* Slight expansion makes them "pulse" */
+                filter: brightness(1.3); /* Makes the white pop more at the peak */
+            }
+        }
+
+        /* Optional: A subtle nebula wash */
+        #galaxy-bg::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(100, 181, 246, 0.03), transparent 80%);
+            z-index: -1;
+        }
+
+        /* =========================================
+           LAYOUT & TYPOGRAPHY
+           ========================================= */
+        .container {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Header: Glassmorphism effect */
+        .header {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            background: rgba(5, 8, 16, 0.85); /* Dark semi-transparent */
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        .logo a {
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-decoration: none;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+        .nav a {
+            margin-left: 25px;
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .nav a:hover { color: var(--link-color); }
+
+        .hero {
+            text-align: center;
+            padding: 140px 0 120px;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 20px;
+            /* Gradient Text for modern feel */
+            background: linear-gradient(to right, #ffffff, #b0bec5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero p {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            max-width: 700px;
+            margin: 0 auto 40px;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: var(--link-color);
+            color: #000; 
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(100, 181, 246, 0.3); /* Glow effect */
+        }
+        .cta-button:hover {
+            background-color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        .section { padding: 80px 0; border-top: 1px solid var(--border-color); }
+        .section-heading {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        /* =========================================
+           TIMELINE (Experience)
+           ========================================= */
+        .timeline-item {
+            margin-bottom: 40px;
+            position: relative;
+            padding: 25px 25px 25px 140px; 
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent; 
+        }
+        .timeline-item:hover {
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+        
+        .timeline-item:before {
+            content: attr(data-year);
+            position: absolute;
+            left: 0;
+            top: 25px;
+            font-weight: 700;
+            color: var(--link-color); 
+            font-size: 0.95rem;
+            width: 120px;
+            text-align: right;
+            padding-right: 20px;
+        }
+        .timeline-item h3 { font-weight: 700; font-size: 1.3rem; color: #fff; margin-bottom: 5px;}
+        .timeline-item p { font-size: 1rem; color: var(--secondary-color); margin-bottom: 10px;}
+        .timeline-item ul {
+            list-style-type: none;
+            padding: 10px 0 0 20px;
+            border-left: 2px solid var(--border-color);
+        }
+        .timeline-item li {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            color: #cfd8dc; 
+        }
+        .timeline-item li:before {
+            content: "•";
+            color: var(--link-color);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* =========================================
+           INTERESTS (Photo Interaction)
+           ========================================= */
+        #interest-photo-container {
+            text-align: center; 
+            margin-bottom: 40px; 
+            min-height: 250px; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        #interest-photo {
+            max-width: 100%; 
+            max-height: 250px; 
+            border-radius: 12px; 
+            box-shadow: 0 0 30px rgba(0,0,0,0.5); 
+            border: 1px solid var(--border-color);
+            opacity: 0; 
+            transition: opacity 0.3s;
+        }
+        #photo-instruction {
+            color: var(--secondary-color); 
+            font-style: italic;
+            opacity: 0.7;
+        }
+        
+        .interests-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .interest-item {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 12px 25px;
+            border-radius: 50px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+            cursor: pointer; 
+            color: var(--secondary-color);
+        }
+        .interest-item:hover, .interest-item.active {
+            background-color: var(--hover-bg);
+            color: #fff;
+            border-color: var(--link-color);
+            box-shadow: 0 0 15px rgba(100, 181, 246, 0.2);
+        }
+
+        /* =========================================
+           IMAGES & CARDS
+           ========================================= */
+        .profile-photo {
+            width: 160px;
+            height: 160px;
+            object-fit: cover; 
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            display: block;
+            border: 3px solid var(--link-color); 
+            box-shadow: 0 0 25px rgba(100, 181, 246, 0.25);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .project-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255,255,255,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .project-card h4 { font-size: 1.4rem; margin-bottom: 10px; color: #fff; }
+        .project-card a {
+            color: var(--link-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .project-card a:hover { text-decoration: underline; }
+
+        .footer { text-align: center; padding: 60px 0; color: var(--secondary-color); font-size: 0.9rem; border-top: 1px solid var(--border-color); }
+        .footer-links a {
+            margin: 0 15px;
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--link-color); }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .container { padding: 0 20px; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .section-heading { font-size: 2rem; }
+            
+            .timeline-item {
+                padding-left: 0;
+                border-left: 2px solid var(--border-color);
+                padding: 15px 10px 15px 20px;
+                margin-left: 0;
+            }
+            .timeline-item:before {
+                position: static;
+                display: block;
+                margin-bottom: 8px;
+                text-align: left;
+                padding-right: 0;
+            }
+            .timeline-item ul { padding-left: 15px; border-left: none; }
+        }
+    </style>
+</head>
+<body>
+    <div id="galaxy-bg"></div>
+
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo"><a href="#home">Manuel Mezo</a></div>
+            <nav class="nav">
+                <a href="#about">About</a>
+                <a href="#experience">Experience</a>
+                <a href="#projects">Projects</a>
+                <a href="#interests">Interests</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Product Strategy Leader & Analytics-Driven Builder.</h1>
+            <p>I pivot strategic vision into tangible business value by building robust, data-centric products. Driving efficiency and stakeholder alignment across global operations.</p>
+            <a href="#projects" class="cta-button">View My Work</a>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-heading">About Manuel Mezo</h2>
+            
+            <img class="profile-photo" src="Manuel_Mezo_Original.png" 
+                 alt="Manuel Mezo professional profile photo" />
+                 
+            <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; text-align: center; color: var(--secondary-color); line-height: 1.8;">
+                Supply Chain & Planning leader with over <b>8 years</b> of experience in driving <b>Integrated Business Planning (IBP)</b> and <b>Sales & Operations Planning (S&OP)</b>. Proven ability to enhance forecast accuracy and streamline capacity planning, resulting in substantial savings and improved operational efficiency. Expertise includes <b>Programming (SQL, Python)</b>, <b>Business Data Analysis</b>, <b>Scenario Planning</b>, and cross-functional collaboration. Seeking a Product Manager role to leverage this experience in building innovative digital products. Bilingual in Spanish and English.
+            </p>
+        </div>
+    </section>
+
+    <section id="experience" class="section">
+        <div class="container">
+            <h2 class="section-heading">Experience</h2>
+
+            <div class="timeline-item" data-year="Sept 2023 – Present">
+                <h3>Supply Chain Planning - Senior Program Manager, Amazon (Madrid, Spain)</h3>
+                <p>Leading the development and implementation of long-range planning methodologies for EU logistics network.</p>
+                <ul>
+                    <li>Designed a new long-range forecasting methodology for EU truckload demand supporting IBP/S&OP cycles, that led to <b>$140Mn CapEx</b> in transportation equipment in 2025.</li>
+                    <li>Improved inventory transfers truck fill-rate modeling (inaccuracy reduced from 35% to 17%), cutting truck addition and cancellations rates by approx. <b>20k trucks</b> annually saving ca. <b>$1.8Mn</b>.</li>
+                    <li>Resolved recurring truck shortages in specific sites by identifying and fixing a logic defect in the automated scheduling system, protecting approx. <b>$10Mn extra cost</b> in late truck additions.</li>
+                    <li>Led cross-functional collaboration with Labor Planning, Network Design, Ops, and Finance to translate forecast signals into actionable capacity and labor strategies.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="Aug 2022 – Jul 2023">
+                <h3>Operations Consultant, McKinsey & Company (Madrid, Spain)</h3>
+                <p>Consulting for global manufacturers on optimization and capacity planning projects.</p>
+                <ul>
+                    <li>Revamped production capacity planning for a global pharmaceutical manufacturer through creation of an <b>automated, KPI-oriented model</b>, strengthening scenario planning and cross-site decision-making, across 6 plants and 13 production lines.</li>
+                    <li>Optimized production batch sizes across 9 plants for a generics manufacturer in the LATAM region, saving <b>$800k/year</b> (1.1% of conversion costs).</li>
+                    <li>Analyzed and revamped production plan of a train manufacturer recovering 2.5 months of delivery delays and cutting penalties by <b>$1Mn</b>.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="Oct 2021 – Aug 2022">
+                <h3>Sr Program Manager - Operations Excellence, Amazon (Madrid, Spain)</h3>
+                <p>Driving operational and WMS improvements across EU 3PL network.</p>
+                <ul>
+                    <li>Led the planning and implementation of <b>multi-item order shipping capability</b> across 10 3PL sites, handling 3M+ units and generating <b>$10Mn+ transport savings</b>.</li>
+                    <li>Built network-wide inventory audit program across 25+ sites, improving <b>Inventory Record Defect Rate (IRDR) by 50%</b>.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="Sept 2017 – Sept 2021">
+                <h3>3PL Operations Quality - Program Manager, Amazon (Luxembourg)</h3>
+                <p>Directed quality and inventory management programs across EU 3PL centers.</p>
+                <ul>
+                    <li>Recovered severe inventory defects crisis (from 120k to <b>&lt;10k DPMO</b> in 8 weeks) through SOP and process re-design.</li>
+                    <li>Led root-cause investigation on a <b>$7Mn disputed inventory loss</b>, eliminating approx. 50% of the original claim value.</li>
+                </ul>
+            </div>
+            
+            <div class="timeline-item" data-year="Education">
+                <h3>Master's & Bachelor's Degrees in Engineering</h3>
+                <p>Aerospace and Mechanical Engineering focus.</p>
+                <ul>
+                    <li>Master's degree in <b>Aerospace Engineering</b>, Universidad Carlos III de Madrid (Jan 2015-Jan 2017).</li>
+                    <li>Bachelor's degree in <b>Aerospace Engineering</b> (Jan 2011-Jan 2015) and <b>Mechanical Engineering</b> (Jan 2013-Jan 2016), Universidad de León.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <section id="interests" class="section">
+        <div class="container">
+            <h2 class="section-heading">Personal Interests</h2>
+
+            <div id="interest-photo-container">
+                <img id="interest-photo" src="" alt="Related photo" />
+                <p id="photo-instruction">Click an interest below to see a related photo!</p>
+            </div>
+
+            <div class="interests-grid">
+                <div class="interest-item" data-interest="space">🚀 Space & Aeronautics</div>
+                <div class="interest-item" data-interest="robotics">🤖 Robotics & AI</div>
+                <div class="interest-item" data-interest="basketball">🏀 Basketball</div>
+                <div class="interest-item" data-interest="nature">🌳 Nature & Hiking</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="section">
+        <div class="container">
+            <h2 class="section-heading">Featured Projects</h2>
+            <div class="projects-grid">
+
+                <div class="project-card">
+                    <h4>Medical Imaging Agent (Web App)</h4>
+                    <p>A web-based tool demonstrating capabilities in medical image analysis and agent-based functionality. Showcases full-stack development and domain integration.</p>
+                    <a href="https://medical-imaging-agent-370691863918.us-central1.run.app/" target="_blank">View Live Demo →</a>
+                </div>
+
+                <div class="project-card">
+                    <h4>FoodStats (Web App)</h4>
+                    <p>A data-driven web application for visualizing and exploring food statistics. Highlights data analysis and front-end visualization skills in a consumer-facing product.</p>
+                    <a href="https://foodstats.lovable.app/" target="_blank">See Live Demo →</a>
+                </div>
+
+                <div class="project-card">
+                    <h4>Data Modeling & Business Intelligence</h4>
+                    <p>Showcase of advanced data analysis, scenario modeling, and dashboard creation using <b>Python, SQL, Tableau, and Quicksight</b> to drive executive decision support.</p>
+                    <a href="https://github.com/manumezog" target="_blank">View GitHub →</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class="footer">
+        <div class="container">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px; font-weight: 800; color: #fff;">Let's Connect</h2>
+            <div class="footer-links">
+                <a href="mailto:manumezog@gmail.com">manumezog@gmail.com</a>
+                <a href="https://www.linkedin.com/in/manuelmezo/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/manumezog" target="_blank">GitHub</a>
+            </div>
+            <p style="margin-top: 10px; font-weight: 600;">Based in Madrid, Spain.</p>
+            <p style="margin-top: 20px;">© <span id="year"></span> Manuel Mezo.</p>
+        </div>
+    </footer>
+
+    <script>
+        const interestsMap = {
+            'space': 'photo-space.jpg',
+            'robotics': 'photo-robotics.jpg',
+            'basketball': 'photo-basketball.jpg',
+            'nature': 'photo-nature.jpg'
+        };
+        const photoElement = document.getElementById('interest-photo');
+        const instructionElement = document.getElementById('photo-instruction');
+        const interestItems = document.querySelectorAll('.interest-item');
+        
+        // Function to handle image click and fade
+        function displayInterestPhoto(interestKey) {
+            const photoFileName = interestsMap[interestKey];
+
+            if (photoFileName) {
+                // 1. Hide current image/instruction
+                if (photoElement.style.opacity > 0) {
+                    photoElement.style.opacity = 0; // Fade out image
+                } else {
+                    instructionElement.style.display = 'none';
+                    photoElement.style.display = 'block';
+                }
+
+                // 2. Wait for fade/display change, then update src and fade in
+                setTimeout(() => {
+                    photoElement.src = photoFileName;
+                    photoElement.alt = `Manuel Mezo photo related to ${interestKey}`;
+                    
+                    // Force reflow/repaint for CSS transition to work
+                    void photoElement.offsetWidth; 
+                    
+                    photoElement.style.opacity = 1; // Fade in
+                }, 300); // Matches the 0.3s CSS transition
+            }
+        }
+
+        // Add event listeners to all interest items
+        interestItems.forEach(item => {
+            item.addEventListener('click', function() {
+                // Optional: add a temporary 'active' class for visual feedback
+                interestItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+
+                const interestKey = this.getAttribute('data-interest');
+                displayInterestPhoto(interestKey);
+            });
+        });
+        
+        // Initialize year in footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+</html>

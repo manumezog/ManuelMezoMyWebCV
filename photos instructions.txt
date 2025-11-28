@@ -1,0 +1,14 @@
+Reminder for Deployment:
+Please ensure the following five image files are uploaded to the same directory as this index.html file for the website to display correctly:
+
+ManuelMezo_thumbnail.jpg (Artistic version - for the favicon)
+
+Manuel_Mezo_Original.png (Original version - for the About section)
+
+photo-space.jpg (For the interactive interests section)
+
+photo-robotics.jpg (For the interactive interests section)
+
+photo-basketball.jpg (For the interactive interests section)
+
+photo-nature.jpg (For the interactive interests section)
