@@ -65,8 +65,14 @@
         
         .gradient-text { 
             background: var(--accent-gradient); 
+            /* keep the WebKit prefixed property for Safari/older Blink engines */
             -webkit-background-clip: text; 
+            /* standard property (modern browsers) */
+            background-clip: text;
+
+            /* keep WebKit text fill rule and a standard fallback color */
             -webkit-text-fill-color: transparent; 
+            color: transparent;
         }
         
         .hero p { font-size: 1.3rem; color: var(--secondary-text); max-width: 700px; margin: 0 auto 40px; }
@@ -490,4 +496,4 @@
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
 </body>
-</htmlAnalytics-Driven Builder
+</html>
