@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "mywebcvmanuelmezo"
-  }
+    "default": "webcv-manuelmezo"
+  },
+  "targets": {},
+  "etags": {}
 }
