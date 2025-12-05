@@ -134,6 +134,9 @@
         .timeline-item ul { list-style-type: none; padding: 10px 0 0 20px; border-left: 2px solid var(--card-border); }
         .timeline-item li { font-size: 0.95rem; margin-bottom: 10px; color: var(--secondary-text); }
         .timeline-item li:before { content: "•"; color: var(--accent-color); font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+        
+        /* Hide mobile experience header on desktop */
+        .exp-mobile-header { display: none; }
 
         /* =========================================
            PROJECTS (Light Scrollable)
@@ -301,6 +304,131 @@
                 width: 24px;
                 border-radius: 4px;
             }
+            
+            /* Mobile Header - Keep nav on single line */
+            .header-content {
+                height: auto;
+                padding: 10px 0;
+            }
+            
+            .logo {
+                margin-left: 10px;
+            }
+            
+            .logo a {
+                font-size: 0.75rem;
+                font-weight: 700;
+            }
+            
+            .nav {
+                display: flex;
+                flex-wrap: nowrap;
+                margin-right: 10px;
+            }
+            
+            .nav a {
+                margin-left: 10px;
+                font-size: 0.75rem;
+            }
+            
+            /* Reduce section spacing on mobile */
+            .section {
+                padding: 40px 0;
+            }
+            
+            .section-heading {
+                font-size: 2rem;
+                margin-bottom: 30px;
+            }
+            
+            /* Hero - Center on mobile viewport, shifted up */
+            .hero {
+                min-height: calc(100vh - 50px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0 0 80px 0;
+            }
+            
+            .hero .container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+                margin-bottom: 25px;
+            }
+            
+            /* Experience cards - Redesigned for mobile */
+            .timeline-item {
+                padding: 20px;
+                padding-left: 20px;
+                margin-left: 0;
+                border-left: 2px solid var(--card-border);
+            }
+            
+            .timeline-item:before {
+                display: none; /* Hide the date pseudo-element */
+            }
+            
+            /* New mobile experience header with logo + date inline */
+            .exp-mobile-header {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 12px;
+            }
+            
+            .exp-mobile-header .company-logo {
+                width: 50px;
+                height: 50px;
+                margin: 0;
+                padding: 6px;
+                background: #fff;
+                border: 1px solid var(--card-border);
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+            
+            .exp-mobile-header .exp-date {
+                font-size: 0.85rem;
+                font-weight: 600;
+                color: var(--primary-text);
+            }
+            
+            .exp-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .exp-header .company-logo {
+                display: none; /* Hide the logo in exp-header on mobile, shown in mobile-header instead */
+            }
+            
+            .timeline-item h3 {
+                font-size: 1.1rem;
+            }
+            
+            .timeline-item ul {
+                border-left: none;
+                padding-left: 20px;
+            }
+            
+            .timeline-item li {
+                padding-left: 5px;
+            }
+            
+            /* Footer spacing on mobile */
+            .footer {
+                padding: 40px 0;
+            }
         }
         
         /* Hide scroll indicator on desktop */
@@ -313,20 +441,21 @@
     
     <header class="header">
         <div class="container header-content">
-            <div class="logo"><a href="#home">Manuel Mezo</a></div>
+            <div class="logo"><a href="#home">Manuel M.</a></div>
             <nav class="nav">
                 <a href="#about">About</a>
                 <a href="#experience">Experience</a>
-                <a href="#projects">Projects</a>
+                <a href="#education">Education</a>
+                <a href="#projects">AI</a>
                 <a href="#interests">Interests</a>
-                <a href="#contact">Contact</a>
+                <a href="#contact">✉️</a>
             </nav>
         </div>
     </header>
 
     <section id="home" class="hero">
         <div class="container">
-            <h1>Operations Leader & <br><span class="hero">AI Enthusiast Builder</span></h1>
+            <h1>Operations Leader &amp;&nbsp;AI Enthusiast Builder</h1>
             <p>I pivot strategic vision into tangible business value by building robust, data-centric products. Driving efficiency and stakeholder alignment across global operations.</p>
             <a href="#projects" class="cta-button">View My Work</a>
         </div>
@@ -344,9 +473,13 @@
 
     <section id="experience" class="section">
         <div class="container">
-            <h2 class="section-heading">Experience</h2>
+            <h2 class="section-heading">Professional Experience 🧑🏻‍💻</h2>
 
             <div class="timeline-item" data-year="Sept 2023 – Present">
+                <div class="exp-mobile-header">
+                    <img src="logo-amazon-new.png" alt="Amazon Logo" class="company-logo" onerror="this.style.display='none'">
+                    <span class="exp-date">Sept 2023 – Present</span>
+                </div>
                 <div class="exp-header">
                     <div class="exp-title-group">
                         <h3>Senior Program Manager - Supply Chain<br><span style="font-size:0.9em; color:#4b5563; font-weight:400;">Amazon (Madrid, Spain)</span></h3>
@@ -363,6 +496,10 @@
             </div>
 
             <div class="timeline-item" data-year="Aug 2022 – Jul 2023">
+                <div class="exp-mobile-header">
+                    <img src="logo-mckinsey.png" alt="McKinsey Logo" class="company-logo" onerror="this.style.display='none'">
+                    <span class="exp-date">Aug 2022 – Jul 2023</span>
+                </div>
                 <div class="exp-header">
                     <div class="exp-title-group">
                         <h3>Operations Consultant<br><span style="font-size:0.9em; color:#4b5563; font-weight:400;">McKinsey & Company (Madrid, Spain)</span></h3>
@@ -378,6 +515,10 @@
             </div>
 
             <div class="timeline-item" data-year="Oct 2021 – Aug 2022">
+                <div class="exp-mobile-header">
+                    <img src="logo-amazon-new.png" alt="Amazon Logo" class="company-logo" onerror="this.style.display='none'">
+                    <span class="exp-date">Oct 2021 – Aug 2022</span>
+                </div>
                 <div class="exp-header">
                     <div class="exp-title-group">
                         <h3>Sr Program Manager - Ops Excellence<br><span style="font-size:0.9em; color:#4b5563; font-weight:400;">Amazon (Madrid, Spain)</span></h3>
@@ -392,6 +533,10 @@
             </div>
 
             <div class="timeline-item" data-year="Sept 2017 – Sept 2021">
+                <div class="exp-mobile-header">
+                    <img src="logo-amazon-new.png" alt="Amazon Logo" class="company-logo" onerror="this.style.display='none'">
+                    <span class="exp-date">Sept 2017 – Sept 2021</span>
+                </div>
                 <div class="exp-header">
                     <div class="exp-title-group">
                         <h3>3PL Operations Quality - Program Manager<br><span style="font-size:0.9em; color:#4b5563; font-weight:400;">Amazon (Luxembourg)</span></h3>
@@ -407,9 +552,81 @@
         </div>
     </section>
 
+    <section id="education" class="section">
+        <div class="container">
+            <h2 class="section-heading">Education 🎓</h2>
+
+            <div class="timeline-item" data-year="2017">
+                <div class="exp-mobile-header">
+                    <img src="logo-tudelft.jpg" alt="TU Delft Logo" class="company-logo" onerror="this.style.display='none'">
+                    <span class="exp-date">2017</span>
+                </div>
+                <div class="exp-header">
+                    <div class="exp-title-group">
+                        <h3>Master's Thesis Exchange<br><span style="font-size:0.9em; color:#4b5563; font-weight:400;">Delft University of Technology</span></h3>
+                    </div>
+                    <img src="logo-tudelft.jpg" alt="TU Delft Logo" class="company-logo" onerror="this.style.display='none'">
+                </div>
+                <ul>
+                    <li>6-month exchange to elaborate Master's thesis: "Open- and closed-loop Doppler data modelling for spacecraft tracking".</li>
+                    <li>Part-time volunteering engineer at Formula Student Team Delft.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="2015 – 2017">
+                <div class="exp-mobile-header">
+                    <img src="logo-uc3m.jpg" alt="UC3M Logo" class="company-logo" onerror="this.style.display='none'">
+                    <span class="exp-date">2015 – 2017</span>
+                </div>
+                <div class="exp-header">
+                    <div class="exp-title-group">
+                        <h3>MSc in Aerospace Engineering<br><span style="font-size:0.9em; color:#4b5563; font-weight:400;">Universidad Carlos III de Madrid</span></h3>
+                    </div>
+                    <img src="logo-uc3m.jpg" alt="UC3M Logo" class="company-logo" onerror="this.style.display='none'">
+                </div>
+                <ul>
+                    <li>Focus on integral aircraft and satellite design, aeronautical and space propulsion, aerospace navigation and control.</li>
+                    <li>Exchange program at TU Delft (Netherlands).</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="2011 – 2015">
+                <div class="exp-mobile-header">
+                    <img src="logo-unileon.jpg" alt="Universidad de León Logo" class="company-logo" onerror="this.style.display='none'">
+                    <span class="exp-date">2011 – 2015</span>
+                </div>
+                <div class="exp-header">
+                    <div class="exp-title-group">
+                        <h3>BSc in Aerospace Engineering<br><span style="font-size:0.9em; color:#4b5563; font-weight:400;">Universidad de León</span></h3>
+                    </div>
+                    <img src="logo-unileon.jpg" alt="Universidad de León Logo" class="company-logo" onerror="this.style.display='none'">
+                </div>
+                <ul>
+                    <li>Basketball player and referee.</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item" data-year="2013 – 2016">
+                <div class="exp-mobile-header">
+                    <img src="logo-unileon.jpg" alt="Universidad de León Logo" class="company-logo" onerror="this.style.display='none'">
+                    <span class="exp-date">2013 – 2016</span>
+                </div>
+                <div class="exp-header">
+                    <div class="exp-title-group">
+                        <h3>BSc in Mechanical Engineering<br><span style="font-size:0.9em; color:#4b5563; font-weight:400;">Universidad de León</span></h3>
+                    </div>
+                    <img src="logo-unileon.jpg" alt="Universidad de León Logo" class="company-logo" onerror="this.style.display='none'">
+                </div>
+                <ul>
+                    <li>Basketball player and referee.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
     <section id="projects" class="section">
         <div class="container">
-            <h2 class="section-heading">Featured AI Projects</h2>
+            <h2 class="section-heading">My AI projects 🚀</h2>
             
             <div class="projects-wrapper">
                 <button class="scroll-btn left" onclick="scrollProjects(-1)">&#10094;</button>
@@ -486,7 +703,7 @@
     
     <section id="interests" class="section">
         <div class="container">
-            <h2 class="section-heading">Personal Interests</h2>
+            <h2 class="section-heading">Personal Interests 🤓</h2>
             <div id="interest-photo-container">
                 <img id="interest-photo" src="" alt="Related photo" />
                 <p id="photo-instruction">Click an interest below to see a related photo!</p>
@@ -506,12 +723,19 @@
     <footer id="contact" class="footer">
         <div class="container">
             <h2 style="font-size: 1.8rem; margin-bottom: 20px; font-weight: 800; color: var(--primary-text);">Let's Connect</h2>
-            <div class="footer-links">
-                <a href="mailto:manumezog@gmail.com">manumezog@gmail.com</a>
-                <a href="https://www.linkedin.com/in/manuelmezo/" target="_blank">LinkedIn</a>
-                <a href="https://github.com/manumezog" target="_blank">GitHub</a>
+            <div class="footer-links" style="display: flex; justify-content: center; gap: 30px; margin-bottom: 15px;">
+                <a href="mailto:manumezog@gmail.com" title="Email" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--card-border); transition: all 0.2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/in/manuelmezo/" target="_blank" title="LinkedIn" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--card-border); transition: all 0.2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                </a>
+                <a href="https://github.com/manumezog" target="_blank" title="GitHub" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--card-border); transition: all 0.2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                </a>
             </div>
-            <p style="margin-top: 20px;">© <span id="year"></span> Manuel Mezo.</p>
+            <p style="color: var(--secondary-text); font-size: 0.95rem; margin-bottom: 15px;">manumezog@gmail.com </p>
+            <p style="margin-top: 10px; font-size: 0.85rem;">© <span id="year"></span> Manuel Mezo</p>
         </div>
     </footer>
 
