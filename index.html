@@ -248,6 +248,64 @@
             .exp-header { flex-direction: column-reverse; align-items: flex-start; }
             .company-logo { width: 60px; height: 60px; margin-bottom: 10px; }
             .scroll-btn { display: none; }
+            
+            /* Mobile Projects Scroll Improvements */
+            .projects-wrapper {
+                position: relative;
+            }
+            
+            /* Gradient fade hint on right edge */
+            .projects-wrapper::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                width: 40px;
+                background: linear-gradient(to left, rgba(255,255,255,0.95), transparent);
+                pointer-events: none;
+                z-index: 1;
+            }
+            
+            .projects-container {
+                padding: 10px 20px 30px 20px;
+                gap: 15px;
+                scroll-snap-type: x mandatory;
+            }
+            
+            /* Card sized to show peek of next card */
+            .project-card {
+                min-width: calc(85vw - 40px);
+                max-width: calc(85vw - 40px);
+                scroll-snap-align: start;
+            }
+            
+            /* Scroll indicator dots */
+            .scroll-indicator {
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 15px;
+            }
+            
+            .scroll-dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--card-border);
+                transition: all 0.3s ease;
+            }
+            
+            .scroll-dot.active {
+                background: var(--accent-color);
+                width: 24px;
+                border-radius: 4px;
+            }
+        }
+        
+        /* Hide scroll indicator on desktop */
+        .scroll-indicator {
+            display: none;
         }
     </style>
 </head>
@@ -414,6 +472,15 @@
 
                 <button class="scroll-btn right" onclick="scrollProjects(1)">&#10095;</button>
             </div>
+            
+            <!-- Scroll indicator dots for mobile -->
+            <div class="scroll-indicator" id="scrollIndicator">
+                <div class="scroll-dot active"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+            </div>
         </div>
     </section>
     
@@ -513,6 +580,57 @@
             const cardWidth = 350; // card width + gap
             container.scrollBy({ left: cardWidth * direction, behavior: 'smooth' });
         }
+        
+        // 3. Mobile Projects Scroll Enhancements
+        const projectsContainer = document.getElementById('projectsContainer');
+        const scrollDots = document.querySelectorAll('.scroll-dot');
+        const projectCards = document.querySelectorAll('.project-card');
+        let peekAnimationDone = false;
+        
+        // Update scroll indicator dots based on scroll position
+        function updateScrollIndicator() {
+            if (window.innerWidth > 768) return; // Only on mobile
+            
+            const scrollLeft = projectsContainer.scrollLeft;
+            const cardWidth = projectsContainer.querySelector('.project-card').offsetWidth + 15; // card + gap
+            const activeIndex = Math.round(scrollLeft / cardWidth);
+            
+            scrollDots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        }
+        
+        // Listen for scroll events on projects container
+        projectsContainer.addEventListener('scroll', updateScrollIndicator);
+        
+        // Peek animation when projects section comes into view (mobile only)
+        function triggerPeekAnimation() {
+            if (peekAnimationDone || window.innerWidth > 768) return;
+            peekAnimationDone = true;
+            
+            // Small delay for better UX
+            setTimeout(() => {
+                // Scroll right slightly to reveal next card
+                projectsContainer.scrollTo({ left: 60, behavior: 'smooth' });
+                
+                // Scroll back after a moment
+                setTimeout(() => {
+                    projectsContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                }, 400);
+            }, 300);
+        }
+        
+        // Intersection Observer to detect when projects section is visible
+        const projectsSection = document.getElementById('projects');
+        const projectsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+                    triggerPeekAnimation();
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        projectsObserver.observe(projectsSection);
 
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
