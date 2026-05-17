@@ -265,13 +265,23 @@
             <div class="section-num">04 — Data Augmentation Strategy</div>
             <h2>Simulating Real-World Physical Constraints</h2>
             <p>A fundamental challenge in custom dataset training is <strong>overfitting</strong>: a small dataset causes the model to memorize training examples rather than learning generalizable features. The solution is data augmentation — synthetically expanding the dataset by applying controlled transformations.</p>
-            <p>The augmentation strategy was designed to mirror the specific physical constraints of the deployment environment:</p>
-            <ul style="margin: 16px 0 16px 20px; color: var(--secondary); line-height: 2;">
-                <li><strong>Motion Blur</strong> — The conveyor belt moves. Objects will be slightly blurred during transit. Motion blur augmentation trains the model to handle this.</li>
-                <li><strong>Noise / Grain</strong> — Ambient room lighting varies and introduces sensor noise. Gaussian noise augmentation improves robustness to lighting changes.</li>
-                <li><strong>Brightness & Exposure Shifts</strong> — Simulates different times of day and lighting conditions without needing to recapture data.</li>
-                <li><strong>Horizontal Flips & Rotations</strong> — Objects may arrive on the belt in any orientation.</li>
+            <p>To ensure robust generalizations, the augmentation and preprocessing strategy was configured directly in <strong>Roboflow</strong> to mirror the specific physical constraints of the physical conveyor belt environment:</p>
+            
+            <div class="media-block">
+                <img src="project-yolo-augmentation.png" alt="Roboflow dataset version configuration dashboard" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>project-yolo-augmentation.png</code> in this folder</div>'">
+                <p class="media-caption">Roboflow Dataset v2 configuration dashboard showing preprocessing parameters, augmentation limits, and the 94% / 6% training-to-validation split.</p>
+            </div>
+
+            <ul style="margin: 24px 0 24px 20px; color: var(--secondary); line-height: 2;">
+                <li><strong>Dataset Split</strong> — 94% Train (129 images) and 6% Validation (8 images), structured to optimize validation signals for custom tracking.</li>
+                <li><strong>Preprocessing</strong> — Auto-Orient applied, and all images stretched to a uniform <strong>640x640</strong> canvas matching YOLO's native size.</li>
+                <li><strong>Outputs per training example</strong> — 3x expansion factor, generating synthetic variations to multiply the training distribution.</li>
+                <li><strong>Rotation (Between -15° and +15°)</strong> — Simulates arbitrary orientations of wooden blocks as they are placed or roll slightly onto the moving belt.</li>
+                <li><strong>Brightness (Between -25% and +25%)</strong> — Models physical changes in ambient light in different environments and times of day.</li>
+                <li><strong>Blur (Up to 1.5px)</strong> — Accounts for motion blur introduced by the physical velocity of the conveyor belt.</li>
+                <li><strong>Noise (Up to 1.49% of pixels)</strong> — Replicates sensor gain and camera artifacts to make the model invariant to hardware noise.</li>
             </ul>
+
             <div class="media-block">
                 <img src="eg augmented image for training.jpg" alt="Example augmented training image showing noise and motion blur applied to conveyor belt scene" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>eg augmented image for training.jpg</code> in this folder</div>'">
                 <p class="media-caption">Generating synthetic training data using noise and motion blur augmentations. The dark vignette and grain simulate low-light and motion conditions on the physical belt.</p>
