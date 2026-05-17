@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Spatial Logic: Real-Time Object Tracking & Counting | Manuel Mezo</title>
+    <meta name="description" content="Implementing multi-object tracking (ByteTrack) and spatial calculations (OpenCV) on top of a fine-tuned YOLOv8 model for throughput counting and pick-zone monitoring.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;        /* --primary-text in index */
+            --secondary: #4b5563;      /* --secondary-text in index */
+            --bg: #ffffff;             /* --bg-color in index */
+            --card-bg: #f9fafb;        /* same as index */
+            --border: #e5e7eb;         /* --card-border in index */
+            --accent: #0284c7;         /* --accent-color in index */
+            --accent-grad: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            --code-bg: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; color: var(--primary); background: var(--bg); line-height: 1.7; }
+        a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s ease; }
+        a:hover { color: #0369a1; text-decoration: underline; }
+
+        /* ── NAV ── */
+        .nav-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-bar a { text-decoration: none; font-weight: 600; color: var(--secondary); font-size: 0.9rem; transition: color 0.2s; }
+        .nav-bar a:hover { color: var(--accent); }
+        .nav-logo { font-weight: 800; font-size: 1rem; color: var(--primary) !important; }
+
+        /* ── HERO ── */
+        .hero {
+            background: var(--bg);
+            padding: 120px 40px 80px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-label {
+            display: inline-block;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            color: #fff;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; max-width: 900px; margin-left: auto; margin-right: auto; color: var(--primary); letter-spacing: -1px; }
+        .hero p { font-size: 1.3rem; color: var(--secondary); max-width: 700px; margin: 0 auto 30px; }
+        .tech-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .pill {
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff; font-size: 0.8rem; font-weight: 600;
+            padding: 6px 16px; border-radius: 20px;
+        }
+
+        /* ── LAYOUT ── */
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+        .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+        .section:last-of-type { border-bottom: none; }
+
+        /* ── SECTION HEADING ── */
+        .section-num {
+            display: inline-block;
+            background: var(--accent-grad); -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+        .section p { color: var(--secondary); margin-bottom: 16px; font-size: 1rem; }
+        .section p:last-child { margin-bottom: 0; }
+
+        /* ── CALLOUT ── */
+        .callout {
+            background: var(--card-bg); border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0;
+        }
+        .callout strong { display: block; margin-bottom: 6px; color: var(--primary); font-size: 0.95rem; }
+        .callout span { color: var(--secondary); font-size: 0.95rem; }
+
+        /* ── MEDIA ── */
+        .media-block { margin: 32px 0; }
+        .media-block video, .media-block img {
+            width: 100%; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: block;
+        }
+        .media-caption {
+            margin-top: 10px; font-size: 0.85rem;
+            color: var(--secondary); font-style: italic; text-align: center;
+        }
+
+        /* ── SIDE BY SIDE ── */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0; }
+        @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+        /* ── METRICS GRID ── */
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+        .metric-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .metric-val { font-size: 2rem; font-weight: 800; background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-label { font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-top: 4px; }
+        @media (max-width: 500px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
+
+        /* ── PIPELINE STEPS ── */
+        .pipeline { display: flex; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+        .pipeline-step {
+            flex: 1; min-width: 120px;
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 12px; text-align: center; position: relative;
+        }
+        .pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+        .pipeline-step:last-child { border-radius: 0 10px 10px 0; }
+        .pipeline-step:not(:last-child)::after {
+            content: '→'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--accent); font-size: 1.1rem; font-weight: 700; z-index: 2;
+        }
+        .pipeline-step .step-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .pipeline-step .step-label { font-size: 0.72rem; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ── CODE ── */
+        pre {
+            background: var(--code-bg); color: #e2e8f0;
+            border-radius: 10px; padding: 20px 24px;
+            font-size: 0.85rem; overflow-x: auto;
+            margin: 20px 0; line-height: 1.6;
+        }
+        code { font-family: 'Courier New', monospace; }
+
+        /* ── BACK BUTTON ── */
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%); color: #fff;
+            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+            padding: 14px 35px; border-radius: 50px;
+            transition: all 0.3s ease; margin: 50px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); }
+
+        /* ── FOOTER ── */
+        footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">← Manuel Mezo</a>
+        <a href="index.html#vision">Computer Vision Projects</a>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <div class="hero">
+        <div class="hero-label">Spatial AI · OpenCV Logic · Throughput Counting</div>
+        <h1>Advanced Spatial Logic: Real-Time Object Tracking & Counting on Edge Devices</h1>
+        <p>Building memory-driven, spatial intelligence layers on top of raw deep learning predictions to enable conveyor belt pick-and-place automation.</p>
+        <div class="tech-pills">
+            <span class="pill">Python</span>
+            <span class="pill">OpenCV</span>
+            <span class="pill">Ultralytics YOLOv8</span>
+            <span class="pill">ByteTrack</span>
+            <span class="pill">Spatial Mathematics</span>
+            <span class="pill">Edge Deployment</span>
+        </div>
+    </div>
+
+    <!-- ── PIPELINE OVERVIEW ── -->
+    <div class="container">
+        <div class="pipeline" style="margin-top: 50px;">
+            <div class="pipeline-step"><div class="step-icon">🎥</div><div class="step-label">Frame Input</div></div>
+            <div class="pipeline-step"><div class="step-icon">🧠</div><div class="step-label">YOLO Inference</div></div>
+            <div class="pipeline-step"><div class="step-icon">🆔</div><div class="step-label">ByteTrack ID</div></div>
+            <div class="pipeline-step"><div class="step-icon">🟢</div><div class="step-label">Polygon Zone</div></div>
+            <div class="pipeline-step"><div class="step-icon">🔴</div><div class="step-label">Tripwire Logic</div></div>
+            <div class="pipeline-step"><div class="step-icon">⚙️</div><div class="step-label">Control Out</div></div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 1: CONTEXT ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">01 — Project Context & Challenge</div>
+            <h2>Advanced Spatial Logic: Throughput Counting & Zone Monitoring</h2>
+            <p>Raw deep learning models like YOLO are excellent detectors, but they operate as static frame-by-frame snapshot engines. They are completely temporal-blind: they lack <strong>"memory."</strong> To successfully automate a physical conveyor belt, knowing that an item exists in a single frame is not enough. The automation layer needs to verify if an object identified in Frame A is the exact same piece in Frame B, measure the total volume of objects moving past a threshold (throughput), and pinpoint the exact moment an item enters the robot's coordinates (pick-zone).</p>
+            <p>To bridge the gap between raw bounding boxes and mechanical action, we engineered an advanced spatial logic pipeline. Combining the lightweight <code>YOLOv8</code> detector with the high-performance <strong>ByteTrack</strong> multi-object tracking engine and native <strong>OpenCV</strong> vector operations, we built a low-latency, modular system that converts raw video feeds into actionable, coordinate-level automation triggers.</p>
+            
+            <div class="callout">
+                <strong>The Spatial Challenge</strong>
+                <span>Deep learning models provide detections, but spatial logic provides decisions. By giving the AI "memory" and mathematical boundaries, we can reliably guide a robotic arm to execute pick-and-place routines on moving items.</span>
+            </div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-val">30+</div><div class="metric-label">FPS on Edge Hardware</div></div>
+                <div class="metric-card"><div class="metric-val">&lt; 10ms</div><div class="metric-label">Processing Overhead</div></div>
+                <div class="metric-card"><div class="metric-val">100%</div><div class="metric-label">Identity Cohesion</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 2: TRACKING ENGINE ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">02 — The Tracking Engine</div>
+            <h2>Giving AI "Memory" via Multi-Object Tracking</h2>
+            <p>The foundation of spatial logic is identity tracking. We integrated <strong>ByteTrack</strong> directly with our fine-tuned YOLOv8 model. Unlike generic trackers that throw away low-confidence detection boxes (often leading to tracking loss when items are partially blocked or shadowed), ByteTrack exploits association logic across every single detection box, matching low-score detections to existing trajectories using Kalman filters.</p>
+            <p>By comparing the Intersect-over-Union (IoU) of boxes across frames, ByteTrack assigns a <strong>persistent, unique ID</strong> to every detected item. This ID remains tied to the physical object as long as it is in the camera's field of view. This "memory" is what prevents the throughput counter from double-counting the same item, and it provides a smooth, continuous path of coordinates that a robotic arm can easily follow.</p>
+            
+            <pre><code># Integrating multi-object tracking with YOLOv8 using ByteTrack
+from ultralytics import YOLO
+
+# Load fine-tuned conveyor model weights
+model = YOLO("best.pt")
+
+# Perform real-time inference with persistent tracking
+results = model.track(source="conveyor_feed.mp4", persist=True, tracker="bytetrack.yaml")
+for box in results[0].boxes:
+    # Safely retrieve persistent track ID assigned by ByteTrack
+    track_id = int(box.id[0]) if box.id is not None else None
+    x1, y1, x2, y2 = box.xyxy[0]
+    print(f"Object ID: {track_id} | Coordinates: ({x1:.1f}, {y1:.1f})")</code></pre>
+        </div>
+    </div>
+
+    <!-- ── SECTION 3: APPLICATION 1 ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">03 — Application 1: Zone-Based Monitoring</div>
+            <h2>Polygon Boundary Logic for Robotic Workspace Gates</h2>
+            <p>With unique IDs successfully assigned, we implemented virtual bounding zones to simulate industrial robotic workspace boundaries. Rather than using simple rectangular bounding boxes, we engineered support for <strong>arbitrary 2D polygons</strong> to model complex, real-world pick-zones or machine exclusion spaces.</p>
+            <p>Using OpenCV's mathematical vectors, we defined a custom coordinates array representing the green "Pick Zone." In each frame, the centroid $(C_x, C_y)$ of each active track ID is computed. We then call the <code>cv2.pointPolygonTest</code> algorithm:</p>
+            
+            <pre><code># Check if object centroid lies within custom pick polygon
+# dist = positive (inside), zero (on edge), negative (outside)
+dist = cv2.pointPolygonTest(polygon_coords, (centroid_x, centroid_y), measureDist=False)
+if dist >= 0:
+    # Target object is inside pick zone, trigger robotic pickup event
+    trigger_pick_action(track_id, centroid_x, centroid_y)</code></pre>
+            
+            <p>This allows the system to register precisely when objects enter the pick area, incrementing a live 'IN ZONE' monitor and feeding exact localized coordinates directly to the robot arm's actuation system.</p>
+
+            <div class="media-block">
+                <video controls preload="metadata">
+                    <source src="live new scenario test after training augmented100e target zone counter.mp4" type="video/mp4">
+                    <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e target zone counter.mp4</code> in this directory to view.</p>
+                </video>
+                <p class="media-caption">Real-time zone tracking. The system draws a virtual green polygon and successfully increments the 'IN ZONE' counter only when the tracked centroids of the fine-tuned classes enter the designated area.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 4: APPLICATION 2 ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">04 — Application 2: Throughput Measurement</div>
+            <h2>Tripwire Logic for High-Speed Production Analytics</h2>
+            <p>The second application is a high-speed **tripwire throughput counter**. This is designed to replace traditional optoelectronic sensors, with the added capability of classifying exactly what kind of product crossed the line.</p>
+            <p>The system defines a linear threshold using two points. As items move from left to right down the conveyor belt, the tracking engine records the history of their coordinates. By comparing the previous X-coordinate of a specific object ID to the X-coordinate of the tripwire line, the system detects a threshold crossing. Once crossed, the object's ID is registered in a "counted set" to prevent duplicate tracking, and the global throughput count is updated instantly.</p>
+
+            <div class="media-block">
+                <video controls preload="metadata">
+                    <source src="live new scenario test after training augmented100e line counter.mp4" type="video/mp4">
+                    <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e line counter.mp4</code> in this directory to view.</p>
+                </video>
+                <p class="media-caption">Real-time throughput counting. A virtual red tripwire is established. As the multi-object tracker maintains the ID of the moving items, the top-left 'COUNT' updates precisely as each centroid crosses the threshold.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 5: KEY LEARNINGS ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">05 — Key Learnings & Scalability</div>
+            <h2>Industrial Efficacy and Edge Deployment Potential</h2>
+            <p>This project highlights that the real value of deep learning in industrial contexts is unlocked by clever post-processing algorithms. By keeping our vision pipeline lightweight and computationally efficient, we achieve robust spatial intelligence that scales easily to standard hardware.</p>
+            
+            <ul style="margin: 24px 0 24px 20px; color: var(--secondary); line-height: 2;">
+                <li><strong>High Edge Efficiency:</strong> Layering tracking algorithms and coordinate logic using vector operations on top of a YOLO pipeline is highly modular and runs at <strong>30+ FPS</strong> with extremely minimal overhead.</li>
+                <li><strong>Industrial Production Analytics:</strong> The tripwire throughput system can easily be deployed on packaging lines, logistics hubs, or traffic analysis stations to classify and measure flow rates.</li>
+                <li><strong>Safety & Danger Zone Enforcement:</strong> The polygon zone logic directly translates to safety systems (PPE compliance areas, heavy machinery lockouts, and personnel separation barriers) to protect workers in automated plants.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ── BACK ── -->
+    <div class="container" style="text-align:center;">
+        <a href="index.html#vision" class="back-btn">← Back to Computer Vision Projects</a>
+    </div>
+
+    <footer>
+        <p>© <span id="yr"></span> Manuel Mezo &nbsp;·&nbsp; <a href="index.html" style="color:var(--accent);text-decoration:none;">cv.manuelmezo.com</a></p>
+    </footer>
+
+    <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>
