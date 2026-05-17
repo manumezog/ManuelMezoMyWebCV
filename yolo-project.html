@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine-Tuning YOLOv8 for Real-Time Conveyor Belt Tracking | Manuel Mezo</title>
+    <meta name="description" content="End-to-end machine learning pipeline: custom dataset creation, Roboflow annotation, data augmentation, YOLOv8 fine-tuning, and real-time edge deployment for conveyor belt object tracking.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;        /* --primary-text in index */
+            --secondary: #4b5563;      /* --secondary-text in index */
+            --bg: #ffffff;             /* --bg-color in index */
+            --card-bg: #f9fafb;        /* same as index */
+            --border: #e5e7eb;         /* --card-border in index */
+            --accent: #0284c7;         /* --accent-color in index */
+            --accent-grad: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            --code-bg: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; color: var(--primary); background: var(--bg); line-height: 1.7; }
+        a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s ease; }
+        a:hover { color: #0369a1; text-decoration: underline; }
+
+        /* ── NAV ── */
+        .nav-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-bar a { text-decoration: none; font-weight: 600; color: var(--secondary); font-size: 0.9rem; transition: color 0.2s; }
+        .nav-bar a:hover { color: var(--accent); }
+        .nav-logo { font-weight: 800; font-size: 1rem; color: var(--primary) !important; }
+
+        /* ── HERO ── */
+        .hero {
+            background: var(--bg);
+            padding: 120px 40px 80px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-label {
+            display: inline-block;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            color: #fff;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; max-width: 900px; margin-left: auto; margin-right: auto; color: var(--primary); letter-spacing: -1px; }
+        .hero p { font-size: 1.3rem; color: var(--secondary); max-width: 700px; margin: 0 auto 30px; }
+        .tech-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .pill {
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff; font-size: 0.8rem; font-weight: 600;
+            padding: 6px 16px; border-radius: 20px;
+        }
+
+        /* ── LAYOUT ── */
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+        .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+        .section:last-of-type { border-bottom: none; }
+
+        /* ── SECTION HEADING ── */
+        .section-num {
+            display: inline-block;
+            background: var(--accent-grad); -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+        .section p { color: var(--secondary); margin-bottom: 16px; font-size: 1rem; }
+        .section p:last-child { margin-bottom: 0; }
+
+        /* ── CALLOUT ── */
+        .callout {
+            background: var(--card-bg); border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0;
+        }
+        .callout strong { display: block; margin-bottom: 6px; color: var(--primary); font-size: 0.95rem; }
+        .callout span { color: var(--secondary); font-size: 0.95rem; }
+
+        /* ── MEDIA ── */
+        .media-block { margin: 32px 0; }
+        .media-block video, .media-block img {
+            width: 100%; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: block;
+        }
+        .media-caption {
+            margin-top: 10px; font-size: 0.85rem;
+            color: var(--secondary); font-style: italic; text-align: center;
+        }
+
+        /* ── SIDE BY SIDE ── */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0; }
+        @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+        /* ── METRICS GRID ── */
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+        .metric-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .metric-val { font-size: 2rem; font-weight: 800; background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-label { font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-top: 4px; }
+        @media (max-width: 500px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
+
+        /* ── PIPELINE STEPS ── */
+        .pipeline { display: flex; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+        .pipeline-step {
+            flex: 1; min-width: 120px;
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 12px; text-align: center; position: relative;
+        }
+        .pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+        .pipeline-step:last-child { border-radius: 0 10px 10px 0; }
+        .pipeline-step:not(:last-child)::after {
+            content: '→'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--accent); font-size: 1.1rem; font-weight: 700; z-index: 2;
+        }
+        .pipeline-step .step-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .pipeline-step .step-label { font-size: 0.72rem; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ── CODE ── */
+        pre {
+            background: var(--code-bg); color: #e2e8f0;
+            border-radius: 10px; padding: 20px 24px;
+            font-size: 0.85rem; overflow-x: auto;
+            margin: 20px 0; line-height: 1.6;
+        }
+        code { font-family: 'Courier New', monospace; }
+
+        /* ── BACK BUTTON ── */
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%); color: #fff;
+            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+            padding: 14px 35px; border-radius: 50px;
+            transition: all 0.3s ease; margin: 50px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); }
+
+        /* ── FOOTER ── */
+        footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">← Manuel Mezo</a>
+        <a href="index.html#vision">Computer Vision Projects</a>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <div class="hero">
+        <div class="hero-label">Computer Vision · ML Pipeline · Edge Deployment</div>
+        <h1>Custom Object Detection & Tracking: Fine-Tuning YOLOv8 for Edge Robotics</h1>
+        <p>A complete, end-to-end machine learning pipeline — from raw video capture to real-time inference on a conveyor belt robotic system.</p>
+        <div class="tech-pills">
+            <span class="pill">Python</span>
+            <span class="pill">YOLOv8 / Ultralytics</span>
+            <span class="pill">OpenCV</span>
+            <span class="pill">Roboflow</span>
+            <span class="pill">Google Colab</span>
+            <span class="pill">ByteTrack</span>
+        </div>
+    </div>
+
+    <!-- ── PIPELINE OVERVIEW ── -->
+    <div class="container">
+        <div class="pipeline" style="margin-top: 50px;">
+            <div class="pipeline-step"><div class="step-icon">🎥</div><div class="step-label">Frame Extraction</div></div>
+            <div class="pipeline-step"><div class="step-icon">🏷️</div><div class="step-label">Annotation</div></div>
+            <div class="pipeline-step"><div class="step-icon">🔀</div><div class="step-label">Augmentation</div></div>
+            <div class="pipeline-step"><div class="step-icon">🧠</div><div class="step-label">Fine-Tuning</div></div>
+            <div class="pipeline-step"><div class="step-icon">📊</div><div class="step-label">Evaluation</div></div>
+            <div class="pipeline-step"><div class="step-icon">🤖</div><div class="step-label">Deployment</div></div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 1: CONTEXT ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">01 — Context & Objective</div>
+            <h2>Fine-Tuning YOLOv8 for Real-Time Conveyor Belt Tracking</h2>
+            <p>The end goal of this project is to feed a robotic arm: a vision system that can <strong>detect, classify, and track custom wooden objects</strong> moving on a physical conveyor belt, at real-time inference speeds, and with sufficient positional accuracy to guide pick-and-place operations. The conveyor belt system is <strong>fully 3D printed in PETG</strong>, utilizing a modular, open-source design from <a href="https://makerworld.com/en/models/192994-conveyor-belt-fully-3d-printed#profileId-944530" target="_blank">MakerWorld</a>.</p>
+            <p>The target objects for recognition are the wooden game pieces from the <strong>Catan board game</strong> (see reference image below). These four custom object classes — <strong>Church, House, Bar,</strong> and <strong>Dice</strong> — are non-standard, small-scale, and visually similar in certain lighting conditions. No existing pre-trained model has ever seen them. This rules out any zero-shot approach and demands a purpose-built, fine-tuned model.</p>
+            
+            <div class="media-block">
+                <img src="catan_board.jpg" alt="Catan board game showing the wooden game pieces" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>catan_board.jpg</code> in this folder</div>'">
+                <p class="media-caption">Reference: The Catan board game. The target wooden pieces (Church, House, Bar) are scattered across the board.</p>
+            </div>
+
+            <div class="callout">
+                <strong>Project Objective</strong>
+                <span>Build a robust, high-speed computer vision model capable of detecting, classifying, and tracking custom wooden shapes on a moving conveyor belt to guide a robotic arm — using the smallest viable YOLO architecture for edge deployment.</span>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-val">4</div><div class="metric-label">Custom Classes</div></div>
+                <div class="metric-card"><div class="metric-val">100</div><div class="metric-label">Training Epochs</div></div>
+                <div class="metric-card"><div class="metric-val">~97%</div><div class="metric-label">mAP@50 Achieved</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 2: BASELINE ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">02 — The Baseline Problem</div>
+            <h2>Zero-Shot Limitations of Pre-Trained YOLOv8</h2>
+            <p>The first step of any robust ML project is establishing a baseline — understanding exactly what the off-the-shelf model <em>cannot</em> do. Running the base <code>YOLOv8n</code> (Nano) model on our conveyor belt scene produced spectacularly wrong results.</p>
+            <p>The model — trained on COCO's 80 generic classes — had no concept of a "Church" shaped wooden block. Instead, it mapped visual features to the nearest object in its training distribution, confidently misclassifying the wooden shapes as <strong>"scissors," "surfboards,"</strong> and <strong>"knives."</strong> A human hand in the scene was tagged as a <strong>"person."</strong> Bounding boxes were erratic, appearing and disappearing frame-to-frame with no temporal consistency.</p>
+            <div class="callout">
+                <strong>Key Insight</strong>
+                <span>Pre-trained models are highly capable within their training distribution, but they cannot generalize to domain-specific, custom object classes without targeted fine-tuning on representative data. Zero-shot performance on this task was 0% useful accuracy.</span>
+            </div>
+            <div class="media-block">
+                <video controls preload="metadata" poster="">
+                    <source src="live scenario test raw yolov8n.mp4" type="video/mp4">
+                    <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live scenario test raw yolov8n.mp4</code> in this directory to view.</p>
+                </video>
+                <p class="media-caption">Baseline inference using pre-trained YOLOv8n. Note the severe misclassifications ("scissors", "surfboard") and erratic, temporally inconsistent bounding boxes.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 3: DATASET ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">03 — Dataset Creation & Annotation</div>
+            <h2>Building a Custom Dataset from Scratch</h2>
+            <p>With no existing dataset for these objects, the entire training corpus had to be built from scratch. The approach was pragmatic: <strong>capture video of the actual physical setup</strong> — same lighting, same camera angle, same conveyor belt surface — and extract frames at a rate that captures sufficient class diversity without redundancy.</p>
+            <p>Frames were extracted from a recording of the actual conveyor belt scene. This ensures the model trains on the exact domain it will be deployed in — a critical practice that eliminates domain shift between training and inference.</p>
+            <p>The raw frames were imported into <strong>Roboflow</strong>, where each object instance was manually annotated by drawing precise bounding boxes and assigning class labels. Each annotation becomes a ground truth data point that the model learns to replicate.</p>
+
+            <div class="two-col">
+                <div class="media-block" style="margin:0">
+                    <img src="labeling example Roboflow.png" alt="Roboflow annotation interface showing bounding boxes on conveyor belt objects" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--secondary)\'>📁 Place <code>labeling example Roboflow.jpg</code> in this folder</div>'">
+                    <p class="media-caption">Manual bounding box annotation of custom classes (Church, Bar, Dice, House) within Roboflow. Each shape required individual labeling across all collected frames.</p>
+                </div>
+                <div class="media-block" style="margin:0">
+                    <img src="labels.jpg" alt="Dataset label distribution chart showing class balance and bounding box dimensions" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--secondary)\'>📁 Place <code>labels.jpg</code> in this folder</div>'">
+                    <p class="media-caption">Dataset label distribution: Church (276), Bar (213), House (195), Dice (57). The Dice class imbalance was partially addressed through augmentation.</p>
+                </div>
+            </div>
+
+            <div class="callout">
+                <strong>Dataset Composition</strong>
+                <span>741 total annotated instances across 4 classes. The dataset reflects realistic object distribution on the conveyor, including partial occlusions and objects near the belt edges.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 4: AUGMENTATION ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">04 — Data Augmentation Strategy</div>
+            <h2>Simulating Real-World Physical Constraints</h2>
+            <p>A fundamental challenge in custom dataset training is <strong>overfitting</strong>: a small dataset causes the model to memorize training examples rather than learning generalizable features. The solution is data augmentation — synthetically expanding the dataset by applying controlled transformations.</p>
+            <p>The augmentation strategy was designed to mirror the specific physical constraints of the deployment environment:</p>
+            <ul style="margin: 16px 0 16px 20px; color: var(--secondary); line-height: 2;">
+                <li><strong>Motion Blur</strong> — The conveyor belt moves. Objects will be slightly blurred during transit. Motion blur augmentation trains the model to handle this.</li>
+                <li><strong>Noise / Grain</strong> — Ambient room lighting varies and introduces sensor noise. Gaussian noise augmentation improves robustness to lighting changes.</li>
+                <li><strong>Brightness & Exposure Shifts</strong> — Simulates different times of day and lighting conditions without needing to recapture data.</li>
+                <li><strong>Horizontal Flips & Rotations</strong> — Objects may arrive on the belt in any orientation.</li>
+            </ul>
+            <div class="media-block">
+                <img src="eg augmented image for training.jpg" alt="Example augmented training image showing noise and motion blur applied to conveyor belt scene" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>eg augmented image for training.jpg</code> in this folder</div>'">
+                <p class="media-caption">Generating synthetic training data using noise and motion blur augmentations. The dark vignette and grain simulate low-light and motion conditions on the physical belt.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 5: TRAINING ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">05 — Model Training & Evaluation</div>
+            <h2>Fine-Tuning with Ultralytics YOLOv8</h2>
+            <p>Training was executed on <strong>Google Colab</strong> using a GPU runtime, leveraging the Ultralytics YOLOv8 framework. The chosen architecture was <strong>YOLOv8 Nano (YOLOv8n)</strong> — the smallest model in the YOLO8 family, deliberately selected to maximize inference speed on the target edge hardware while still achieving sufficient accuracy for the task.</p>
+
+            <pre><code># Fine-tuning command (Ultralytics CLI)
+yolo task=detect mode=train \
+    model=yolov8n.pt \
+    data=dataset.yaml \
+    epochs=100 \
+    imgsz=640 \
+    batch=16 \
+    patience=20</code></pre>
+
+            <p>The training curves tell a clear story: both training and validation losses (box, classification, DFL) <strong>converge rapidly within the first 20 epochs</strong> and stabilize with no signs of divergence or overfitting. Precision and Recall climb to near-ceiling values. The mAP@50 reaches ~97% and mAP@50-95 exceeds 90%, indicating robust detection across a range of IoU thresholds.</p>
+
+            <div class="two-col">
+                <div class="media-block" style="margin:0">
+                    <img src="results.png" alt="YOLOv8 training metrics showing loss curves and mAP over 100 epochs" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>results.jpg</code> in this folder</div>'">
+                    <p class="media-caption">Training results over 100 epochs. Rapid convergence of classification and box loss; mAP@50 stabilises above 0.97.</p>
+                </div>
+                <div class="media-block" style="margin:0">
+                    <img src="confusion_matrix_normalized.png" alt="Normalized confusion matrix showing per-class detection accuracy" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>confusion_matrix_normalized.png</code> in this folder</div>'">
+                    <p class="media-caption">Normalized Confusion Matrix. Church: 1.00, Bar: 0.93, House: 0.92, Dice: 0.50 — the lower Dice score reflects class imbalance (57 vs 195–276 instances for other classes).</p>
+                </div>
+            </div>
+
+            <div class="callout">
+                <strong>Reading the Confusion Matrix</strong>
+                <span>Church achieves perfect recall (1.00). Bar and House score 0.93 and 0.92 respectively — excellent for a small custom dataset. The Dice class at 0.50 is expected given only 57 training instances; its confusion with the background indicates it needs more training data in the next iteration, not a model architecture change.</span>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-val">1.00</div><div class="metric-label">Church Recall</div></div>
+                <div class="metric-card"><div class="metric-val">0.93</div><div class="metric-label">Bar Recall</div></div>
+                <div class="metric-card"><div class="metric-val">0.92</div><div class="metric-label">House Recall</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTION 6: DEPLOYMENT ── -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">06 — Deployment & Multi-Object Tracking</div>
+            <h2>Real-Time Inference with Persistent Object IDs</h2>
+            <p>The fine-tuned <code>.pt</code> weight file was deployed locally using <strong>OpenCV</strong> for camera feed capture and the Ultralytics inference API for frame-by-frame detection. The key upgrade over basic detection is the addition of a <strong>multi-object tracking algorithm</strong>.</p>
+            <p>Rather than detecting objects independently in each frame (which produces flickering boxes and no temporal consistency), a tracking algorithm like <strong>ByteTrack</strong> assigns a persistent <em>tracking ID</em> to each detected object across frames. This means the system knows that object <em>#3</em> (a "House") at position X in frame 150 is the same object at position X+5 in frame 151 — enabling trajectory prediction and confident hand-off to the robotic arm controller.</p>
+
+            <pre><code># Inference with tracking
+from ultralytics import YOLO
+import cv2
+
+model = YOLO("best.pt")  # fine-tuned weights
+cap = cv2.VideoCapture(0)  # webcam / camera feed
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    results = model.track(frame, persist=True, tracker="bytetrack.yaml")
+    annotated = results[0].plot()
+    cv2.imshow("Conveyor Tracking", annotated)</code></pre>
+
+            <div class="media-block">
+                <video controls preload="metadata">
+                    <source src="live new scenario test after training augmented100e.mp4" type="video/mp4">
+                    <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e.mp4</code> in this directory to view.</p>
+                </video>
+                <p class="media-caption">Final deployed model. The fine-tuned YOLOv8n accurately classifies custom wooden objects, assigns persistent tracking IDs (blue text), and maintains high confidence scores even while the user interacts with the scene — demonstrating robustness to partial occlusion.</p>
+            </div>
+
+            <div class="callout">
+                <strong>Next Steps</strong>
+                <span>Expand the Dice class dataset to 150+ instances to close the recall gap. Integrate positional output (bounding box centroid + class) with the robotic arm controller via serial/ROS2 communication to complete the pick-and-place pipeline. Explore ONNX/TensorRT export for further inference optimisation on edge hardware.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── BACK ── -->
+    <div class="container" style="text-align:center;">
+        <a href="index.html#vision" class="back-btn">← Back to Computer Vision Projects</a>
+    </div>
+
+    <footer>
+        <p>© <span id="yr"></span> Manuel Mezo &nbsp;·&nbsp; <a href="index.html" style="color:var(--accent);text-decoration:none;">cv.manuelmezo.com</a></p>
+    </footer>
+
+    <script>document.getElementById('yr').textContent = new Date().getFullYear();</script>
+</body>
+</html>

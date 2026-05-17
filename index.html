@@ -446,9 +446,9 @@
                 <a href="#about">About</a>
                 <a href="#experience">Work</a>
                 <a href="#tech">Tech</a>
-                <a href="#education">Education</a>
-                <a href="#projects">AI</a>
+                <a href="#vision">Vision</a>
                 <a href="#robotics">Robotics</a>
+                <a href="#projects">AI</a>
                 <a href="#interests">Interests</a>
                 <a href="#contact">✉️</a>
             </nav>
@@ -460,8 +460,9 @@
             <h1>Program Leader &amp;&nbsp;AI Enthusiast Builder</h1>
             <p>I pivot strategic vision into tangible business value by building robust, data-centric products and processes. Driving efficiency and simplification across global operations.</p>
             <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                <a href="#projects" class="cta-button">View my work on AI</a>
+                <a href="#vision" class="cta-button">View my work on Computer Vision</a>
                 <a href="#robotics" class="cta-button">View my work on Robotics</a>
+                <a href="#projects" class="cta-button">View my work with AI</a>
             </div>
         </div>
     </section>
@@ -471,7 +472,7 @@
             <h2 class="section-heading">About Manuel Mezo</h2>
             <img class="profile-photo" src="Manuel_Mezo_Original.png" alt="Manuel Mezo" />
             <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto; text-align: center; color: var(--secondary-text); line-height: 1.8;">
-                Program and Operations <b>Leader</b> and <b>AI Enthusiast Builder</b> with 8+ years of experience translating complex operational challenges into high-value product and process solutions for global manufacturers and logistics (Amazon, McKinsey). Proven ability to enhance forecast accuracy, streamline capacity planning, and deliver <b>millions in annual savings</b> by <b>building robust, data-centric tools</b> and coaching high-performing teams.<br>When I am alone at home I build and program <b>robots</b> leveraging AI.<br>Bilingual (Spanish/English).
+                Program and Operations <b>Leader</b> and <b>AI Enthusiast Builder</b> with 8+ years of experience translating complex operational challenges into high-value product and process solutions for global manufacturers and logistics (Amazon, McKinsey). Proven ability to enhance forecast accuracy, streamline capacity planning, and deliver <b>millions in annual savings</b> by <b>building robust, data-centric tools</b> and coaching high-performing teams.<br>When I am alone at home I build and program <b>robots</b> and experiment with Computer Vision.<br>Bilingual (Spanish/English).
             </p>
         </div>
     </section>
@@ -590,7 +591,21 @@
                 </div>
                 <ul>
                     <li><b>Languages:</b> Python (Advanced), C++, Matlab,SQL (Advanced), JavaScript (Basic)</li>
-                    <li><b>Deployment:</b> Docker, Git/GitHub, CI/CD pipelines</li>
+                    <li><b>Deployment:</b> Git/GitHub, Firebase, Vercel, CI/CD pipelines, Clerk, Neon</li>
+                </ul>
+            </div>
+
+
+            <!-- Robotics & Computer Vision -->
+            <div class="timeline-item" style="padding-left: 30px;">
+                <div class="exp-header">
+                    <div class="exp-title-group">
+                        <h3>🤖 Robotics &amp; 👁️ Computer Vision</h3>
+                    </div>
+                </div>
+                <ul>
+                    <li><b>Robotics &amp; Simulation:</b> ROS2, Gazebo, CoppeliaSim, Arduino, Inverse Kinematics, 3D Printing, CAD Design</li>
+                    <li><b>Computer Vision &amp; ML:</b> OpenCV, YOLO (open-source fine-tuning), Ultralytics, Roboflow, Data Augmentation, Vision tracking / counting / zone-based logic, Google Colab, neural network fine-tuning </li>
                 </ul>
             </div>
 
@@ -602,8 +617,8 @@
                     </div>
                 </div>
                 <ul>
-                    <li><b>Cloud Platforms:</b> AWS (S3, EC2), Google Cloud Platform (GCP)</li>
-                    <li><b>AI & Custom Tools:</b> Lovable, Antigravity, Kiro,Firebase (Studio, Hosting, Auth), LLMs (OpenAI, Gemini, Claude, Grok), OpenRouter</li>
+                    <li><b>Cloud Platforms:</b> Google Cloud Platform (GCP), AWS</li>
+                    <li><b>AI & Custom Tools:</b> Antigravity, Google AI Studio, Gemini API, LLM APIs (ChatGPT, Gemini, Claude, Grok), OpenRouter</li>
                     <li><b>Automation and integrations:</b> n8n for workflow automation</li>
                 </ul>
             </div>
@@ -621,6 +636,7 @@
                     <li><b>Skills:</b> Insights generation, KPI/metric definition, data storytelling</li>
                 </ul>
             </div>
+
         </div>
     </section>
 
@@ -681,6 +697,138 @@
         </div>
     </section>
 
+    <section id="vision" class="section">
+        <div class="container">
+            <h2 class="section-heading">Computer Vision projects 👁️</h2>
+            
+            <div class="projects-wrapper">
+                <button class="scroll-btn left" onclick="scrollVision(-1)">&#10094;</button>
+                
+                <div class="projects-container" id="visionContainer">
+                    <div class="project-card">
+                        <div class="project-img-container" style="display:flex;align-items:center;justify-content:center;background:#f3f4f6;">
+                            <span style="font-size:3rem;">📦</span>
+                        </div>
+                        <div class="project-content">
+                            <h4>📦 Items counting and Zone-Based Logic</h4>
+                            <p style="color:var(--secondary-text);font-style:italic;">Coming soon — intelligent tracking and counting of items across defined zones with real-time event logic and alerts.</p>
+                            <span style="color:var(--secondary-text);font-weight:700;font-size:0.9rem;font-style:italic;">⚙️ In Development ⚙️</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="project-yolo-finetune.png" alt="End-to-End YOLO Implementation" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>🎯 End-to-End Fine-Tuned YOLO Implementation</h4>
+                            <p>Custom object detection pipeline: annotated dataset in Roboflow, augmentation for motion blur & lighting variance, YOLOv8n fine-tuning over 100 epochs (~97% mAP@50), and real-time multi-object tracking on a conveyor belt.</p>
+                            <a href="yolo-project.html">View full project →</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container" style="display:flex;align-items:center;justify-content:center;background:#f3f4f6;">
+                            <span style="font-size:3rem;">🚦</span>
+                        </div>
+                        <div class="project-content">
+                            <h4>🚦 AI Vision Traffic Analyzer</h4>
+                            <p style="color:var(--secondary-text);font-style:italic;">Coming soon — real-time traffic analysis using computer vision to detect, classify, and count vehicles across lanes.</p>
+                            <span style="color:var(--secondary-text);font-weight:700;font-size:0.9rem;font-style:italic;">⚙️ In Development ⚙️</span>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="project-aivision.png" alt="VisionAI App" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>👁️ VisionAI</h4>
+                            <p>Real-time video analysis powered by <b>Gemini 2.5 Flash</b>. Detects and tracks objects via natural language queries with live bounding boxes.</p>
+                            <a href="https://ai-vision.mezapps.com/" target="_blank">Try it out!</a>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="scroll-btn right" onclick="scrollVision(1)">&#10095;</button>
+            </div>
+            
+            <!-- Scroll indicator dots for mobile -->
+            <div class="scroll-indicator" id="visionScrollIndicator">
+                <div class="scroll-dot active"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="robotics" class="section">
+        <div class="container">
+            <h2 class="section-heading">Robotics side ventures 🤖</h2>
+            
+            <div class="projects-wrapper">
+                <button class="scroll-btn left" onclick="scrollRobotics(-1)">&#10094;</button>
+                
+                <div class="projects-container" id="roboticsContainer">
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="https://raw.githubusercontent.com/manumezog/self-balancing-robot-ros2-simulation/main/demo.gif" alt="Self-Balancing Robot Simulation" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>⚖️ Self-Balancing Robot (Sim)</h4>
+                            <p>ROS2 simulation of a <b>self-balancing robot</b> built in Gazebo. Focuses on sensor modeling, odometry, and control loop tuning.</p>
+                            <a href="https://github.com/manumezog/self-balancing-robot-ros2-simulation" target="_blank">Check it out!</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="https://raw.githubusercontent.com/manumezog/self-balancing-robot-ros2-real/main/galery/video-final.gif" alt="Self-Balancing Robot Real" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>🤖 Self-Balancing Robot (Real)</h4>
+                            <p>Physical deployment of my simulation built on <b>Arduino hardware</b>. Implements PID control, IMU filtering, and motor actuation in the real world.</p>
+                            <a href="https://github.com/manumezog/self-balancing-robot-ros2-real" target="_blank">Check it out!</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="https://raw.githubusercontent.com/manumezog/ROS2-course-wall-follower-robot/main/images/real_life_robot_demonstration.gif" alt="Wall Follower Robot" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>🏎️ ROS2 Wall Follower</h4>
+                            <p>Autonomous navigation logic using <b>Python and multithreading</b>, parsing LIDAR data to track and successfully follow walls in a simulated environment.</p>
+                            <a href="https://github.com/manumezog/ROS2-course-wall-follower-robot" target="_blank">Check it out!</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="RoboArm.gif" alt="3D Printed AI robotic arm finalized assembly" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>🦾 3D Printed Robotic Arm</h4>
+                            <p>Finalized <b>hardware assembly</b> of a 4-axis robotic arm. Now fully controllable via a <b>custom web interface with slider controls</b>. Next phase: autonomous execution via <b>voice input</b> leveraging <b>VLA AI</b>.</p>
+                            <span style="color: var(--secondary-text); font-weight: 700; font-size: 0.9rem; font-style: italic;">⚙️ Assembly &amp; Web UI Complete — VLA Pending ⚙️</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="scroll-btn right" onclick="scrollRobotics(1)">&#10095;</button>
+            </div>
+            
+            <!-- Scroll indicator dots for mobile -->
+            <div class="scroll-indicator" id="roboticsScrollIndicator">
+                <div class="scroll-dot active"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+            </div>
+        </div>
+    </section>
+    
     <section id="projects" class="section">
         <div class="container">
             <h2 class="section-heading">AI side ventures 🚀</h2>
@@ -754,16 +902,7 @@
                         </div>
                     </div>
 
-                    <div class="project-card">
-                        <div class="project-img-container">
-                            <img src="project-aivision.png" alt="VisionAI App" class="project-img">
-                        </div>
-                        <div class="project-content">
-                            <h4>👁️ VisionAI</h4>
-                            <p>Real-time video analysis powered by <b>Gemini 2.5 Flash</b>. Detects and tracks objects via natural language queries with live bounding boxes.</p>
-                            <a href="https://ai-vision.mezapps.com/" target="_blank">Try it out!</a>
-                        </div>
-                    </div>
+
 
                     <div class="project-card">
                         <div class="project-img-container">
@@ -810,73 +949,6 @@
                 <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
-                <div class="scroll-dot"></div>
-                <div class="scroll-dot"></div>
-                <div class="scroll-dot"></div>
-                <div class="scroll-dot"></div>
-            </div>
-        </div>
-    </section>
-    
-    <section id="robotics" class="section">
-        <div class="container">
-            <h2 class="section-heading">Robotics side ventures 🤖</h2>
-            
-            <div class="projects-wrapper">
-                <button class="scroll-btn left" onclick="scrollRobotics(-1)">&#10094;</button>
-                
-                <div class="projects-container" id="roboticsContainer">
-                    <div class="project-card">
-                        <div class="project-img-container">
-                            <img src="https://raw.githubusercontent.com/manumezog/self-balancing-robot-ros2-simulation/main/demo.gif" alt="Self-Balancing Robot Simulation" class="project-img">
-                        </div>
-                        <div class="project-content">
-                            <h4>⚖️ Self-Balancing Robot (Sim)</h4>
-                            <p>ROS2 simulation of a <b>self-balancing robot</b> built in Gazebo. Focuses on sensor modeling, odometry, and control loop tuning.</p>
-                            <a href="https://github.com/manumezog/self-balancing-robot-ros2-simulation" target="_blank">Check it out!</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-img-container">
-                            <img src="https://raw.githubusercontent.com/manumezog/self-balancing-robot-ros2-real/main/galery/video-final.gif" alt="Self-Balancing Robot Real" class="project-img">
-                        </div>
-                        <div class="project-content">
-                            <h4>🤖 Self-Balancing Robot (Real)</h4>
-                            <p>Physical deployment of my simulation built on <b>Arduino hardware</b>. Implements PID control, IMU filtering, and motor actuation in the real world.</p>
-                            <a href="https://github.com/manumezog/self-balancing-robot-ros2-real" target="_blank">Check it out!</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-img-container">
-                            <img src="https://raw.githubusercontent.com/manumezog/ROS2-course-wall-follower-robot/main/images/real_life_robot_demonstration.gif" alt="Wall Follower Robot" class="project-img">
-                        </div>
-                        <div class="project-content">
-                            <h4>🏎️ ROS2 Wall Follower</h4>
-                            <p>Autonomous navigation logic using <b>Python and multithreading</b>, parsing LIDAR data to track and successfully follow walls in a simulated environment.</p>
-                            <a href="https://github.com/manumezog/ROS2-course-wall-follower-robot" target="_blank">Check it out!</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-img-container">
-                            <img src="RoboArm.gif" alt="3D Printed AI robotic arm finalized assembly" class="project-img">
-                        </div>
-                        <div class="project-content">
-                            <h4>🦾 3D Printed Robotic Arm</h4>
-                            <p>Finalized <b>hardware assembly</b> of a 4-axis robotic arm. Now fully controllable via a <b>custom web interface with slider controls</b>. Next phase: autonomous execution via <b>voice input</b> leveraging <b>VLA AI</b>.</p>
-                            <span style="color: var(--secondary-text); font-weight: 700; font-size: 0.9rem; font-style: italic;">⚙️ Assembly & Web UI Complete — VLA Pending ⚙️</span>
-                        </div>
-                    </div>
-                </div>
-
-                <button class="scroll-btn right" onclick="scrollRobotics(1)">&#10095;</button>
-            </div>
-            
-            <!-- Scroll indicator dots for mobile -->
-            <div class="scroll-indicator" id="roboticsScrollIndicator">
-                <div class="scroll-dot active"></div>
                 <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
@@ -993,12 +1065,20 @@
             const cardWidth = 350; // card width + gap
             if(container) container.scrollBy({ left: cardWidth * direction, behavior: 'smooth' });
         }
+
+        function scrollVision(direction) {
+            const container = document.getElementById('visionContainer');
+            const cardWidth = 350; // card width + gap
+            if(container) container.scrollBy({ left: cardWidth * direction, behavior: 'smooth' });
+        }
         
         // 3. Mobile Projects Scroll Enhancements
         const projectsContainer = document.getElementById('projectsContainer');
         const scrollDots = document.querySelectorAll('#scrollIndicator .scroll-dot');
         const roboticsContainer = document.getElementById('roboticsContainer');
         const roboticsScrollDots = document.querySelectorAll('#roboticsScrollIndicator .scroll-dot');
+        const visionContainer = document.getElementById('visionContainer');
+        const visionScrollDots = document.querySelectorAll('#visionScrollIndicator .scroll-dot');
         const projectCards = document.querySelectorAll('.project-card');
         let peekAnimationDone = false;
         
@@ -1025,11 +1105,22 @@
                     dot.classList.toggle('active', index === robActiveIndex);
                 });
             }
+
+            if (visionContainer) {
+                const visScrollLeft = visionContainer.scrollLeft;
+                const visCardWidth = visionContainer.querySelector('.project-card').offsetWidth + 15;
+                const visActiveIndex = Math.round(visScrollLeft / visCardWidth);
+                
+                visionScrollDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === visActiveIndex);
+                });
+            }
         }
         
         // Listen for scroll events on projects container
         if (projectsContainer) projectsContainer.addEventListener('scroll', updateScrollIndicator);
         if (roboticsContainer) roboticsContainer.addEventListener('scroll', updateScrollIndicator);
+        if (visionContainer) visionContainer.addEventListener('scroll', updateScrollIndicator);
         
         // Peek animation when projects section comes into view (mobile only)
         function triggerPeekAnimation() {
