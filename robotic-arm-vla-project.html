@@ -162,7 +162,7 @@
     <!-- ── HERO ── -->
     <div class="hero">
         <div class="hero-label">Multimodal VLA · Gemini Pro API · Edge Control</div>
-        <h1>Vision-Language-Action (VLA) Integration:<br>Voice-Controlled Edge Robotics with Gemini API</h1>
+        <h1>Vision-Language-Action (VLA) Integration <br>and Voice-Control</h1>
         <p>Bridging cloud-based large multimodal models with physical edge hardware to execute context-aware autonomous actions via natural language.</p>
         <div class="tech-pills">
             <span class="pill">Gemini 1.5 Pro</span>
@@ -243,16 +243,16 @@
     <div class="section">
         <div class="container">
             <div class="section-num">03 — Demonstration of VLA in Action</div>
-            <h2>Zero-Shot Semantic Inference & Dynamic Trajectory Control</h2>
-            <p>The core breakthrough of the VLA approach is its ability to perform high-level zero-shot reasoning. In the demonstration below, the robotic arm is commanded to: <strong>"Pick up the item that is usually found in a casino."</strong></p>
-            <p>Unlike pre-programmed computer vision databases, the system does not look for a label named "casino". Instead, Gemini performs contextual inference, correctly deduces that the **dice** is the target item, isolates its visual boundaries, and feeds coordinates to the edge translation scripts to coordinate a flawless pick-and-place actuation sequence.</p>
+            <h2>Zero-Shot Semantic Inference & Clutter Workspace Navigation</h2>
+            <p>To evaluate the system under real-world conditions, I executed a test on a highly cluttered workspace containing multiple distractor items (pens, highlighters, correction fluids, and various tools). The user provides a natural language voice command asking the robot to locate and pick up a specific object. The local daemon captures the camera frame and forwards both inputs to the Gemini model.</p>
+            <p>Rather than relying on pre-trained custom bounding boxes for every possible office supply, the cloud-based multimodal engine interprets the audio stream, visually segments the target object amidst the surrounding clutter, and translates the high-level semantic request into precise physical spatial coordinates. These coordinates are instantly solved via inverse kinematics to coordinate a flawless actuator hand-off.</p>
 
             <div class="media-block">
                 <video autoplay loop muted playsinline controls>
                     <source src="RoboArm-VLA-demo.mp4" type="video/mp4">
                     <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>RoboArm-VLA-demo.mp4</code> in this directory to view.</p>
                 </video>
-                <p class="media-caption">Live demonstration of the VLA integration. The system successfully interprets a complex voice command, uses Gemini to locate the target object, and executes the physical retrieval via the local kinematics engine.</p>
+                <p class="media-caption">Live demonstration of the VLA integration. The system successfully interprets the voice command "Recoge el bolígrafo azul" (Pick up the blue pen), uses Gemini to pinpoint the exact item amidst surrounding clutter, and executes the physical retrieval via the local kinematics engine.</p>
             </div>
         </div>
     </div>
