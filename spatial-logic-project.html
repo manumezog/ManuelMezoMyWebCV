@@ -161,7 +161,7 @@
 
     <!-- ── HERO ── -->
     <div class="hero">
-        <div class="hero-label">Spatial AI · OpenCV Logic · Throughput Counting</div>
+        <div class="hero-label">📦 Part II — Multi-Object Tracking & Spatial Logic (ByteTrack + OpenCV)</div>
         <h1>Advanced Spatial Logic: Real-Time Object Tracking & Counting on Edge Devices</h1>
         <p>Building memory-driven, spatial intelligence layers on top of raw deep learning predictions to enable conveyor belt pick-and-place automation.</p>
         <div class="tech-pills">
@@ -191,6 +191,12 @@
         <div class="container">
             <div class="section-num">01 — Project Context & Challenge</div>
             <h2>Advanced Spatial Logic: Throughput Counting & Zone Monitoring</h2>
+
+            <div class="callout" style="border-left-color: #6366f1;">
+                <strong>Two-Part Vision System (Part II of II)</strong>
+                <span>This project is the decision-making layer of a two-part edge vision system. While <strong>Part II (this page)</strong> details the temporal memory tracking and custom 2D polygon boundaries, <strong>Part I</strong> covers the foundational dataset creation and deep network custom training. Explore <a href="yolo-project.html" style="font-weight: 700; text-decoration: underline;">🎯 Part I — Custom YOLOv8 Object Detection</a>.</span>
+            </div>
+
             <p>Raw deep learning models like YOLO are excellent detectors, but they operate as static frame-by-frame snapshot engines. They are completely temporal-blind: they lack <strong>"memory."</strong> To successfully automate a physical conveyor belt, knowing that an item exists in a single frame is not enough. The automation layer needs to verify if an object identified in Frame A is the exact same piece in Frame B, measure the total volume of objects moving past a threshold (throughput), and pinpoint the exact moment an item enters the robot's coordinates (pick-zone).</p>
             <p>To bridge the gap between raw bounding boxes and mechanical action, we engineered an advanced spatial logic pipeline. Combining the lightweight <code>YOLOv8</code> detector with the high-performance <strong>ByteTrack</strong> multi-object tracking engine and native <strong>OpenCV</strong> vector operations, we built a low-latency, modular system that converts raw video feeds into actionable, coordinate-level automation triggers.</p>
             
@@ -288,6 +294,16 @@ if dist >= 0:
                 <li><strong>Industrial Production Analytics:</strong> The tripwire throughput system can easily be deployed on packaging lines, logistics hubs, or traffic analysis stations to classify and measure flow rates.</li>
                 <li><strong>Safety & Danger Zone Enforcement:</strong> The polygon zone logic directly translates to safety systems (PPE compliance areas, heavy machinery lockouts, and personnel separation barriers) to protect workers in automated plants.</li>
             </ul>
+
+            <div class="callout" style="border-left-color: #10b981;">
+                <strong>Open-Source Project Repository & Notebooks</strong>
+                <span>All source files, Jupyter Notebooks, and training weights for this custom fine-tuning model are open-sourced on GitHub at <a href="https://github.com/manumezog/vision-yolo-finetune" target="_blank" style="font-weight: 700; text-decoration: underline;">vision-yolo-finetune</a>. Specifically, this repository provides:
+                <ul>
+                    <li style="margin-top: 8px;"><strong>Google Colab Notebook:</strong> The fully documented Jupyter/Colab notebook used to set up the environment, import the Roboflow dataset, and fine-tune YOLOv8 on our 4 custom shape classes.</li>
+                    <li><strong>Local Inference Script:</strong> A standalone production script used to execute the trained YOLOv8 model locally on a live camera video feed to test, debug, and validate inference accuracy and real-time latency before deployment.</li>
+                </ul>
+                </span>
+            </div>
         </div>
     </div>
 

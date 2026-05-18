@@ -161,7 +161,7 @@
 
     <!-- ── HERO ── -->
     <div class="hero">
-        <div class="hero-label">Computer Vision · ML Pipeline · Edge Deployment</div>
+        <div class="hero-label">🎯 Part I — Custom YOLOv8 Object Detection (Fine-Tuned)</div>
         <h1>Custom Object Detection & Tracking: Fine-Tuning YOLOv8 for Edge Robotics</h1>
         <p>A complete, end-to-end machine learning pipeline — from raw video capture to real-time inference on a conveyor belt robotic system.</p>
         <div class="tech-pills">
@@ -191,6 +191,12 @@
         <div class="container">
             <div class="section-num">01 — Context & Objective</div>
             <h2>Fine-Tuning YOLOv8 for Real-Time Conveyor Belt Tracking</h2>
+            
+            <div class="callout" style="border-left-color: #6366f1;">
+                <strong>Two-Part Vision System (Part I of II)</strong>
+                <span>This project is the foundational component of a two-part edge vision system. While <strong>Part I (this page)</strong> focuses on custom dataset creation, Roboflow annotation, and YOLOv8 fine-tuning, <strong>Part II</strong> layers advanced tracking and OpenCV spatial boundaries on top of the model. Explore <a href="spatial-logic-project.html" style="font-weight: 700; text-decoration: underline;">📦 Part II — Multi-Object Tracking & Spatial Logic</a>.</span>
+            </div>
+
             <p>The end goal of this project is to feed a robotic arm: a vision system that can <strong>detect, classify, and track custom wooden objects</strong> moving on a physical conveyor belt, at real-time inference speeds, and with sufficient positional accuracy to guide pick-and-place operations. The conveyor belt system is <strong>fully 3D printed in PETG</strong>, utilizing a modular, open-source design from <a href="https://makerworld.com/en/models/192994-conveyor-belt-fully-3d-printed#profileId-944530" target="_blank">MakerWorld</a>.</p>
             <p>The target objects for recognition are the wooden game pieces from the <strong>Catan board game</strong> (see reference image below). These four custom object classes — <strong>Church, House, Bar,</strong> and <strong>Dice</strong> — are non-standard, small-scale, and visually similar in certain lighting conditions. No existing pre-trained model has ever seen them. This rules out any zero-shot approach and demands a purpose-built, fine-tuned model.</p>
             
@@ -327,6 +333,16 @@ yolo task=detect mode=train \
                 <div class="metric-card"><div class="metric-val">1.00</div><div class="metric-label">Church Recall</div></div>
                 <div class="metric-card"><div class="metric-val">0.93</div><div class="metric-label">Bar Recall</div></div>
                 <div class="metric-card"><div class="metric-val">0.92</div><div class="metric-label">House Recall</div></div>
+            </div>
+
+            <div class="callout" style="border-left-color: #10b981;">
+                <strong>Open-Source Project Repository & Notebooks</strong>
+                <span>All source files, Jupyter Notebooks, and training weights for this custom fine-tuning model are open-sourced on GitHub at <a href="https://github.com/manumezog/vision-yolo-finetune" target="_blank" style="font-weight: 700; text-decoration: underline;">vision-yolo-finetune</a>. Specifically, this repository provides:
+                <ul>
+                    <li style="margin-top: 8px;"><strong>Google Colab Notebook:</strong> The fully documented Jupyter/Colab notebook used to set up the environment, import the Roboflow dataset, and fine-tune YOLOv8 on our 4 custom shape classes.</li>
+                    <li><strong>Local Inference Script:</strong> A standalone production script used to execute the trained YOLOv8 model locally on a live camera video feed to test, debug, and validate inference accuracy and real-time latency before deployment.</li>
+                </ul>
+                </span>
             </div>
         </div>
     </div>
