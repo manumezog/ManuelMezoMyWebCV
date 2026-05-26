@@ -6,6 +6,7 @@
       "**/.*",
       "**/node_modules/**",
       "archive/**"
-    ]
+    ],
+    "maxVersions": 5
   }
 }
