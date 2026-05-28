@@ -446,9 +446,9 @@
                 <a href="#about">About</a>
                 <a href="#experience">Work</a>
                 <a href="#tech">Tech</a>
-                <a href="#robotics">Robotics</a>
+                <a href="#projects">GenAI</a>
                 <a href="#vision">Vision</a>
-                <a href="#projects">AI</a>
+                <a href="#robotics">Robotics</a>
                 <a href="#interests">Interests</a>
                 <a href="#contact">Contact</a>
             </nav>
@@ -674,71 +674,120 @@
         </div>
     </section>
 
-    <section id="robotics" class="section">
+    <section id="projects" class="section">
         <div class="container">
-            <h2 class="section-heading">Robotics side ventures 🤖</h2>
+            <h2 class="section-heading">GenAI Projects 🚀</h2>
 
             <div class="projects-wrapper">
-                <button class="scroll-btn left" onclick="scrollRobotics(-1)">&#10094;</button>
+                <button class="scroll-btn left" onclick="scrollProjects(-1)">&#10094;</button>
 
-                <div class="projects-container" id="roboticsContainer">
+                <div class="projects-container" id="projectsContainer">
                     <div class="project-card">
                         <div class="project-img-container">
-                            <img src="RoboArm.gif" alt="3D Printed AI robotic arm finalized assembly" class="project-img">
+                            <img src="project-portfolio-chat-agent.png" alt="Portfolio Chat Agent" class="project-img">
                         </div>
                         <div class="project-content">
-                            <h4>🦾 3D Printed Robotic Arm</h4>
-                            <p>Physical 4-axis robotic arm integrated with a cloud-based <b>Vision-Language-Action (VLA)</b> reasoning engine. Translates natural language voice commands via Gemini 1.5 Pro into precise local mechanical movements.</p>
-                            <a href="robotic-arm-vla-project.html">View full project →</a>
+                            <h4>💬 Portfolio Chat Agent</h4>
+                            <p>End-to-end RAG system built with <b>LangChain</b>, <b>ChromaDB</b>, and <b>Gemini 2.5 Flash</b>. Ask about my background, experience, and projects — the agent answers grounded in my actual documents.</p>
+                            <a href="portfolio-chat-agent-project.html">View full project →</a>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-img-container">
-                            <img src="https://raw.githubusercontent.com/manumezog/ROS2-course-wall-follower-robot/main/images/real_life_robot_demonstration.gif" alt="Wall Follower Robot" class="project-img">
+                            <img src="project-coffee-cs.png" alt="Ember & Roast AI Customer Service" class="project-img">
                         </div>
                         <div class="project-content">
-                            <h4>🏎️ ROS2 Wall Follower</h4>
-                            <p>Autonomous navigation logic using <b>Python and multithreading</b>, parsing LIDAR data to track and successfully follow walls in a simulated environment.</p>
-                            <a href="https://github.com/manumezog/ROS2-course-wall-follower-robot" target="_blank">Check it out!</a>
+                            <h4>☕ Ember & Roast — AI Voice CS</h4>
+                            <p>Premium <b>voice-first customer service</b> agent featuring real-time <b>Vercel</b> order lookups via <b>Retell.ai</b>, integrated with <b>Voiceflow</b> and <b>Resend</b> for a unified multi-channel support experience.</p>
+                            <a href="https://coffee-cs.vercel.app" target="_blank">Try it out!</a>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-img-container">
-                            <img src="https://raw.githubusercontent.com/manumezog/self-balancing-robot-ros2-real/main/galery/video-final.gif" alt="Self-Balancing Robot Real" class="project-img">
+                            <img src="project-medical-new.png" alt="Medical App" class="project-img">
                         </div>
                         <div class="project-content">
-                            <h4>🤖 Self-Balancing Robot (Real)</h4>
-                            <p>Physical deployment of my simulation built on <b>Arduino hardware</b>. Implements PID control, IMU filtering, and motor actuation in the real world.</p>
-                            <a href="https://github.com/manumezog/self-balancing-robot-ros2-real" target="_blank">Check it out!</a>
+                            <h4>🩺 X-Ray Medical Agent</h4>
+                            <p>Autonomous diagnostic agent powered by <b>Computer Vision</b> for real-time medical image analysis.</p>
+                            <a href="https://www.x-ray.mezapps.com" target="_blank">Try it out!</a>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-img-container">
-                            <img src="https://raw.githubusercontent.com/manumezog/self-balancing-robot-ros2-simulation/main/demo.gif" alt="Self-Balancing Robot Simulation" class="project-img">
+                            <img src="project-monuments.jpg" alt="MonumentScout App" class="project-img">
                         </div>
                         <div class="project-content">
-                            <h4>⚖️ Self-Balancing Robot (Sim)</h4>
-                            <p>ROS2 simulation of a <b>self-balancing robot</b> built in Gazebo. Focuses on sensor modeling, odometry, and control loop tuning.</p>
-                            <a href="https://github.com/manumezog/self-balancing-robot-ros2-simulation" target="_blank">Check it out!</a>
+                            <h4>🏛️ MonumentScout</h4>
+                            <p>Location-based discovery app using <b>Geolocation APIs</b> and <b>AI-powered explanations</b> to explore nearby historical monuments.</p>
+                            <a href="https://www.monumentscout.mezapps.com/" target="_blank">Try it out!</a>
                         </div>
                     </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="project-WMS.jpg" alt="WMS Prototype" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>📦 WMS Prototype</h4>
+                            <p>Mobile-first inventory system leveraging <b>on-device Camera Vision</b> for barcode scanning and real-time cloud synchronization.</p>
+                            <a href="https://mez-wms.mezapps.com/" target="_blank">Try it out!</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="project-voiceagent.jpg" alt="Voice Booking Agent" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>🎙️ Voice Booking Agent</h4>
+                            <p>AI voice assistant using <b>Web Speech API</b> and <b>LLM orchestration</b> to book and manage your Google Calendar appointments via natural language voice conversation.</p>
+                            <a href="https://reservas.mezapps.com/" target="_blank">Try it out!</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="project-github.jpg" alt="Github profile image" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>💻 My Github profile</h4>
+                            <p>Public repository of my ongoing experiments in <b>AI prototyping</b>, web/mobile applications, and AI-assisted software development.</p>
+                            <a href="https://github.com/manumezog" target="_blank">Check it out!</a>
+                        </div>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-img-container">
+                            <img src="project-webCV.jpg" alt="Web CV Project" class="project-img">
+                        </div>
+                        <div class="project-content">
+                            <h4>🌐Web CV</h4>
+                            <p><b>AI-developed</b> interactive portfolio showcasing my professional accomplishments, education, and <b>AI side hustles</b>.</p>
+                            <a href="https://www.cv.manuelmezo.com" target="_blank">Thanks for watching!</a>
+                        </div>
+                    </div>
+
                 </div>
 
-                <button class="scroll-btn right" onclick="scrollRobotics(1)">&#10095;</button>
+                <button class="scroll-btn right" onclick="scrollProjects(1)">&#10095;</button>
             </div>
 
             <!-- Scroll indicator dots for mobile -->
-            <div class="scroll-indicator" id="roboticsScrollIndicator">
+            <div class="scroll-indicator" id="scrollIndicator">
                 <div class="scroll-dot active"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
+                <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
             </div>
         </div>
     </section>
+    
 
     <section id="vision" class="section">
         <div class="container">
@@ -819,108 +868,74 @@
         </div>
     </section>
 
-    <section id="projects" class="section">
+
+    <section id="robotics" class="section">
         <div class="container">
-            <h2 class="section-heading">AI side ventures 🚀</h2>
+            <h2 class="section-heading">Robotics side ventures 🤖</h2>
 
             <div class="projects-wrapper">
-                <button class="scroll-btn left" onclick="scrollProjects(-1)">&#10094;</button>
+                <button class="scroll-btn left" onclick="scrollRobotics(-1)">&#10094;</button>
 
-                <div class="projects-container" id="projectsContainer">
+                <div class="projects-container" id="roboticsContainer">
                     <div class="project-card">
                         <div class="project-img-container">
-                            <img src="project-coffee-cs.png" alt="Ember & Roast AI Customer Service" class="project-img">
+                            <img src="RoboArm.gif" alt="3D Printed AI robotic arm finalized assembly" class="project-img">
                         </div>
                         <div class="project-content">
-                            <h4>☕ Ember & Roast — AI Voice CS</h4>
-                            <p>Premium <b>voice-first customer service</b> agent featuring real-time <b>Vercel</b> order lookups via <b>Retell.ai</b>, integrated with <b>Voiceflow</b> and <b>Resend</b> for a unified multi-channel support experience.</p>
-                            <a href="https://coffee-cs.vercel.app" target="_blank">Try it out!</a>
+                            <h4>🦾 3D Printed Robotic Arm</h4>
+                            <p>Physical 4-axis robotic arm integrated with a cloud-based <b>Vision-Language-Action (VLA)</b> reasoning engine. Translates natural language voice commands via Gemini 1.5 Pro into precise local mechanical movements.</p>
+                            <a href="robotic-arm-vla-project.html">View full project →</a>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-img-container">
-                            <img src="project-medical-new.png" alt="Medical App" class="project-img">
+                            <img src="https://raw.githubusercontent.com/manumezog/ROS2-course-wall-follower-robot/main/images/real_life_robot_demonstration.gif" alt="Wall Follower Robot" class="project-img">
                         </div>
                         <div class="project-content">
-                            <h4>🩺 X-Ray Medical Agent</h4>
-                            <p>Autonomous diagnostic agent powered by <b>Computer Vision</b> for real-time medical image analysis.</p>
-                            <a href="https://www.x-ray.mezapps.com" target="_blank">Try it out!</a>
+                            <h4>🏎️ ROS2 Wall Follower</h4>
+                            <p>Autonomous navigation logic using <b>Python and multithreading</b>, parsing LIDAR data to track and successfully follow walls in a simulated environment.</p>
+                            <a href="https://github.com/manumezog/ROS2-course-wall-follower-robot" target="_blank">Check it out!</a>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-img-container">
-                            <img src="project-monuments.jpg" alt="MonumentScout App" class="project-img">
+                            <img src="https://raw.githubusercontent.com/manumezog/self-balancing-robot-ros2-real/main/galery/video-final.gif" alt="Self-Balancing Robot Real" class="project-img">
                         </div>
                         <div class="project-content">
-                            <h4>🏛️ MonumentScout</h4>
-                            <p>Location-based discovery app using <b>Geolocation APIs</b> and <b>AI-powered explanations</b> to explore nearby historical monuments.</p>
-                            <a href="https://www.monumentscout.mezapps.com/" target="_blank">Try it out!</a>
+                            <h4>🤖 Self-Balancing Robot (Real)</h4>
+                            <p>Physical deployment of my simulation built on <b>Arduino hardware</b>. Implements PID control, IMU filtering, and motor actuation in the real world.</p>
+                            <a href="https://github.com/manumezog/self-balancing-robot-ros2-real" target="_blank">Check it out!</a>
                         </div>
                     </div>
 
                     <div class="project-card">
                         <div class="project-img-container">
-                            <img src="project-WMS.jpg" alt="WMS Prototype" class="project-img">
+                            <img src="https://raw.githubusercontent.com/manumezog/self-balancing-robot-ros2-simulation/main/demo.gif" alt="Self-Balancing Robot Simulation" class="project-img">
                         </div>
                         <div class="project-content">
-                            <h4>📦 WMS Prototype</h4>
-                            <p>Mobile-first inventory system leveraging <b>on-device Camera Vision</b> for barcode scanning and real-time cloud synchronization.</p>
-                            <a href="https://mez-wms.mezapps.com/" target="_blank">Try it out!</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-img-container">
-                            <img src="project-voiceagent.jpg" alt="Voice Booking Agent" class="project-img">
-                        </div>
-                        <div class="project-content">
-                            <h4>🎙️ Voice Booking Agent</h4>
-                            <p>AI voice assistant using <b>Web Speech API</b> and <b>LLM orchestration</b> to book and manage your Google Calendar appointments via natural language voice conversation.</p>
-                            <a href="https://reservas.mezapps.com/" target="_blank">Try it out!</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-img-container">
-                            <img src="project-github.jpg" alt="Github profile image" class="project-img">
-                        </div>
-                        <div class="project-content">
-                            <h4>💻 My Github profile</h4>
-                            <p>Public repository of my ongoing experiments in <b>AI prototyping</b>, web/mobile applications, and AI-assisted software development.</p>
-                            <a href="https://github.com/manumezog" target="_blank">Check it out!</a>
-                        </div>
-                    </div>
-
-                    <div class="project-card">
-                        <div class="project-img-container">
-                            <img src="project-webCV.jpg" alt="Web CV Project" class="project-img">
-                        </div>
-                        <div class="project-content">
-                            <h4>🌐Web CV</h4>
-                            <p><b>AI-developed</b> interactive portfolio showcasing my professional accomplishments, education, and <b>AI side hustles</b>.</p>
-                            <a href="https://www.cv.manuelmezo.com" target="_blank">Thanks for watching!</a>
+                            <h4>⚖️ Self-Balancing Robot (Sim)</h4>
+                            <p>ROS2 simulation of a <b>self-balancing robot</b> built in Gazebo. Focuses on sensor modeling, odometry, and control loop tuning.</p>
+                            <a href="https://github.com/manumezog/self-balancing-robot-ros2-simulation" target="_blank">Check it out!</a>
                         </div>
                     </div>
                 </div>
 
-                <button class="scroll-btn right" onclick="scrollProjects(1)">&#10095;</button>
+                <button class="scroll-btn right" onclick="scrollRobotics(1)">&#10095;</button>
             </div>
 
             <!-- Scroll indicator dots for mobile -->
-            <div class="scroll-indicator" id="scrollIndicator">
+            <div class="scroll-indicator" id="roboticsScrollIndicator">
                 <div class="scroll-dot active"></div>
-                <div class="scroll-dot"></div>
-                <div class="scroll-dot"></div>
-                <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
                 <div class="scroll-dot"></div>
             </div>
         </div>
     </section>
-    
+
+
     <section id="interests" class="section">
         <div class="container">
             <h2 class="section-heading">Personal Interests 🤓</h2>
@@ -1119,5 +1134,7 @@
 
         document.getElementById('year').textContent = new Date().getFullYear();
     </script>
+    <link rel="stylesheet" href="chat-widget.css">
+    <script src="chat-widget.js"></script>
 </body>
 </html>

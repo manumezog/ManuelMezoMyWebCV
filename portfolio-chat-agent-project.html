@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Chat Agent — LangChain RAG + FastAPI | Manuel Mezo</title>
+    <meta name="description" content="End-to-end RAG chat agent built with LangChain, ChromaDB, Gemini and FastAPI. Covers document loading, embeddings, vector search, conversational memory and production deployment.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;
+            --secondary: #4b5563;
+            --bg: #ffffff;
+            --card-bg: #f9fafb;
+            --border: #e5e7eb;
+            --accent: #0284c7;
+            --accent-grad: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            --code-bg: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; color: var(--primary); background: var(--bg); line-height: 1.7; }
+        a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s ease; }
+        a:hover { color: #0369a1; text-decoration: underline; }
+
+        .nav-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-bar a { text-decoration: none; font-weight: 600; color: var(--secondary); font-size: 0.9rem; transition: color 0.2s; }
+        .nav-bar a:hover { color: var(--accent); }
+        .nav-logo { font-weight: 800; font-size: 1rem; color: var(--primary) !important; }
+
+        .hero {
+            background: var(--bg);
+            padding: 120px 40px 80px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-label {
+            display: inline-block;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            color: #fff;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; max-width: 900px; margin-left: auto; margin-right: auto; color: var(--primary); letter-spacing: -1px; }
+        .hero p { font-size: 1.3rem; color: var(--secondary); max-width: 700px; margin: 0 auto 30px; }
+        .tech-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .pill {
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.8rem; font-weight: 600;
+            padding: 6px 16px; border-radius: 20px;
+        }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+        .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+        .section:last-of-type { border-bottom: none; }
+
+        .section-num {
+            display: inline-block;
+            background: var(--accent-grad); -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+        .section p { color: var(--secondary); margin-bottom: 16px; font-size: 1rem; }
+        .section p:last-child { margin-bottom: 0; }
+
+        .callout {
+            background: var(--card-bg); border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0;
+        }
+        .callout strong { display: block; margin-bottom: 6px; color: var(--primary); font-size: 0.95rem; }
+        .callout span { color: var(--secondary); font-size: 0.95rem; }
+
+        .media-block { margin: 32px 0; }
+        .media-block img {
+            width: 100%; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: block;
+        }
+        .media-caption { margin-top: 10px; font-size: 0.85rem; color: var(--secondary); font-style: italic; text-align: center; }
+
+        .pipeline { display: flex; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+        .pipeline-step {
+            flex: 1; min-width: 100px;
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 16px 12px; text-align: center; position: relative;
+        }
+        .pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+        .pipeline-step:last-child { border-radius: 0 10px 10px 0; }
+        .pipeline-step:not(:last-child)::after {
+            content: '→'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--accent); font-size: 1.1rem; font-weight: 700; z-index: 2;
+        }
+        .pipeline-step .step-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .pipeline-step .step-label { font-size: 0.72rem; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+        .metric-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .metric-val { font-size: 2rem; font-weight: 800; background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-label { font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-top: 4px; }
+        @media (max-width: 500px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
+
+        pre {
+            background: var(--code-bg); color: #e2e8f0;
+            border-radius: 10px; padding: 20px 24px;
+            font-size: 0.85rem; overflow-x: auto;
+            margin: 20px 0; line-height: 1.6;
+        }
+        code { font-family: 'Courier New', monospace; }
+        p code, li code {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 6px;
+            font-family: 'Courier New', monospace; font-size: 0.85em; color: var(--primary);
+        }
+
+        .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+        @media (max-width: 640px) { .concept-grid { grid-template-columns: 1fr; } }
+        .concept-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+        }
+        .concept-card h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 8px; color: var(--primary); }
+        .concept-card p { font-size: 0.9rem; color: var(--secondary); margin: 0; }
+
+        ul { color: var(--secondary); padding-left: 20px; margin: 16px 0; }
+        ul li { margin-bottom: 8px; font-size: 1rem; }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%); color: #fff;
+            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+            padding: 14px 35px; border-radius: 50px;
+            transition: all 0.3s ease; margin: 50px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); color: #fff; text-decoration: none; }
+
+        footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">← Manuel Mezo</a>
+        <a href="index.html#ai">AI Projects</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-label">🤖 LangChain · RAG · FastAPI</div>
+        <h1>Portfolio Chat Agent — End-to-End RAG with LangChain</h1>
+        <p>Built a production-ready conversational AI agent from scratch: document loading, vector embeddings, ChromaDB retrieval, chat memory, and a deployed FastAPI backend with a live chat widget.</p>
+        <div class="tech-pills">
+            <span class="pill">LangChain</span>
+            <span class="pill">ChromaDB</span>
+            <span class="pill">Gemini 2.5 Flash</span>
+            <span class="pill">HuggingFace Embeddings</span>
+            <span class="pill">FastAPI</span>
+            <span class="pill">Docker</span>
+            <span class="pill">HF Spaces</span>
+            <span class="pill">Firebase</span>
+        </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="container" style="text-align:center; padding-top: 32px;">
+        <div class="callout" style="display:inline-block; text-align:left; max-width: 600px;">
+            <strong>Links</strong>
+            <span>
+                🤗 <a href="https://huggingface.co/spaces/manumezog/portfolio-chat-agent/tree/main" target="_blank">HF Space (files)</a> &nbsp;·&nbsp;
+                💻 <a href="https://github.com/manumezog/portfolio-chat-agent" target="_blank">GitHub repo</a> &nbsp;·&nbsp;
+                🌐 <a href="https://manumezog-portfolio-chat-agent.hf.space/docs" target="_blank">Live API docs</a>
+            </span>
+        </div>
+    </div>
+
+    <!-- PIPELINE -->
+    <div class="container">
+        <div class="pipeline" style="margin-top: 50px;">
+            <div class="pipeline-step"><div class="step-icon">📄</div><div class="step-label">Load Docs</div></div>
+            <div class="pipeline-step"><div class="step-icon">✂️</div><div class="step-label">Chunk</div></div>
+            <div class="pipeline-step"><div class="step-icon">🔢</div><div class="step-label">Embed</div></div>
+            <div class="pipeline-step"><div class="step-icon">🗄️</div><div class="step-label">ChromaDB</div></div>
+            <div class="pipeline-step"><div class="step-icon">🔍</div><div class="step-label">Retrieve</div></div>
+            <div class="pipeline-step"><div class="step-icon">🧠</div><div class="step-label">LLM</div></div>
+            <div class="pipeline-step"><div class="step-icon">💬</div><div class="step-label">Answer</div></div>
+        </div>
+    </div>
+
+    <!-- SECTION 1: CONTEXT -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">01 — Context & Objective</div>
+            <h2>Why build this? A hands-on LangChain learning project</h2>
+
+            <div class="callout" style="border-left-color: #6366f1;">
+                <strong>Try it live</strong>
+                <span>The chat agent is embedded in this portfolio. Click the 💬 button at the bottom-right corner to ask it anything about my background, experience, and projects.</span>
+            </div>
+
+            <p>The goal was to learn <strong>LangChain hands-on</strong> by building something real and immediately useful: a chat agent for this portfolio that can answer questions about my education, professional experience, and projects — grounded entirely in my own documents (CV, thesis presentations, project write-ups).</p>
+            <p>Rather than following a tutorial, the project was built end-to-end in a single day, covering every layer of the stack: document ingestion, vector search, conversational memory, API design, security, and cloud deployment.</p>
+
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-val">318</div><div class="metric-label">Knowledge chunks indexed</div></div>
+                <div class="metric-card"><div class="metric-val">6</div><div class="metric-label">Source documents</div></div>
+                <div class="metric-card"><div class="metric-val">7</div><div class="metric-label">LangChain concepts covered</div></div>
+            </div>
+
+            <div class="media-block">
+                <img src="project-portfolio-chat-agent.png" alt="Portfolio Chat Agent — live chat widget on cv.manuelmezo.com">
+                <p class="media-caption">The chat widget live on cv.manuelmezo.com, powered by a FastAPI backend deployed on HF Spaces.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: DOCUMENT LOADING -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">02 — Document Loading</div>
+            <h2>Turning PDFs and Word docs into LangChain Documents</h2>
+
+            <p>LangChain provides <strong>document loaders</strong> for almost every file format. Each loader reads a file and returns a list of <code>Document</code> objects — the universal unit of content in LangChain.</p>
+            <p>A <code>Document</code> has two fields: <code>page_content</code> (the raw text) and <code>metadata</code> (a dict with the source path, page number, etc.). This metadata travels with the content all the way to the final answer, making it possible to cite sources.</p>
+
+            <pre><code>from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
+
+# PyPDFLoader splits one Document per physical PDF page
+loader = PyPDFLoader("data/cv.pdf")
+docs = loader.load()   # returns list[Document]
+
+print(docs[0].metadata)      # {'source': 'data/cv.pdf', 'page': 0}
+print(docs[0].page_content)  # raw text of page 1</code></pre>
+
+            <div class="callout">
+                <strong>Key insight</strong>
+                <span>The 6 source documents loaded as 92 raw pages/documents. <code>PyPDFLoader</code> maps exactly to physical PDF pages. <code>Docx2txtLoader</code> returns the entire Word file as a single Document.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3: TEXT SPLITTING -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">03 — Text Splitting</div>
+            <h2>Why chunking matters — and how to do it right</h2>
+
+            <p>LLMs and embedding models have context limits. More importantly, a full PDF page often contains multiple topics — sending the whole page as context would pollute the retrieval signal. We split each document into smaller <strong>chunks</strong> that each represent one coherent idea.</p>
+            <p><code>RecursiveCharacterTextSplitter</code> is the recommended default. It tries to split on paragraph breaks first, then sentences, then words — so chunks stay semantically coherent rather than cutting mid-sentence.</p>
+
+            <pre><code>from langchain_text_splitters import RecursiveCharacterTextSplitter
+
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,    # max characters per chunk
+    chunk_overlap=80,  # shared chars between consecutive chunks
+    separators=["\n\n", "\n", " ", ""],
+)
+
+chunks = splitter.split_documents(raw_docs)
+
+# Filter blank chunks (e.g. from empty presentation slides)
+chunks = [c for c in chunks if c.page_content.strip()]
+
+print(f"92 pages → {len(chunks)} chunks")  # 92 → 318</code></pre>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>chunk_size</h4>
+                    <p>Maximum characters per chunk. Too large = noisy context. Too small = insufficient information. 500 chars works well for dense PDFs.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>chunk_overlap</h4>
+                    <p>Characters shared between consecutive chunks. Prevents a sentence from being cut right at a boundary and losing context.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4: EMBEDDINGS -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">04 — Embeddings</div>
+            <h2>Turning text into searchable vectors</h2>
+
+            <p>An <strong>embedding</strong> is a vector of numbers (e.g. 384 floats) that represents the meaning of a piece of text. The key property: semantically similar text produces vectors that are close together in that high-dimensional space.</p>
+            <p>This project uses <code>sentence-transformers/all-MiniLM-L6-v2</code> — a small, fast model (~80 MB) that runs <strong>entirely locally on CPU</strong> with no API calls. This was a deliberate choice after experiencing instability with cloud-based embedding APIs on the free tier.</p>
+
+            <pre><code>from langchain_huggingface import HuggingFaceEmbeddings
+
+# Loads the model locally — downloads ~80MB on first run
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
+
+# .embed_query() converts a string to a list of 384 floats
+vector = embeddings.embed_query("What did Manuel study?")
+print(len(vector))   # 384
+print(vector[:3])    # [-0.031, 0.072, -0.014, ...]</code></pre>
+
+            <div class="callout">
+                <strong>Cloud vs. local embeddings</strong>
+                <span>Cloud embedding APIs (e.g. Gemini) are convenient but have rate limits and can return intermittent 500 errors on the free tier. For production RAG where retrieval must always work, local sentence-transformers are far more reliable. The quality trade-off is negligible for a portfolio use case.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5: VECTOR STORE -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">05 — Vector Store</div>
+            <h2>ChromaDB — storing and searching vectors</h2>
+
+            <p>A <strong>vector store</strong> is a database optimised for similarity search. Given a query vector, it finds the stored vectors that are closest to it (by cosine similarity) and returns the corresponding documents.</p>
+            <p><strong>ChromaDB</strong> runs entirely locally — no server setup, no account, no cost. It persists to disk so the index survives restarts without re-embedding everything.</p>
+
+            <pre><code>from langchain_chroma import Chroma
+import uuid
+
+# Embed all chunks once and store in ChromaDB
+texts   = [c.page_content for c in chunks]
+metas   = [c.metadata     for c in chunks]
+ids     = [str(uuid.uuid4()) for _ in chunks]
+vectors = embeddings.embed_documents(texts)
+
+vs = Chroma(persist_directory="chroma_db", embedding_function=embeddings)
+vs._collection.add(
+    documents=texts,
+    embeddings=vectors,
+    metadatas=metas,
+    ids=ids,
+)
+print(vs._collection.count())  # 318</code></pre>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Why not use from_documents()?</h4>
+                    <p>LangChain's <code>Chroma.from_documents()</code> has a batching bug on some versions. Using <code>_collection.add()</code> directly bypasses it and gives full control.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Persisting to disk</h4>
+                    <p><code>persist_directory</code> stores the SQLite database and HNSW index files locally. On subsequent runs, reload with <code>Chroma(persist_directory=...)</code> — no re-embedding needed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 6: RAG CHAIN -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">06 — RAG Chain & LCEL</div>
+            <h2>Connecting retrieval to the LLM with LangChain Expression Language</h2>
+
+            <p>With the vector store built, the next step is connecting retrieval to an LLM. LangChain's <strong>LCEL (LangChain Expression Language)</strong> uses the <code>|</code> pipe operator to chain components — conceptually similar to a Unix shell pipe.</p>
+
+            <pre><code>from langchain_core.runnables import RunnablePassthrough, RunnableLambda
+from langchain_core.output_parsers import StrOutputParser
+
+retriever = vs.as_retriever(search_type="similarity", search_kwargs={"k": 8})
+
+def format_docs(docs):
+    return "\n\n".join(d.page_content for d in docs)
+
+rag_chain = (
+    # Step 1: add 'context' key by retrieving relevant chunks
+    RunnablePassthrough.assign(
+        context=RunnableLambda(lambda x: x["input"]) | retriever | format_docs
+    )
+    # Step 2: fill the prompt template with {input} and {context}
+    | answer_prompt
+    # Step 3: send to the LLM
+    | llm
+    # Step 4: extract the plain text string from the response object
+    | StrOutputParser()
+)
+
+answer = rag_chain.invoke({"input": "What did Manuel study?"})</code></pre>
+
+            <div class="callout">
+                <strong>What RunnablePassthrough.assign does</strong>
+                <span>It takes the input dict and adds new keys to it without removing existing ones. Here it adds <code>context</code> (the retrieved text) so the prompt template has both <code>input</code> (the question) and <code>context</code> (the evidence) available.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 7: CHAT MEMORY -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">07 — Conversational Memory</div>
+            <h2>Multi-turn chat with RunnableWithMessageHistory</h2>
+
+            <p>A basic RAG chain treats every question independently. If a user asks <em>"What tools did he use for it?"</em> after asking about the thesis, the retriever has no idea what "it" refers to. The fix requires two additions:</p>
+
+            <ul>
+                <li><strong>Contextualize chain</strong> — a small LLM call that rewrites the question as standalone given the chat history ("What tools did Manuel use for his master thesis?")</li>
+                <li><strong>RunnableWithMessageHistory</strong> — a wrapper that loads and saves conversation history per session automatically</li>
+            </ul>
+
+            <pre><code># Step 1: rephrase ambiguous questions using history
+contextualize_prompt = ChatPromptTemplate.from_messages([
+    ("system", "Rewrite the question as standalone. Do not answer."),
+    MessagesPlaceholder("chat_history"),
+    ("human", "{input}"),
+])
+contextualize_chain = contextualize_prompt | llm | StrOutputParser()
+
+def contextualize_question(inputs):
+    if inputs.get("chat_history"):
+        return contextualize_chain.invoke(inputs)
+    return inputs["input"]   # first message — no history, pass through
+
+# Step 2: wrap chain with automatic history management
+session_store = {}
+
+def get_session_history(session_id):
+    if session_id not in session_store:
+        session_store[session_id] = ChatMessageHistory()
+    return session_store[session_id]
+
+conversational_rag = RunnableWithMessageHistory(
+    rag_chain,
+    get_session_history,
+    input_messages_key="input",
+    history_messages_key="chat_history",
+)</code></pre>
+
+            <div class="callout">
+                <strong>How session IDs work</strong>
+                <span>Each conversation gets a UUID as its <code>session_id</code>. The server maps that ID to a <code>ChatMessageHistory</code> object in memory. The client stores the ID in JavaScript and sends it with every follow-up message — this is how the agent "remembers" the conversation without any login or user accounts.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 8: FASTAPI -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">08 — FastAPI Backend</div>
+            <h2>Exposing the chain as a production-ready REST API</h2>
+
+            <p>The RAG chain is wrapped in a <strong>FastAPI</strong> application, exposing a single <code>POST /chat</code> endpoint. FastAPI was chosen for its automatic request validation via Pydantic models, async support, and auto-generated interactive docs at <code>/docs</code>.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Lifespan</h4>
+                    <p>Heavy resources (vectorstore, model, chain) are loaded once at startup via the <code>@asynccontextmanager lifespan</code> pattern — not on every request.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Pydantic validation</h4>
+                    <p>Request bodies are declared as Pydantic models. FastAPI validates them automatically and returns HTTP 422 with a clear error if the shape is wrong.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>CORS middleware</h4>
+                    <p>Browsers block cross-origin requests by default. The CORS middleware adds the headers that tell the browser your portfolio domain is allowed to call the API.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Security layers</h4>
+                    <p>Input capped at 500 chars, output at 512 tokens, per-IP rate limit (10/min), daily global cap (200/day), session turn limit (20 turns).</p>
+                </div>
+            </div>
+
+            <pre><code>@app.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest, http_request: Request):
+    # Rate limit → daily budget → session cap → invoke chain
+    if is_daily_budget_exceeded():
+        raise HTTPException(429, "Daily limit reached.")
+    if is_rate_limited(http_request.client.host):
+        raise HTTPException(429, "Too many requests.")
+
+    session_id = request.session_id or str(uuid.uuid4())
+    answer = chain.invoke(
+        {"input": request.message},
+        config={"configurable": {"session_id": session_id}},
+    )
+    return ChatResponse(answer=answer, session_id=session_id)</code></pre>
+        </div>
+    </div>
+
+    <!-- SECTION 9: DEPLOYMENT -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">09 — Deployment</div>
+            <h2>Docker on HF Spaces + Firebase hosting</h2>
+
+            <p>The API is containerised with Docker and deployed as a <strong>Hugging Face Space</strong> (free tier, always-on). The frontend portfolio is hosted on <strong>Firebase Hosting</strong>.</p>
+            <p>A key design decision: the <code>chroma_db</code> binary files are not stored in git. Instead, the knowledge base is exported as <code>knowledge_base.json</code> (plain text, version-control friendly), and the Dockerfile runs <code>build_db.py</code> at image build time to reconstruct ChromaDB from it. Updating the knowledge base is as simple as adding documents, re-running the export script, and pushing.</p>
+
+            <pre><code># Dockerfile — builds ChromaDB at image build time
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY knowledge_base.json build_db.py .
+RUN python build_db.py        # embeds chunks locally, writes chroma_db/
+COPY api.py .
+EXPOSE 7860                   # HF Spaces requires port 7860
+CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "7860"]</code></pre>
+
+        </div>
+    </div>
+
+    <!-- BACK BUTTON -->
+    <div class="container" style="text-align:center;">
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+    </div>
+
+    <footer>
+        <p>© <span id="year"></span> Manuel Mezo · <a href="index.html">cv.manuelmezo.com</a></p>
+    </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <link rel="stylesheet" href="chat-widget.css">
+    <script src="chat-widget.js"></script>
+</body>
+</html>
