@@ -148,6 +148,24 @@
         }
         .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); color: #fff; text-decoration: none; }
 
+        /* Before/After comparison table */
+        .compare-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.92rem; }
+        .compare-table th { padding: 12px 16px; text-align: left; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase; }
+        .compare-table th:first-child { background: #fee2e2; color: #991b1b; border-radius: 8px 0 0 0; }
+        .compare-table th:last-child  { background: #dcfce7; color: #166534; border-radius: 0 8px 0 0; }
+        .compare-table td { padding: 12px 16px; border-top: 1px solid var(--border); vertical-align: top; color: var(--secondary); }
+        .compare-table td:first-child { background: #fff5f5; }
+        .compare-table td:last-child  { background: #f0fdf4; }
+        .compare-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+        .compare-table tr:last-child td:last-child  { border-radius: 0 0 8px 0; }
+
+        /* Knowledge doc cards */
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin: 24px 0; }
+        .doc-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+        .doc-card .doc-type { font-size: 0.72rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+        .doc-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+        .doc-card p { font-size: 0.83rem; color: var(--secondary); margin: 0; }
+
         footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
     </style>
 </head>
@@ -162,7 +180,7 @@
     <div class="hero">
         <div class="hero-label">🤖 LangChain · RAG · FastAPI</div>
         <h1>Portfolio Chat Agent — End-to-End RAG with LangChain</h1>
-        <p>Built a production-ready conversational AI agent from scratch: document loading, vector embeddings, ChromaDB retrieval, chat memory, and a deployed FastAPI backend with a live chat widget.</p>
+        <p>Built a production-ready conversational AI agent from scratch — then went beyond the tutorial: redesigned the entire knowledge base after discovering that retrieval quality depends far more on input data design than on pipeline code.</p>
         <div class="tech-pills">
             <span class="pill">LangChain</span>
             <span class="pill">ChromaDB</span>
@@ -203,15 +221,131 @@
             <p>Rather than following a tutorial, the project was built end-to-end in a single day, covering every layer of the stack: document ingestion, vector search, conversational memory, API design, security, and cloud deployment.</p>
 
             <div class="metrics-grid">
-                <div class="metric-card"><div class="metric-val">318</div><div class="metric-label">Knowledge chunks indexed</div></div>
-                <div class="metric-card"><div class="metric-val">6</div><div class="metric-label">Source documents</div></div>
-                <div class="metric-card"><div class="metric-val">7</div><div class="metric-label">LangChain concepts covered</div></div>
+                <div class="metric-card"><div class="metric-val">1,042</div><div class="metric-label">Knowledge chunks indexed (v2)</div></div>
+                <div class="metric-card"><div class="metric-val">10</div><div class="metric-label">Source documents (incl. 5 synthetic)</div></div>
+                <div class="metric-card"><div class="metric-val">17</div><div class="metric-label">STAR stories — clean prose</div></div>
             </div>
 
             <div class="media-block">
                 <img src="project-portfolio-chat-agent.png" alt="Portfolio Chat Agent — live chat widget on cv.manuelmezo.com">
                 <p class="media-caption">The chat widget live on cv.manuelmezo.com, powered by a FastAPI backend deployed on HF Spaces.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- SECTION 1b: KNOWLEDGE BASE OVERHAUL -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">01b — The Real Lesson: Data Quality</div>
+            <h2>Why the first version failed — and what we did about it</h2>
+
+            <p>After deploying the initial version, the agent gave poor, vague, or hallucinated answers to most interesting questions. The pipeline code was correct. The problem was the data going into it.</p>
+
+            <div class="callout" style="border-left-color: #ef4444;">
+                <strong>The "garbage in, garbage out" problem in RAG</strong>
+                <span>You can build a perfect retrieval pipeline — correct chunking, right embedding model, well-tuned similarity search — and still get poor answers if the source documents are not designed for retrieval. This is the most important lesson this project taught me, and it's under-covered in RAG tutorials.</span>
+            </div>
+
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 16px;">What was wrong with v1</h3>
+
+            <table class="compare-table">
+                <tr>
+                    <th>v1 — What we had</th>
+                    <th>v2 — What we built</th>
+                </tr>
+                <tr>
+                    <td><strong>Presentation slides (PPT → PDF)</strong><br>Bullet fragments, no prose, minimal text per page. A slide saying "→ improved DEA 300 to 90bps" is meaningless without context.</td>
+                    <td><strong>Full thesis documents + clean markdown files</strong><br>Complete text with narrative, evidence, and context. Each chunk can stand alone.</td>
+                </tr>
+                <tr>
+                    <td><strong>Raw interview-prep DOCX</strong><br>Mixed formats, bullet lists, rough notes. The 500-char splitter cut mid-story leaving fragments like "Additionally he handled with 'brio' this cross-functional project..."</td>
+                    <td><strong>17 hand-authored STAR stories in prose</strong><br>Each story is a self-contained narrative unit. The splitter keeps full Situation → Task → Action → Result coherent per chunk.</td>
+                </tr>
+                <tr>
+                    <td><strong>No cross-cutting summaries</strong><br>No single document could answer "What is Manuel's working style?" — that answer lives across 17 stories, not in any one chunk.</td>
+                    <td><strong>Synthetic summary documents</strong><br>Dedicated files for professional summary, technical skills taxonomy, and personality/approach — designed to answer exactly those high-level questions.</td>
+                </tr>
+                <tr>
+                    <td><strong>Blind 500-char chunking for everything</strong><br>Character count is agnostic to document structure. A 500-char cut lands in the middle of a Result paragraph.</td>
+                    <td><strong>Semantic story-level chunking for markdown</strong><br>Stories are split on <code>---</code> separators first. Character splitting is a fallback only if a story exceeds 1,800 chars.</td>
+                </tr>
+                <tr>
+                    <td><strong>No chunk metadata</strong><br>Every chunk looks the same to the retriever. No way to filter by company, topic, or skill.</td>
+                    <td><strong>Structured metadata per chunk</strong><br>Each story chunk carries <code>company</code>, <code>skills</code>, <code>year</code> fields extracted from the header, enabling future filtered retrieval.</td>
+                </tr>
+            </table>
+
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 16px;">The five knowledge documents designed for retrieval</h3>
+
+            <div class="doc-grid">
+                <div class="doc-card">
+                    <div class="doc-type">Synthetic · Stories</div>
+                    <h4>professional_experience_stories.md</h4>
+                    <p>17 STAR-format stories from Amazon and McKinsey, each with metadata header and clean S/T/A/R prose. Replaces a raw interview-prep DOCX.</p>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-type">Synthetic · Summary</div>
+                    <h4>professional_summary.md</h4>
+                    <p>~600-word narrative bio covering career arc, what each role taught, and target roles. Answers "who is Manuel?" directly.</p>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-type">Synthetic · Skills</div>
+                    <h4>technical_skills.md</h4>
+                    <p>Structured skills taxonomy with evidence per skill: not "knows Python" but "used for X, Y, Z — see projects A, B." Answers skills questions with specifics.</p>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-type">Synthetic · Personality</div>
+                    <h4>personality_and_approach.md</h4>
+                    <p>7 sections on working style — each backed by a real story from the STAR document. Answers "how does Manuel approach X?" questions.</p>
+                </div>
+                <div class="doc-card">
+                    <div class="doc-type">Synthetic · Projects</div>
+                    <h4>side_projects.md</h4>
+                    <p>Descriptions of all 15+ portfolio projects: tech stack, what it does, what problem it solves. Sourced from the portfolio website and GitHub.</p>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 16px;">Semantic chunking: how it works</h3>
+
+            <p>The key insight is that different document types require different splitting strategies. A one-size-fits-all character splitter destroys narrative structure. The <code>prepare_knowledge_base.py</code> script applies the right strategy per file type:</p>
+
+            <pre><code>def load_markdown(filepath):
+    with open(filepath, encoding="utf-8") as f:
+        content = f.read()
+
+    # Primary: split on "---" story separators
+    # Each STAR story stays as one coherent chunk
+    raw_sections = re.split(r'\n---\n', content)
+
+    # Fallback: split on ## headers if no --- separators
+    if len(raw_sections) == 1 and len(content) > MAX_CHUNK:
+        raw_sections = re.split(r'\n(?=## )', content)
+
+    chunks = []
+    for section in raw_sections:
+        meta = _extract_metadata_from_section(section, filepath)
+        # Sub-split only if section exceeds 1800 chars
+        chunks.extend(_section_chunks(section, meta))
+    return chunks
+
+def _extract_metadata_from_section(text, filepath):
+    # Pull Company, Skills, Year from the story header line
+    company_m = re.search(r'\*\*Company:\*\*\s*([^|]+)', text)
+    skills_m  = re.search(r'\*\*Skills:\*\*\s*(.+)$', text, re.MULTILINE)
+    return {
+        "source":   filepath,
+        "company":  company_m.group(1).strip() if company_m else "",
+        "skills":   skills_m.group(1).strip()  if skills_m  else "",
+    }</code></pre>
+
+            <div class="callout" style="border-left-color: #22c55e;">
+                <strong>Before vs. after — a concrete example</strong>
+                <span>Question: <em>"Tell me about a time Manuel dealt with a difficult stakeholder."</em><br><br>
+                <strong>v1 answer:</strong> "Manuel has worked on several professional projects, including a cross-functional project he handled until financial and implementation approval..."<br><br>
+                <strong>v2 answer:</strong> "Manuel dealt with a difficult stakeholder during a McKinsey engagement with a major European train manufacturer. The client's flagship project was 5.5 months behind schedule, accumulating €17 million in penalties. The client's operations leadership was actively hostile toward the consulting team due to negative past experiences..."</span>
+            </div>
+
+            <p>The infrastructure didn't change. The answer quality improved entirely because the chunks retrieved now carry full narrative context — company, challenge, specific actions, measurable result — rather than isolated bullet fragments.</p>
         </div>
     </div>
 
