@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastPay AI — Autonomous 3-Way Invoice Matching Agent | Manuel Mezo</title>
+    <meta name="description" content="Autonomous AP back-office agent that reads messy vendor invoices, cross-references Purchase Orders and WMS receipts, and approves or flags them with full reasoning — built with Gemini 2.5 Flash, Next.js, and Neon Postgres.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;
+            --secondary: #4b5563;
+            --bg: #ffffff;
+            --card-bg: #f9fafb;
+            --border: #e5e7eb;
+            --accent: #0284c7;
+            --accent-grad: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            --code-bg: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; color: var(--primary); background: var(--bg); line-height: 1.7; }
+        a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s ease; }
+        a:hover { color: #0369a1; text-decoration: underline; }
+
+        .nav-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-bar a { text-decoration: none; font-weight: 600; color: var(--secondary); font-size: 0.9rem; transition: color 0.2s; }
+        .nav-bar a:hover { color: var(--accent); }
+        .nav-logo { font-weight: 800; font-size: 1rem; color: var(--primary) !important; }
+
+        .hero {
+            background: var(--bg);
+            padding: 120px 40px 80px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-label {
+            display: inline-block;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            color: #fff;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; max-width: 900px; margin-left: auto; margin-right: auto; color: var(--primary); letter-spacing: -1px; }
+        .hero p { font-size: 1.3rem; color: var(--secondary); max-width: 700px; margin: 0 auto 30px; }
+        .tech-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .pill {
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.8rem; font-weight: 600;
+            padding: 6px 16px; border-radius: 20px;
+        }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+        .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+        .section:last-of-type { border-bottom: none; }
+
+        .section-num {
+            display: inline-block;
+            background: var(--accent-grad); -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+        .section p { color: var(--secondary); margin-bottom: 16px; font-size: 1rem; }
+        .section p:last-child { margin-bottom: 0; }
+
+        .callout {
+            background: var(--card-bg); border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0;
+        }
+        .callout strong { display: block; margin-bottom: 6px; color: var(--primary); font-size: 0.95rem; }
+        .callout span { color: var(--secondary); font-size: 0.95rem; }
+
+        .media-block { margin: 32px 0; }
+        .media-block img {
+            width: 100%; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: block;
+        }
+        .media-caption { margin-top: 10px; font-size: 0.85rem; color: var(--secondary); font-style: italic; text-align: center; }
+
+        .pipeline { display: flex; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+        .pipeline-step {
+            flex: 1; min-width: 100px;
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 16px 12px; text-align: center; position: relative;
+        }
+        .pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+        .pipeline-step:last-child { border-radius: 0 10px 10px 0; }
+        .pipeline-step:not(:last-child)::after {
+            content: '→'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--accent); font-size: 1.1rem; font-weight: 700; z-index: 2;
+        }
+        .pipeline-step .step-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .pipeline-step .step-label { font-size: 0.72rem; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+        .metric-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .metric-val { font-size: 2rem; font-weight: 800; background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-label { font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-top: 4px; }
+        @media (max-width: 500px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
+
+        pre {
+            background: var(--code-bg); color: #e2e8f0;
+            border-radius: 10px; padding: 20px 24px;
+            font-size: 0.85rem; overflow-x: auto;
+            margin: 20px 0; line-height: 1.6;
+        }
+        code { font-family: 'Courier New', monospace; }
+        p code, li code {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 6px;
+            font-family: 'Courier New', monospace; font-size: 0.85em; color: var(--primary);
+        }
+
+        .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+        @media (max-width: 640px) { .concept-grid { grid-template-columns: 1fr; } }
+        .concept-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+        }
+        .concept-card h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 8px; color: var(--primary); }
+        .concept-card p { font-size: 0.9rem; color: var(--secondary); margin: 0; }
+
+        ul { color: var(--secondary); padding-left: 20px; margin: 16px 0; }
+        ul li { margin-bottom: 8px; font-size: 1rem; }
+
+        .decision-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.9rem; }
+        .decision-table th { background: var(--card-bg); padding: 12px 16px; text-align: left; font-weight: 700; border: 1px solid var(--border); color: var(--primary); }
+        .decision-table td { padding: 11px 16px; border: 1px solid var(--border); color: var(--secondary); }
+        .decision-table tr:nth-child(even) td { background: #fafafa; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .badge-green { background: rgba(16,185,129,0.1); color: #059669; }
+        .badge-red   { background: rgba(239,68,68,0.1);   color: #dc2626; }
+        .badge-amber { background: rgba(245,158,11,0.1);  color: #d97706; }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%); color: #fff;
+            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+            padding: 14px 35px; border-radius: 50px;
+            transition: all 0.3s ease; margin: 50px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); color: #fff; text-decoration: none; }
+
+        footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .hero { padding: 80px 20px 50px; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1.1rem; }
+            .container { padding: 0 20px; }
+            .nav-bar { padding: 0 20px; }
+            .section { padding: 50px 0; }
+            .pipeline { gap: 4px; }
+            .pipeline-step { min-width: 70px; padding: 12px 6px; }
+            .pipeline-step:not(:last-child)::after { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">← Manuel Mezo</a>
+        <a href="index.html#projects">GenAI Projects</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-label">🤖 GenAI · Agentic · Full-Stack</div>
+        <h1>FastPay AI — Autonomous 3-Way Invoice Matching Agent</h1>
+        <p>Custom-built agentic pipeline that reads messy vendor invoices, cross-references them against Purchase Orders and Warehouse receipts, and autonomously approves, flags, or escalates — with live reasoning trace and a full evaluation suite.</p>
+        <div class="tech-pills">
+            <span class="pill">Gemini 2.5 Flash</span>
+            <span class="pill">Next.js 14</span>
+            <span class="pill">TypeScript</span>
+            <span class="pill">Neon Postgres</span>
+            <span class="pill">Langfuse</span>
+            <span class="pill">Upstash Redis</span>
+            <span class="pill">Vercel</span>
+            <span class="pill">Server-Sent Events</span>
+        </div>
+    </div>
+
+    <!-- PIPELINE -->
+    <div class="container">
+        <div class="pipeline" style="margin-top: 50px;">
+            <div class="pipeline-step"><div class="step-icon">📄</div><div class="step-label">Extract PDF</div></div>
+            <div class="pipeline-step"><div class="step-icon">🔁</div><div class="step-label">Dedup Check</div></div>
+            <div class="pipeline-step"><div class="step-icon">🔍</div><div class="step-label">Lookup PO</div></div>
+            <div class="pipeline-step"><div class="step-icon">📦</div><div class="step-label">Query WMS</div></div>
+            <div class="pipeline-step"><div class="step-icon">🔤</div><div class="step-label">Fuzzy Match</div></div>
+            <div class="pipeline-step"><div class="step-icon">💱</div><div class="step-label">FX Convert</div></div>
+            <div class="pipeline-step"><div class="step-icon">🧠</div><div class="step-label">Decide</div></div>
+        </div>
+    </div>
+
+    <!-- SECTION 1: PROBLEM -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">01 — The Problem</div>
+            <h2>3-Way Matching: thousands of manual hours in every AP team</h2>
+
+            <div class="callout" style="border-left-color: #6366f1;">
+                <strong>Try it live</strong>
+                <span>The full demo is live at <a href="https://fastpay-ai.mezapps.com" target="_blank">fastpay-ai.mezapps.com</a>. Click any invoice card to watch the agent reason through it in real time, or hit "Process Today's Batch" to run all 12 scenarios at once.</span>
+            </div>
+
+            <p>Every AP team runs the same gauntlet daily: for every vendor invoice received, a clerk must manually pull the corresponding Purchase Order and Warehouse receipt, then verify that quantities, prices, line items, and totals agree across all three documents. Any mismatch — a shortage, a price increase, an unauthorized SKU, a duplicate submission — must be caught before payment is released.</p>
+            <p>This is <strong>3-Way Matching</strong>. It is repetitive, time-consuming, and deeply error-prone at scale. It is also a textbook agentic AI use case: structured document comparison, tool-based data lookup, deterministic rules, and a final reasoning step that must produce an auditable decision.</p>
+
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-val">12</div><div class="metric-label">Hand-crafted test scenarios</div></div>
+                <div class="metric-card"><div class="metric-val">7</div><div class="metric-label">Agent tools per run</div></div>
+                <div class="metric-card"><div class="metric-val">$0</div><div class="metric-label">Monthly infrastructure cost</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: ARCHITECTURE -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">02 — Agent Architecture</div>
+            <h2>Custom orchestrator — no framework, full control</h2>
+
+            <p>The agent is built as a <strong>hand-rolled orchestrator</strong> in TypeScript — no LangChain, no LangGraph. This was a deliberate choice: 3-Way Matching has a fixed, deterministic pipeline. The steps never change order, there is no dynamic tool routing, and the control flow is simple enough that a framework would add overhead without value.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Tool-per-file pattern</h4>
+                    <p>Each capability lives in its own <code>src/lib/agent/tools/</code> file — <code>extract-pdf.ts</code>, <code>lookup-po.ts</code>, <code>query-wms.ts</code>, etc. Each is a plain async function with typed inputs and Zod-validated outputs.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Orchestrator as a pipeline</h4>
+                    <p><code>orchestrator.ts</code> is a single <code>async function runAgent()</code> that calls tools in sequence, emitting a <code>TraceEvent</code> after each step via a callback — no agent loop, no recursion.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Repository pattern</h4>
+                    <p>All DB access goes through <code>db/repo.ts</code>. The same codebase runs against SQLite locally and Neon Postgres in production — one environment variable flip, zero code changes.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Streaming via SSE</h4>
+                    <p>Each tool call emits a <code>TraceEvent</code> that is pushed to the browser over a Server-Sent Events stream. The UI updates in real time — no polling, no WebSocket overhead.</p>
+                </div>
+            </div>
+
+            <pre><code>// orchestrator.ts — simplified
+export async function runAgent(invoiceId: string, emit: EmitFn): Promise<AgentResult> {
+  const invoice  = await getInvoiceById(invoiceId)
+  await checkDuplicate(invoice.invoice_number)   // fast, no API
+
+  const extracted   = await extractPdf(invoice.pdf_path)  // Gemini Vision
+  const po          = await lookupPo(extracted.po_reference)
+  const wms         = await queryWms(po.id)
+  const vendorMatch = await fuzzyMatchVendor(extracted.vendor_name, po.vendor_name)
+  const fxResult    = await convertCurrency(...)           // if currencies differ
+
+  const decision = await reasonAndDecide({ extracted, po, wms, vendorMatch, fxResult })
+  emit({ step: 'decide', status: 'done', detail: decision.status })
+
+  await saveResult(invoiceId, decision)
+  return buildResult(invoiceId, decision, trace)
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- SECTION 3: VISION EXTRACTION -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">03 — Vision-Based Extraction</div>
+            <h2>Reading invoices the way a human would — including messy ones</h2>
+
+            <p>The first tool call is the hardest: turning an unstructured invoice image into a structured JSON object. The agent sends the raw PDF or image file to <strong>Gemini 2.5 Flash</strong> as base64-encoded inline data, along with a schema-anchored extraction prompt. The response is validated with a Zod schema before any downstream tool sees it.</p>
+
+            <pre><code>// extract-pdf.ts
+const result = await model.generateContent([
+  EXTRACTION_PROMPT,                         // structured output instructions
+  { inlineData: { mimeType, data: base64 } } // raw file bytes
+])
+
+// Zod validates the response — rejects any hallucinated fields
+return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></pre>
+
+            <div class="callout">
+                <strong>Why Gemini multimodal over a dedicated OCR service</strong>
+                <span>Dedicated OCR services extract text but miss context — they can't infer that a handwritten note says "5% loyalty discount applied" or that a crumpled scan with low contrast still has a readable PO number. Gemini natively understands layout, tables, annotations, and partial text.</span>
+            </div>
+
+            <p>The 12 test scenarios cover 5 invoice variants: clean digital PDF, scanned document, phone photo, handwritten annotation, and crumpled/degraded. All 5 formats are tested against the same extraction schema to prove robustness.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 4: TOOL-BASED MATCHING -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">04 — Tool-Based Matching</div>
+            <h2>Five typed tools that query real data sources</h2>
+
+            <p>After extraction, the orchestrator runs a sequence of typed tool calls. Each tool is a pure async function — no side effects, no shared state, easy to test in isolation.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>lookup_po + query_wms</h4>
+                    <p>Parameterized SQL queries against the Neon Postgres database. Primary lookup is by PO reference from the invoice; fallback is fuzzy vendor-name search across all open POs.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>fuzzy_match_vendor</h4>
+                    <p>Gemini embeddings + cosine similarity. Catches vendor name drift ("ACME Corp." vs "Acme Corporation Inc.") and near-duplicate fraud ("Apex Logistics" vs "Apax Logistics Inc.").</p>
+                </div>
+                <div class="concept-card">
+                    <h4>convert_currency</h4>
+                    <p>Live FX rate lookup with a 6-hour Neon cache. Only runs when invoice currency ≠ PO currency. Downstream tools receive a converted amount for apples-to-apples price comparison.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>check_duplicate</h4>
+                    <p>Fast pre-check against <code>match_results</code> by <code>invoice_number</code>. Fires before any LLM call — if the invoice was already processed, it is immediately flagged as DUPLICATE at near-zero cost.</p>
+                </div>
+            </div>
+
+            <div class="callout" style="border-left-color: #10b981;">
+                <strong>Multi-line item matching</strong>
+                <span>POs and WMS receipts contain 1–3 SKUs each. The agent compares every line item individually — a quantity shortage on SKU-A while SKU-B matches correctly still flags the invoice, and the specific impacted SKU is highlighted in the UI.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5: DECISION LOGIC -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">05 — Decision Logic</div>
+            <h2>Deterministic rules + LLM-generated explanation</h2>
+
+            <p>The final <code>reason_and_decide</code> step combines two things: a <strong>deterministic rule engine</strong> that catches every known mismatch type, and a <strong>Gemini call</strong> that writes a plain-English explanation of exactly what was found and why.</p>
+
+            <table class="decision-table">
+                <tr><th>Condition detected</th><th>Decision</th></tr>
+                <tr><td>All quantities and prices match</td><td><span class="badge badge-green">APPROVED</span></td></tr>
+                <tr><td>WMS received qty &lt; invoiced qty</td><td><span class="badge badge-red">FLAGGED — SHORTAGE</span></td></tr>
+                <tr><td>Invoice unit price &gt; PO agreed price</td><td><span class="badge badge-red">FLAGGED — PRICE MISMATCH</span></td></tr>
+                <tr><td>Line item not present in PO</td><td><span class="badge badge-red">FLAGGED — UNAUTHORIZED ITEMS</span></td></tr>
+                <tr><td>Same invoice number previously processed</td><td><span class="badge badge-red">FLAGGED — DUPLICATE</span></td></tr>
+                <tr><td>Tax totals don't match line-item arithmetic</td><td><span class="badge badge-red">FLAGGED — TAX MISMATCH</span></td></tr>
+                <tr><td>Currency conversion involved</td><td><span class="badge badge-red">FLAGGED — FX CONVERSION</span></td></tr>
+                <tr><td>Vendor name mismatch beyond fuzzy threshold</td><td><span class="badge badge-red">FLAGGED — VENDOR MISMATCH</span></td></tr>
+                <tr><td>Confidence below threshold / ambiguous</td><td><span class="badge badge-amber">ESCALATED — HUMAN REVIEW</span></td></tr>
+            </table>
+
+            <div class="callout">
+                <strong>Why deterministic rules AND an LLM?</strong>
+                <span>The rules catch every mismatch reliably — the LLM cannot be trusted to do arithmetic on its own. But rules produce cryptic output: <em>"SHORTAGE on SKU MON-27Q: invoiced 50, received 48"</em>. The LLM turns that into auditable prose that an AP clerk can attach to a dispute ticket: <em>"Invoice CSP-2024-2201 claims 50 units of the 27-inch QHD monitor (SKU MON-27Q) at $320 each, but the WMS receipt records only 48 units received at dock, a shortfall of 2 units valued at $640…"</em></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 6: LIVE UI -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">06 — Live Streaming UI</div>
+            <h2>Watching the agent think — in real time</h2>
+
+            <p>The UI is a Next.js 14 App Router application. When a user clicks an invoice card, the browser opens a <strong>Server-Sent Events</strong> connection to <code>/api/agent/stream</code>. Every tool call in the orchestrator emits a <code>TraceEvent</code> that is pushed down the stream immediately — the trace panel updates step-by-step as the agent works.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Invoice Gallery</h4>
+                    <p>12 cards with real PDF thumbnails, difficulty badges, and skill tags. Each card shows the agent's result as a colour dot (green/red/amber) once processed. Individual PDF download on each card.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Agent Trace Panel</h4>
+                    <p>Live log of every tool call — function name, inputs, and output summary. Steps flip from "running" to "done" in-place with animations. Matches exactly what <code>orchestrator.ts</code> emits.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Decision Output Panel</h4>
+                    <p>Animated reveal of status badge, confidence bar, flag reason, and full agent reasoning. Includes a direct link to the Langfuse trace for the run.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Process Today's Batch</h4>
+                    <p>Single button runs all 12 invoices sequentially. The ActionBar shows live approved/flagged/escalated counters updating as each result arrives.</p>
+                </div>
+            </div>
+
+            <pre><code>// SSE stream consumer — client side
+const reader = res.body.getReader()
+while (true) {
+  const { done, value } = await reader.read()
+  if (done) break
+
+  const events = parseSSE(value)
+  for (const event of events) {
+    if (event.type === 'step')   applyStep(event)  // updates trace panel
+    if (event.type === 'result') setDecision(event) // reveals decision
+  }
+}</code></pre>
+        </div>
+    </div>
+
+    <!-- SECTION 7: EVAL FRAMEWORK -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">07 — Evaluation Framework</div>
+            <h2>Proving the agent is reliable — with numbers</h2>
+
+            <p>Every AI demo should have an eval suite. This one runs automatically: hit "Run Eval" and the agent processes all 12 scenarios fresh, then computes a full report against ground-truth labels defined in <code>data/scenarios.json</code>.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Accuracy & Macro F1</h4>
+                    <p>Top-line metrics across all 12 scenarios. F1 is macro-averaged across the three classes (APPROVED / FLAGGED / ESCALATED) to avoid penalizing class imbalance.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Per-class P / R / F1</h4>
+                    <p>Precision, recall, and F1 broken out per class with a visual bar. Makes it easy to see whether the agent over-flags (high recall, low precision) or misses flags (high precision, low recall).</p>
+                </div>
+                <div class="concept-card">
+                    <h4>3×3 Confusion Matrix</h4>
+                    <p>Heat-map grid of actual vs predicted class. Green diagonal = correct. Red off-diagonal = specific error type — e.g. ESCALATED misclassified as APPROVED tells you the agent isn't conservative enough.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>p50 / p95 Latency</h4>
+                    <p>Latency percentiles across all 12 runs. p95 catches outliers — a single slow scenario (e.g. handwritten OCR) can dominate average but is invisible without the percentile view.</p>
+                </div>
+            </div>
+
+            <div class="callout" style="border-left-color: #f59e0b;">
+                <strong>Eval skip detection</strong>
+                <span>If an invoice is missing from the database (e.g. seed not run), the eval now shows an amber ⚠ warning row instead of a silent dash. The per-scenario table also labels mismatches as <em>"expected / got"</em> instead of just showing two unlabelled chips.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 8: EXPLORER & ESCALATIONS -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">08 — Database Explorer & Escalations</div>
+            <h2>ERP-style data visibility baked into the demo</h2>
+
+            <p>One of the goals was to make the data behind the agent visible — to show that this isn't a black box but a system you could wire into a real supply chain. Two dedicated views provide that transparency.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Database Explorer</h4>
+                    <p>Browse all Purchase Orders, WMS receipts, and processed invoices in ERP-style header/detail rows — one header per document, then one row per line item. Non-approved invoices show a ⚠ badge on the specific impacted SKUs.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Escalations View</h4>
+                    <p>Mirrors what an AP manager's review queue looks like. Every FLAGGED or ESCALATED invoice is shown as a card with the flag reason, the agent's full explanation, confidence score, and the exact line items responsible highlighted in red.</p>
+                </div>
+            </div>
+
+            <p>The impacted-SKU logic is deterministic: for <code>PRICE_MISMATCH</code>, it compares invoice unit price vs PO price per SKU; for <code>SHORTAGE</code>, invoice qty vs WMS received qty; for <code>UNAUTHORIZED_ITEMS</code>, SKUs present in the invoice but absent from the PO.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 9: BYOI -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">09 — Bring Your Own Invoice</div>
+            <h2>Upload any real invoice and watch the agent find a flaw</h2>
+
+            <p>Beyond the 12 pre-seeded scenarios, users can upload any invoice PDF, JPEG, PNG, or WEBP. The system:</p>
+
+            <ul>
+                <li>Extracts the invoice data with Gemini Vision</li>
+                <li>Generates a synthetic PO and WMS receipt from the extracted data</li>
+                <li>Injects one intentional discrepancy (randomly chosen: price variance, quantity shortage, or unauthorized line item)</li>
+                <li>Runs the full agent pipeline and explains what it found</li>
+            </ul>
+
+            <div class="callout" style="border-left-color: #ef4444;">
+                <strong>Subtle orchestrator bug — and how it was fixed</strong>
+                <span>An early version re-extracted the uploaded PDF during the agent run, which caused the agent to read the <em>original</em> PO reference from the document (e.g. "PO-2024-0005") and find the wrong PO in the database — making the injected discrepancy invisible. The fix: BYOI invoices skip PDF re-extraction entirely and use the line items already stored in the DB, with the synthetic BYOI PO reference reconstructed from the <code>scenario_id</code>.</span>
+            </div>
+
+            <p>Uploaded files are written to <code>/tmp</code> (Vercel's only writable directory) and deleted immediately after processing. They are never committed to git or persisted beyond the request.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 10: DEPLOYMENT & OBSERVABILITY -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">10 — Deployment & Observability</div>
+            <h2>Production-grade on a $0/month budget</h2>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Vercel + GitHub Actions</h4>
+                    <p>CI runs <code>tsc --noEmit</code> + ESLint + Next.js build on every push. Merge to <code>master</code> triggers an automatic Vercel deploy. Zero-downtime, zero config.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Neon Postgres</h4>
+                    <p>Serverless Postgres — scales to zero between runs, autoscales on load. The same repo runs against SQLite locally via a single env-var switch.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Langfuse observability</h4>
+                    <p>Every agent run creates a Langfuse trace with one span per tool call. The decision panel includes a direct "View Trace" link that opens the full trace in Langfuse — token counts, latency, inputs, outputs.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Abuse protection</h4>
+                    <p>Upstash Redis rate-limiting at the edge (20 req/min/IP). Daily hard cap on total LLM calls. BYOI file size limit (10 MB) and MIME validation. All LLM calls are server-side only.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LINKS + BACK BUTTON -->
+    <div class="container" style="text-align:center;">
+        <div class="callout" style="display:inline-block; text-align:left; max-width:600px; margin-bottom: 0;">
+            <strong>Links</strong>
+            <span>
+                🌐 <a href="https://fastpay-ai.mezapps.com" target="_blank">Live demo — fastpay-ai.mezapps.com</a> &nbsp;·&nbsp;
+                💻 <a href="https://github.com/manumezog/3Way-InvoiceMatching-Agent" target="_blank">GitHub repo</a>
+            </span>
+        </div>
+        <br>
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+    </div>
+
+    <footer>
+        <p>© <span id="year"></span> Manuel Mezo · <a href="index.html">cv.manuelmezo.com</a></p>
+    </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <link rel="stylesheet" href="chat-widget.css">
+    <script src="chat-widget.js"></script>
+</body>
+</html>
