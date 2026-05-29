@@ -185,7 +185,7 @@
             <span class="pill">LangChain</span>
             <span class="pill">ChromaDB</span>
             <span class="pill">Gemini 2.5 Flash</span>
-            <span class="pill">HuggingFace Embeddings</span>
+            <span class="pill">BGE bge-small-en-v1.5</span>
             <span class="pill">FastAPI</span>
             <span class="pill">Docker</span>
             <span class="pill">HF Spaces</span>
@@ -418,13 +418,13 @@ print(f"92 pages → {len(chunks)} chunks")  # 92 → 318</code></pre>
             <h2>Turning text into searchable vectors</h2>
 
             <p>An <strong>embedding</strong> is a vector of numbers (e.g. 384 floats) that represents the meaning of a piece of text. The key property: semantically similar text produces vectors that are close together in that high-dimensional space.</p>
-            <p>This project uses <code>sentence-transformers/all-MiniLM-L6-v2</code> — a small, fast model (~80 MB) that runs <strong>entirely locally on CPU</strong> with no API calls. This was a deliberate choice after experiencing instability with cloud-based embedding APIs on the free tier.</p>
+            <p>This project uses <code>BAAI/bge-small-en-v1.5</code> — a ~90 MB model that runs <strong>entirely locally on CPU</strong> with no API calls. BGE (Beijing General Embedding) models are trained specifically for retrieval tasks, making them a better fit for RAG than general-purpose sentence similarity models like MiniLM.</p>
 
             <pre><code>from langchain_huggingface import HuggingFaceEmbeddings
 
-# Loads the model locally — downloads ~80MB on first run
+# Loads the model locally — downloads ~90MB on first run
 embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
+    model_name="BAAI/bge-small-en-v1.5"
 )
 
 # .embed_query() converts a string to a list of 384 floats
@@ -433,8 +433,8 @@ print(len(vector))   # 384
 print(vector[:3])    # [-0.031, 0.072, -0.014, ...]</code></pre>
 
             <div class="callout">
-                <strong>Cloud vs. local embeddings</strong>
-                <span>Cloud embedding APIs (e.g. Gemini) are convenient but have rate limits and can return intermittent 500 errors on the free tier. For production RAG where retrieval must always work, local sentence-transformers are far more reliable. The quality trade-off is negligible for a portfolio use case.</span>
+                <strong>Embedding model choice matters for retrieval quality</strong>
+                <span>The project started with <code>all-MiniLM-L6-v2</code> (MTEB retrieval score ~40) — a fast, general-purpose model. After reviewing benchmarks, it was upgraded to <code>BAAI/bge-small-en-v1.5</code> (MTEB retrieval ~51), which is the same size but ~25% better on retrieval tasks because it was trained specifically for that purpose. Cloud APIs like Gemini Embedding offer higher quality but add API cost and latency to every single query — not worth it when a strong local model works just as well for this use case.</span>
             </div>
         </div>
     </div>
