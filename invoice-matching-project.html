@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FastPay AI — Autonomous 3-Way Invoice Matching Agent | Manuel Mezo</title>
-    <meta name="description" content="Autonomous AP back-office agent that reads messy vendor invoices, cross-references Purchase Orders and WMS receipts, and approves or flags them with full reasoning — built with Gemini 2.5 Flash, Next.js, and Neon Postgres.">
+    <meta name="description" content="Autonomous Accounts Payable (AP) back-office agent that reads messy vendor invoices, cross-references Purchase Orders and WMS receipts, and approves or flags them with full reasoning — built with Gemini 2.5 Flash, Next.js, and Neon Postgres.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -213,14 +213,14 @@
     <div class="section">
         <div class="container">
             <div class="section-num">01 — The Problem</div>
-            <h2>3-Way Matching: thousands of manual hours in every AP team</h2>
+            <h2>3-Way Matching: thousands of manual hours in every Accounts Payable (AP) team</h2>
 
             <div class="callout" style="border-left-color: #6366f1;">
                 <strong>Try it live</strong>
                 <span>The full demo is live at <a href="https://fastpay-ai.mezapps.com" target="_blank">fastpay-ai.mezapps.com</a>. Click any invoice card to watch the agent reason through it in real time, or hit "Process Today's Batch" to run all 12 scenarios at once.</span>
             </div>
 
-            <p>Every AP team runs the same gauntlet daily: for every vendor invoice received, a clerk must manually pull the corresponding Purchase Order and Warehouse receipt, then verify that quantities, prices, line items, and totals agree across all three documents. Any mismatch — a shortage, a price increase, an unauthorized SKU, a duplicate submission — must be caught before payment is released.</p>
+            <p>Every Accounts Payable (AP) team runs the same gauntlet daily: for every vendor invoice received, a clerk must manually pull the corresponding Purchase Order and Warehouse receipt, then verify that quantities, prices, line items, and totals agree across all three documents. Any mismatch — a shortage, a price increase, an unauthorized SKU, a duplicate submission — must be caught before payment is released.</p>
             <p>This is <strong>3-Way Matching</strong>. It is repetitive, time-consuming, and deeply error-prone at scale. It is also a textbook agentic AI use case: structured document comparison, tool-based data lookup, deterministic rules, and a final reasoning step that must produce an auditable decision.</p>
 
             <div class="metrics-grid">
@@ -361,7 +361,7 @@ return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></
 
             <div class="callout">
                 <strong>Why deterministic rules AND an LLM?</strong>
-                <span>The rules catch every mismatch reliably — the LLM cannot be trusted to do arithmetic on its own. But rules produce cryptic output: <em>"SHORTAGE on SKU MON-27Q: invoiced 50, received 48"</em>. The LLM turns that into auditable prose that an AP clerk can attach to a dispute ticket: <em>"Invoice CSP-2024-2201 claims 50 units of the 27-inch QHD monitor (SKU MON-27Q) at $320 each, but the WMS receipt records only 48 units received at dock, a shortfall of 2 units valued at $640…"</em></span>
+                <span>The rules catch every mismatch reliably — the LLM cannot be trusted to do arithmetic on its own. But rules produce cryptic output: <em>"SHORTAGE on SKU MON-27Q: invoiced 50, received 48"</em>. The LLM turns that into auditable prose that an Accounts Payable (AP) clerk can attach to a dispute ticket: <em>"Invoice CSP-2024-2201 claims 50 units of the 27-inch QHD monitor (SKU MON-27Q) at $320 each, but the WMS receipt records only 48 units received at dock, a shortfall of 2 units valued at $640…"</em></span>
             </div>
         </div>
     </div>
@@ -457,7 +457,7 @@ while (true) {
                 </div>
                 <div class="concept-card">
                     <h4>Escalations View</h4>
-                    <p>Mirrors what an AP manager's review queue looks like. Every FLAGGED or ESCALATED invoice is shown as a card with the flag reason, the agent's full explanation, confidence score, and the exact line items responsible highlighted in red.</p>
+                    <p>Mirrors what an Accounts Payable (AP) manager's review queue looks like. Every FLAGGED or ESCALATED invoice is shown as a card with the flag reason, the agent's full explanation, confidence score, and the exact line items responsible highlighted in red.</p>
                 </div>
             </div>
 
