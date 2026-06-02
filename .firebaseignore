@@ -1,0 +1,6 @@
+**/.*
+.firebase/**
+**/node_modules/**
+firebase.json
+archive/**
+videos/training raw video.mp4
