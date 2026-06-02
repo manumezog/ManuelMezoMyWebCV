@@ -852,7 +852,7 @@ docker run -d -p 7860:7860 --name yolo-api yolo-queue-api
                 const res = await fetch(`${API_BASE}/predict/`, { method: 'POST', body: formData });
                 if (!res.ok) throw new Error(`Server error: ${res.status}`);
 
-                const data = await res.json();
+                const data = JSON.parse(await res.text());
                 clearTimeout(coldStartTimer);
                 document.getElementById('coldStartNotice').classList.remove('visible');
 
@@ -874,7 +874,16 @@ docker run -d -p 7860:7860 --name yolo-api yolo-queue-api
         function poll(taskId, startTime) {
             pollInterval = setInterval(async () => {
                 try {
-                    const res = await fetch(`${API_BASE}/result/${taskId}`);
+                    // Use AbortController so a slow mobile network can't hang forever
+                    const controller = new AbortController();
+                    const fetchTimeout = setTimeout(() => controller.abort(), 35000);
+
+                    let res;
+                    try {
+                        res = await fetch(`${API_BASE}/result/${taskId}`, { signal: controller.signal });
+                    } finally {
+                        clearTimeout(fetchTimeout);
+                    }
 
                     if (res.status === 404) {
                         clearInterval(pollInterval);
@@ -883,7 +892,11 @@ docker run -d -p 7860:7860 --name yolo-api yolo-queue-api
                         return;
                     }
 
-                    const data = await res.json();
+                    // iOS WebKit's response.json() silently hangs for large cross-origin
+                    // responses (the base64 result image can be 2–4 MB). Using text() +
+                    // JSON.parse() is synchronous on the JS side and avoids that bug.
+                    const rawText = await res.text();
+                    const data = JSON.parse(rawText);
 
                     if (data.status === 'processing') {
                         setStep('processing');
@@ -910,10 +923,21 @@ docker run -d -p 7860:7860 --name yolo-api yolo-queue-api
         }
 
         function showResult(base64, elapsed) {
-            document.getElementById('resultImg').src = base64;
+            // Make the section visible and scroll to it BEFORE assigning the large
+            // base64 src — on iOS, setting a multi-MB data URL can block the main
+            // thread momentarily, causing scrollIntoView to fire before the element
+            // has painted.
+            const section = document.getElementById('resultSection');
             document.getElementById('elapsedTime').textContent = elapsed;
-            document.getElementById('resultSection').style.display = 'block';
-            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            section.style.display = 'block';
+            // Slight delay so the section paints before we try to scroll to it
+            setTimeout(() => {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 80);
+            // Assign the image src after the section is visible
+            if (base64) {
+                document.getElementById('resultImg').src = base64;
+            }
         }
 
         function showStatus(type, text) {
