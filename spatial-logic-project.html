@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -150,6 +150,23 @@
 
         /* ── FOOTER ── */
         footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 18px; height: 52px; }
+            .hero { padding: 70px 18px 50px; }
+            .hero h1 { font-size: 2rem; letter-spacing: -0.5px; line-height: 1.2; }
+            .hero p { font-size: 1rem; }
+            .container { padding: 0 18px; }
+            .section { padding: 50px 0; }
+            .section h2 { font-size: 1.4rem; }
+            .pipeline { flex-direction: column; gap: 2px; }
+            .pipeline-step { min-width: unset; border-radius: 10px !important; }
+            .pipeline-step:not(:last-child)::after { display: none; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            pre { font-size: 0.78rem; padding: 14px 16px; }
+            .back-btn { margin: 30px 0; padding: 12px 24px; font-size: 0.85rem; }
+            footer { padding: 24px 18px; }
+        }
     </style>
 </head>
 <body>
@@ -256,7 +273,7 @@ if dist >= 0:
 
             <div class="media-block">
                 <video controls preload="metadata">
-                    <source src="live new scenario test after training augmented100e target zone counter.mp4" type="video/mp4">
+                    <source src="videos/live new scenario test after training augmented100e target zone counter.mp4" type="video/mp4">
                     <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e target zone counter.mp4</code> in this directory to view.</p>
                 </video>
                 <p class="media-caption">Real-time zone tracking. The system draws a virtual green polygon and successfully increments the 'IN ZONE' counter only when the tracked centroids of the fine-tuned classes enter the designated area.</p>
@@ -274,7 +291,7 @@ if dist >= 0:
 
             <div class="media-block">
                 <video controls preload="metadata">
-                    <source src="live new scenario test after training augmented100e line counter.mp4" type="video/mp4">
+                    <source src="videos/live new scenario test after training augmented100e line counter.mp4" type="video/mp4">
                     <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e line counter.mp4</code> in this directory to view.</p>
                 </video>
                 <p class="media-caption">Real-time throughput counting. A virtual red tripwire is established. As the multi-object tracker maintains the ID of the moving items, the top-left 'COUNT' updates precisely as each centroid crosses the threshold.</p>

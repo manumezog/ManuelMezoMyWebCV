@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -167,6 +167,23 @@
         .doc-card p { font-size: 0.83rem; color: var(--secondary); margin: 0; }
 
         footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 18px; height: 52px; }
+            .hero { padding: 70px 18px 50px; }
+            .hero h1 { font-size: 2rem; letter-spacing: -0.5px; line-height: 1.2; }
+            .hero p { font-size: 1rem; }
+            .container { padding: 0 18px; }
+            .section { padding: 50px 0; }
+            .section h2 { font-size: 1.4rem; }
+            .pipeline { flex-direction: column; gap: 2px; }
+            .pipeline-step { min-width: unset; border-radius: 10px !important; }
+            .pipeline-step:not(:last-child)::after { display: none; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            pre { font-size: 0.78rem; padding: 14px 16px; }
+            .back-btn { margin: 30px 0; padding: 12px 24px; font-size: 0.85rem; }
+            footer { padding: 24px 18px; }
+        }
     </style>
 </head>
 <body>
@@ -227,7 +244,7 @@
             </div>
 
             <div class="media-block">
-                <img src="project-portfolio-chat-agent.png" alt="Portfolio Chat Agent: live chat widget on cv.manuelmezo.com">
+                <img src="images/project-portfolio-chat-agent.png" alt="Portfolio Chat Agent: live chat widget on cv.manuelmezo.com">
                 <p class="media-caption">The chat widget live on cv.manuelmezo.com, powered by a FastAPI backend deployed on HF Spaces.</p>
             </div>
         </div>

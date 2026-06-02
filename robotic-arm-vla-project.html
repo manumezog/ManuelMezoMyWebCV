@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -150,6 +150,23 @@
 
         /* ── FOOTER ── */
         footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 18px; height: 52px; }
+            .hero { padding: 70px 18px 50px; }
+            .hero h1 { font-size: 2rem; letter-spacing: -0.5px; line-height: 1.2; }
+            .hero p { font-size: 1rem; }
+            .container { padding: 0 18px; }
+            .section { padding: 50px 0; }
+            .section h2 { font-size: 1.4rem; }
+            .pipeline { flex-direction: column; gap: 2px; }
+            .pipeline-step { min-width: unset; border-radius: 10px !important; }
+            .pipeline-step:not(:last-child)::after { display: none; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            pre { font-size: 0.78rem; padding: 14px 16px; }
+            .back-btn { margin: 30px 0; padding: 12px 24px; font-size: 0.85rem; }
+            footer { padding: 24px 18px; }
+        }
     </style>
 </head>
 <body>
@@ -225,7 +242,7 @@
             <p>Rather than equipping the robotic arm with a heavy onboard GPU, the architecture implements a strict boundary: **Cloud-based semantic reasoning** (multimodal API calls) takes care of the heavy classification, while the **edge microcontroller (ESP8266)** focuses entirely on low-latency microsecond servo angle execution via high-speed UDP wireless links.</p>
 
             <div class="media-block">
-                <img src="RoboArm-VLA-Setup.jpeg" alt="The hardware setup showing the overhead camera and the EEZYbotARM ready for multimodal commands." onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📷 Place <code>RoboArm-VLA-Setup.jpeg</code> in this folder to display setup</div>'">
+                <img src="images/RoboArm-VLA-Setup.jpeg" alt="The hardware setup showing the overhead camera and the EEZYbotARM ready for multimodal commands." onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📷 Place <code>RoboArm-VLA-Setup.jpeg</code> in this folder to display setup</div>'">
                 <p class="media-caption">The physical hardware setup showing the overhead camera and the EEZYbotARM ready for multimodal commands.</p>
             </div>
 
@@ -233,7 +250,7 @@
             <p>To monitor and control this distributed system, I developed a custom web dashboard. It bridges manual telemetry overrides and automatic VLA command generation. The dashboard displays the live camera stream overlay, real-time voice command transcription, recognized bounding box locations, and calculated target joint angles (Base, Shoulder, Elbow, Gripper).</p>
 
             <div class="media-block">
-                <img src="RoboArm-Web-Controls.jpeg" alt="The custom dashboard used to interface with the Gemini API, displaying the live feed, the recognized text command, and the translated kinematic output." onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📷 Place <code>RoboArm-Web-Controls.jpeg</code> in this folder to display dashboard</div>'">
+                <img src="images/RoboArm-Web-Controls.jpeg" alt="The custom dashboard used to interface with the Gemini API, displaying the live feed, the recognized text command, and the translated kinematic output." onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📷 Place <code>RoboArm-Web-Controls.jpeg</code> in this folder to display dashboard</div>'">
                 <p class="media-caption">The custom web dashboard used to interface with the Gemini API, displaying the live feed, the recognized text command, and the translated kinematic output.</p>
             </div>
         </div>
@@ -249,7 +266,7 @@
 
             <div class="media-block">
                 <video autoplay loop muted playsinline controls>
-                    <source src="RoboArm-VLA-demo.mp4" type="video/mp4">
+                    <source src="videos/RoboArm-VLA-demo.mp4" type="video/mp4">
                     <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>RoboArm-VLA-demo.mp4</code> in this directory to view.</p>
                 </video>
                 <p class="media-caption">Live demonstration of the VLA integration. The system successfully interprets a complex voice command, uses Gemini to locate the target object, and executes the physical retrieval via the local kinematics engine.</p>

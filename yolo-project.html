@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -150,6 +150,23 @@
 
         /* ── FOOTER ── */
         footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 18px; height: 52px; }
+            .hero { padding: 70px 18px 50px; }
+            .hero h1 { font-size: 2rem; letter-spacing: -0.5px; line-height: 1.2; }
+            .hero p { font-size: 1rem; }
+            .container { padding: 0 18px; }
+            .section { padding: 50px 0; }
+            .section h2 { font-size: 1.4rem; }
+            .pipeline { flex-direction: column; gap: 2px; }
+            .pipeline-step { min-width: unset; border-radius: 10px !important; }
+            .pipeline-step:not(:last-child)::after { display: none; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            pre { font-size: 0.78rem; padding: 14px 16px; }
+            .back-btn { margin: 30px 0; padding: 12px 24px; font-size: 0.85rem; }
+            footer { padding: 24px 18px; }
+        }
     </style>
 </head>
 <body>
@@ -201,7 +218,7 @@
             <p>The target objects for recognition are the wooden game pieces from the <strong>Catan board game</strong> (see reference image below). These four custom object classes, <strong>Church, House, Bar,</strong> and <strong>Dice</strong>, are non-standard, small-scale, and visually similar in certain lighting conditions. No existing pre-trained model has ever seen them. This rules out any zero-shot approach and demands a purpose-built, fine-tuned model.</p>
             
             <div class="media-block">
-                <img src="catan_board.jpg" alt="Catan board game showing the wooden game pieces" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>catan_board.jpg</code> in this folder</div>'">
+                <img src="images/catan_board.jpg" alt="Catan board game showing the wooden game pieces" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>catan_board.jpg</code> in this folder</div>'">
                 <p class="media-caption">Reference: The Catan board game. The target wooden pieces (Church, House, Bar) are scattered across the board.</p>
             </div>
 
@@ -230,7 +247,7 @@
             </div>
             <div class="media-block">
                 <video controls preload="metadata" poster="">
-                    <source src="live scenario test raw yolov8n.mp4" type="video/mp4">
+                    <source src="videos/live scenario test raw yolov8n.mp4" type="video/mp4">
                     <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live scenario test raw yolov8n.mp4</code> in this directory to view.</p>
                 </video>
                 <p class="media-caption">Baseline inference using pre-trained YOLOv8n. Note the severe misclassifications ("scissors", "surfboard") and erratic, temporally inconsistent bounding boxes.</p>
@@ -249,11 +266,11 @@
 
             <div class="two-col">
                 <div class="media-block" style="margin:0">
-                    <img src="labeling example Roboflow.png" alt="Roboflow annotation interface showing bounding boxes on conveyor belt objects" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--secondary)\'>📁 Place <code>labeling example Roboflow.jpg</code> in this folder</div>'">
+                    <img src="images/labeling example Roboflow.png" alt="Roboflow annotation interface showing bounding boxes on conveyor belt objects" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--secondary)\'>📁 Place <code>labeling example Roboflow.jpg</code> in this folder</div>'">
                     <p class="media-caption">Manual bounding box annotation of custom classes (Church, Bar, Dice, House) within Roboflow. Each shape required individual labeling across all collected frames.</p>
                 </div>
                 <div class="media-block" style="margin:0">
-                    <img src="labels.jpg" alt="Dataset label distribution chart showing class balance and bounding box dimensions" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--secondary)\'>📁 Place <code>labels.jpg</code> in this folder</div>'">
+                    <img src="images/labels.jpg" alt="Dataset label distribution chart showing class balance and bounding box dimensions" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:40px;text-align:center;color:var(--secondary)\'>📁 Place <code>labels.jpg</code> in this folder</div>'">
                     <p class="media-caption">Dataset label distribution: Church (276), Bar (213), House (195), Dice (57). The Dice class imbalance was partially addressed through augmentation.</p>
                 </div>
             </div>
@@ -274,7 +291,7 @@
             <p>To ensure robust generalizations, the augmentation and preprocessing strategy was configured directly in <strong>Roboflow</strong> to mirror the specific physical constraints of the physical conveyor belt environment:</p>
             
             <div class="media-block">
-                <img src="project-yolo-augmentation.png" alt="Roboflow dataset version configuration dashboard" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>project-yolo-augmentation.png</code> in this folder</div>'">
+                <img src="images/project-yolo-augmentation.png" alt="Roboflow dataset version configuration dashboard" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>project-yolo-augmentation.png</code> in this folder</div>'">
                 <p class="media-caption">Roboflow Dataset v2 configuration dashboard showing preprocessing parameters, augmentation limits, and the 94% / 6% training-to-validation split.</p>
             </div>
 
@@ -289,7 +306,7 @@
             </ul>
 
             <div class="media-block">
-                <img src="eg augmented image for training.jpg" alt="Example augmented training image showing noise and motion blur applied to conveyor belt scene" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>eg augmented image for training.jpg</code> in this folder</div>'">
+                <img src="images/eg augmented image for training.jpg" alt="Example augmented training image showing noise and motion blur applied to conveyor belt scene" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>eg augmented image for training.jpg</code> in this folder</div>'">
                 <p class="media-caption">Generating synthetic training data using noise and motion blur augmentations. The dark vignette and grain simulate low-light and motion conditions on the physical belt.</p>
             </div>
         </div>
@@ -315,11 +332,11 @@ yolo task=detect mode=train \
 
             <div class="two-col">
                 <div class="media-block" style="margin:0">
-                    <img src="results.png" alt="YOLOv8 training metrics showing loss curves and mAP over 100 epochs" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>results.jpg</code> in this folder</div>'">
+                    <img src="images/results.png" alt="YOLOv8 training metrics showing loss curves and mAP over 100 epochs" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>results.jpg</code> in this folder</div>'">
                     <p class="media-caption">Training results over 100 epochs. Rapid convergence of classification and box loss; mAP@50 stabilises above 0.97.</p>
                 </div>
                 <div class="media-block" style="margin:0">
-                    <img src="confusion_matrix_normalized.png" alt="Normalized confusion matrix showing per-class detection accuracy" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>confusion_matrix_normalized.png</code> in this folder</div>'">
+                    <img src="images/confusion_matrix_normalized.png" alt="Normalized confusion matrix showing per-class detection accuracy" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>confusion_matrix_normalized.png</code> in this folder</div>'">
                     <p class="media-caption">Normalized Confusion Matrix. Church: 1.00, Bar: 0.93, House: 0.92, Dice: 0.50, the lower Dice score reflects class imbalance (57 vs 195–276 instances for other classes).</p>
                 </div>
             </div>
@@ -370,7 +387,7 @@ while cap.isOpened():
 
             <div class="media-block">
                 <video controls preload="metadata">
-                    <source src="live new scenario test after training augmented100e.mp4" type="video/mp4">
+                    <source src="videos/live new scenario test after training augmented100e.mp4" type="video/mp4">
                     <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e.mp4</code> in this directory to view.</p>
                 </video>
                 <p class="media-caption">Final deployed model. The fine-tuned YOLOv8n accurately classifies custom wooden objects, assigns persistent tracking IDs (blue text), and maintains high confidence scores even while the user interacts with the scene, demonstrating robustness to partial occlusion.</p>
