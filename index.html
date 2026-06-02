@@ -27,6 +27,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -242,195 +243,235 @@
         .footer-links a { margin: 0 15px; color: var(--secondary-text); text-decoration: none; font-weight: 600; }
         .footer-links a:hover { color: var(--primary-text); }
 
+        /* Anchor offset for fixed header */
+        .section, .hero, footer { scroll-margin-top: 64px; }
+
+        /* Hamburger menu button — hidden on desktop */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            width: 44px;
+            height: 44px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--primary-text);
+            border-radius: 2px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+        .menu-toggle.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
         @media (max-width: 768px) {
-            .container { padding: 0 20px; }
-            .timeline-item { padding-left: 20px; border-left: 2px solid var(--card-border); margin-left: 0; }
-            .timeline-item:before { position: static; display: block; margin-bottom: 10px; text-align: left; }
-            .timeline-item ul { border-left: none; padding-left: 0; }
-            .hero h1 { font-size: 2.5rem; }
-            .exp-header { flex-direction: column-reverse; align-items: flex-start; }
-            .company-logo { width: 60px; height: 60px; margin-bottom: 10px; }
-            .scroll-btn { display: none; }
-            
-            /* Mobile Projects Scroll Improvements */
-            .projects-wrapper {
-                position: relative;
-            }
-            
-            /* Gradient fade hint on right edge */
-            .projects-wrapper::after {
-                content: '';
-                position: absolute;
-                right: 0;
-                top: 0;
-                bottom: 0;
-                width: 40px;
-                background: linear-gradient(to left, rgba(255,255,255,0.95), transparent);
-                pointer-events: none;
-                z-index: 1;
-            }
-            
-            .projects-container {
-                padding: 10px 20px 30px 20px;
-                gap: 15px;
-                scroll-snap-type: x mandatory;
-            }
-            
-            /* Card sized to show peek of next card */
-            .project-card {
-                min-width: calc(85vw - 40px);
-                max-width: calc(85vw - 40px);
-                scroll-snap-align: start;
-            }
-            
-            /* Scroll indicator dots */
-            .scroll-indicator {
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                margin-top: 15px;
-            }
-            
-            .scroll-dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: var(--card-border);
-                transition: all 0.3s ease;
-            }
-            
-            .scroll-dot.active {
-                background: var(--accent-color);
-                width: 24px;
-                border-radius: 4px;
-            }
-            
-            /* Mobile Header - Keep nav on single line */
-            .header-content {
-                height: auto;
-                padding: 10px 0;
-            }
-            
-            .logo {
-                margin-left: 10px;
-            }
-            
-            .logo a {
-                font-size: 0.75rem;
-                font-weight: 700;
-            }
-            
+            /* --- Layout --- */
+            .container { padding: 0 18px; }
+
+            /* --- Header --- */
+            .header { overflow: visible; }
+            .header-content { height: 60px; padding: 0; }
+            .logo a { font-size: 1rem; font-weight: 800; }
+
+            /* --- Hamburger button shown on mobile --- */
+            .menu-toggle { display: flex; }
+
+            /* --- Nav becomes a slide-down dropdown --- */
             .nav {
-                display: flex;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
                 flex-wrap: nowrap;
-                margin-right: 10px;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(16px);
+                border-bottom: 1px solid var(--card-border);
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+                margin: 0;
             }
-            
+            .nav.open { max-height: 540px; }
             .nav a {
-                margin-left: 10px;
-                font-size: 0.75rem;
+                display: block;
+                margin: 0;
+                padding: 16px 24px;
+                font-size: 1rem;
+                font-weight: 600;
+                color: var(--primary-text);
+                border-bottom: 1px solid var(--card-border);
             }
-            
-            /* Reduce section spacing on mobile */
-            .section {
-                padding: 40px 0;
-            }
-            
-            .section-heading {
-                font-size: 2rem;
-                margin-bottom: 30px;
-            }
-            
-            /* Hero - Center on mobile viewport, shifted up */
+            .nav a:last-child { border-bottom: none; }
+            .nav a:active { background: var(--card-bg); }
+
+            /* --- Sections --- */
+            .section { padding: 50px 0; }
+            .section-heading { font-size: 1.8rem; margin-bottom: 28px; }
+
+            /* --- Hero --- */
             .hero {
-                min-height: calc(100vh - 50px);
+                min-height: calc(100vh - 60px);
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                padding: 0 0 80px 0;
+                padding: 60px 0 80px;
             }
-            
             .hero .container {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
             }
-            
             .hero h1 {
                 font-size: 2rem;
+                letter-spacing: -0.5px;
+                line-height: 1.2;
+                margin-bottom: 16px;
             }
-            
             .hero p {
-                font-size: 1rem;
-                margin-bottom: 25px;
+                font-size: 0.95rem;
+                margin-bottom: 28px;
+                line-height: 1.75;
             }
-            
-            /* Experience cards - Redesigned for mobile */
+            .cta-group {
+                flex-direction: column !important;
+                width: 100%;
+                max-width: 300px;
+                gap: 12px !important;
+            }
+            .cta-button {
+                display: block;
+                text-align: center;
+                padding: 13px 20px;
+                font-size: 0.9rem;
+            }
+
+            /* --- About --- */
+            .profile-photo { width: 120px; height: 120px; }
+
+            /* --- Experience / Tech / Education Cards --- */
             .timeline-item {
-                padding: 20px;
-                padding-left: 20px;
+                padding: 18px;
+                padding-left: 18px;
                 margin-left: 0;
-                border-left: 2px solid var(--card-border);
+                margin-bottom: 16px;
+                background: var(--card-bg);
+                border: 1px solid var(--card-border);
+                border-left: 3px solid #d1d5db;
+                border-radius: 12px;
             }
-            
-            .timeline-item:before {
-                display: none; /* Hide the date pseudo-element */
-            }
-            
-            /* New mobile experience header with logo + date inline */
+            .timeline-item:before { display: none; }
+
             .exp-mobile-header {
                 display: flex;
                 align-items: center;
                 gap: 12px;
-                margin-bottom: 12px;
+                margin-bottom: 10px;
             }
-            
             .exp-mobile-header .company-logo {
-                width: 50px;
-                height: 50px;
+                width: 46px;
+                height: 46px;
                 margin: 0;
-                padding: 6px;
+                padding: 5px;
                 background: #fff;
                 border: 1px solid var(--card-border);
-                border-radius: 10px;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                border-radius: 9px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.07);
             }
-            
             .exp-mobile-header .exp-date {
-                font-size: 0.85rem;
+                font-size: 0.8rem;
                 font-weight: 600;
-                color: var(--primary-text);
+                color: var(--secondary-text);
             }
-            
+
             .exp-header {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 0;
+                margin-bottom: 10px;
             }
-            
-            .exp-header .company-logo {
-                display: none; /* Hide the logo in exp-header on mobile, shown in mobile-header instead */
+            .exp-header .company-logo { display: none; }
+
+            .timeline-item h3 { font-size: 1.05rem; line-height: 1.4; }
+            .timeline-item p.role-desc { font-size: 0.88rem; margin-bottom: 10px; }
+            .timeline-item ul { border-left: none; padding-left: 18px; }
+            .timeline-item li { font-size: 0.88rem; padding-left: 4px; margin-bottom: 8px; }
+
+            /* --- Projects / Vision / Robotics scroll carousels --- */
+            .scroll-btn { display: none; }
+
+            .projects-wrapper { position: relative; }
+            .projects-wrapper::after {
+                content: '';
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 36px;
+                width: 36px;
+                background: linear-gradient(to left, rgba(255,255,255,0.9), transparent);
+                pointer-events: none;
+                z-index: 1;
             }
-            
-            .timeline-item h3 {
-                font-size: 1.1rem;
+
+            .projects-container {
+                padding: 10px 18px 18px 18px;
+                gap: 14px;
+                scroll-snap-type: x mandatory;
             }
-            
-            .timeline-item ul {
-                border-left: none;
-                padding-left: 20px;
+
+            .project-card {
+                min-width: 80vw;
+                max-width: 80vw;
+                scroll-snap-align: start;
             }
-            
-            .timeline-item li {
-                padding-left: 5px;
+
+            /* --- Scroll indicator dots --- */
+            .scroll-indicator {
+                display: flex;
+                justify-content: center;
+                gap: 7px;
+                margin-top: 10px;
             }
-            
-            /* Footer spacing on mobile */
-            .footer {
-                padding: 40px 0;
+            .scroll-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: var(--card-border);
+                transition: all 0.3s ease;
             }
+            .scroll-dot.active {
+                background: var(--accent-color);
+                width: 22px;
+                border-radius: 4px;
+            }
+
+            /* --- Interests --- */
+            .interest-item {
+                font-size: 0.9rem;
+                padding: 10px 16px;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+            }
+
+            /* --- Footer --- */
+            .footer { padding: 40px 0; }
         }
         
+        /* Tech stack cards: extra left padding on desktop only */
+        .tech-card { padding-left: 30px; }
+
         /* Hide scroll indicator on desktop */
         .scroll-indicator {
             display: none;
@@ -442,7 +483,12 @@
     <header class="header">
         <div class="container header-content">
             <div class="logo"><a href="#home">Manuel M.</a></div>
-            <nav class="nav">
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="nav" id="mainNav">
                 <a href="#about">About</a>
                 <a href="#experience">Work</a>
                 <a href="#tech">Tech</a>
@@ -459,7 +505,7 @@
         <div class="container">
             <h1>Applied <span class="gradient-text">AI Engineer</span> &amp; Technical Product Leader.</h1>
             <p>8+ years solving multi-million-dollar operational challenges at Amazon and McKinsey. Now independently shipping production AI systems: end-to-end RAG pipelines, autonomous LLM agents, computer vision, and multi-agent workflows. Bridging cutting-edge AI capabilities and real business outcomes. Targeting <b>AI Engineer</b> and <b>Robotics Engineer</b> roles at ambitious startups, and open to <b>Technical PM</b> positions where deep engineering context matters.</p>
-            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+            <div class="cta-group" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                 <a href="#projects" class="cta-button">AI &amp; Agentic Projects</a>
                 <a href="#vision" class="cta-button">Computer Vision</a>
                 <a href="#experience" class="cta-button">Work Experience</a>
@@ -563,7 +609,7 @@
             <h2 class="section-heading">Tech Stack 🛠️</h2>
 
             <!-- AI & LLMs -->
-            <div class="timeline-item" style="padding-left: 30px;">
+            <div class="timeline-item tech-card">
                 <div class="exp-header">
                     <div class="exp-title-group">
                         <h3>🧠 AI & LLMs</h3>
@@ -578,7 +624,7 @@
             </div>
 
             <!-- Computer Vision & ML -->
-            <div class="timeline-item" style="padding-left: 30px;">
+            <div class="timeline-item tech-card">
                 <div class="exp-header">
                     <div class="exp-title-group">
                         <h3>👁️ Computer Vision & ML</h3>
@@ -591,7 +637,7 @@
             </div>
 
             <!-- Backend & Cloud -->
-            <div class="timeline-item" style="padding-left: 30px;">
+            <div class="timeline-item tech-card">
                 <div class="exp-header">
                     <div class="exp-title-group">
                         <h3>☁️ Backend & Cloud</h3>
@@ -606,7 +652,7 @@
             </div>
 
             <!-- Languages & Data -->
-            <div class="timeline-item" style="padding-left: 30px;">
+            <div class="timeline-item tech-card">
                 <div class="exp-header">
                     <div class="exp-title-group">
                         <h3>💻 Languages & Data</h3>
@@ -1149,6 +1195,22 @@
         projectsObserver.observe(projectsSection);
 
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Hamburger menu
+        const menuToggle = document.getElementById('menuToggle');
+        const mainNav = document.getElementById('mainNav');
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('open');
+                mainNav.classList.toggle('open');
+            });
+            mainNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('open');
+                    mainNav.classList.remove('open');
+                });
+            });
+        }
     </script>
     <link rel="stylesheet" href="chat-widget.css">
     <script src="chat-widget.js"></script>
