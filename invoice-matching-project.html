@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FastPay AI — Autonomous 3-Way Invoice Matching Agent | Manuel Mezo</title>
-    <meta name="description" content="Autonomous Accounts Payable (AP) back-office agent that reads messy vendor invoices, cross-references Purchase Orders and WMS receipts, and approves or flags them with full reasoning — built with Gemini 2.5 Flash, Next.js, and Neon Postgres.">
+    <title>FastPay AI: Autonomous 3-Way Invoice Matching Agent | Manuel Mezo</title>
+    <meta name="description" content="Autonomous Accounts Payable (AP) back-office agent that reads messy vendor invoices, cross-references Purchase Orders and WMS receipts, and approves or flags them with full reasoning, built with Gemini 2.5 Flash, Next.js, and Neon Postgres.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -182,8 +182,8 @@
     <!-- HERO -->
     <div class="hero">
         <div class="hero-label">🤖 GenAI · Agentic · Full-Stack</div>
-        <h1>FastPay AI — Autonomous 3-Way Invoice Matching Agent</h1>
-        <p>Custom-built agentic pipeline that reads messy vendor invoices, cross-references them against Purchase Orders and Warehouse receipts, and autonomously approves, flags, or escalates — with live reasoning trace and a full evaluation suite.</p>
+        <h1>FastPay AI: Autonomous 3-Way Invoice Matching Agent</h1>
+        <p>Custom-built agentic pipeline that reads messy vendor invoices, cross-references them against Purchase Orders and Warehouse receipts, and autonomously approves, flags, or escalates, with live reasoning trace and a full evaluation suite.</p>
         <div class="tech-pills">
             <span class="pill">Gemini 2.5 Flash</span>
             <span class="pill">Next.js 14</span>
@@ -212,7 +212,7 @@
     <!-- SECTION 1: PROBLEM -->
     <div class="section">
         <div class="container">
-            <div class="section-num">01 — The Problem</div>
+            <div class="section-num">01: The Problem</div>
             <h2>3-Way Matching: thousands of manual hours in every Accounts Payable (AP) team</h2>
 
             <div class="callout" style="border-left-color: #6366f1;">
@@ -220,7 +220,7 @@
                 <span>The full demo is live at <a href="https://fastpay-ai.mezapps.com" target="_blank">fastpay-ai.mezapps.com</a>. Click any invoice card to watch the agent reason through it in real time, or hit "Process Today's Batch" to run all 12 scenarios at once.</span>
             </div>
 
-            <p>Every Accounts Payable (AP) team runs the same gauntlet daily: for every vendor invoice received, a clerk must manually pull the corresponding Purchase Order and Warehouse receipt, then verify that quantities, prices, line items, and totals agree across all three documents. Any mismatch — a shortage, a price increase, an unauthorized SKU, a duplicate submission — must be caught before payment is released.</p>
+            <p>Every Accounts Payable (AP) team runs the same gauntlet daily: for every vendor invoice received, a clerk must manually pull the corresponding Purchase Order and Warehouse receipt, then verify that quantities, prices, line items, and totals agree across all three documents. Any mismatch, a shortage, a price increase, an unauthorized SKU, a duplicate submission, must be caught before payment is released.</p>
             <p>This is <strong>3-Way Matching</strong>. It is repetitive, time-consuming, and deeply error-prone at scale. It is also a textbook agentic AI use case: structured document comparison, tool-based data lookup, deterministic rules, and a final reasoning step that must produce an auditable decision.</p>
 
             <div class="metrics-grid">
@@ -234,31 +234,31 @@
     <!-- SECTION 2: ARCHITECTURE -->
     <div class="section">
         <div class="container">
-            <div class="section-num">02 — Agent Architecture</div>
-            <h2>Custom orchestrator — no framework, full control</h2>
+            <div class="section-num">02: Agent Architecture</div>
+            <h2>Custom orchestrator: no framework, full control</h2>
 
-            <p>The agent is built as a <strong>hand-rolled orchestrator</strong> in TypeScript — no LangChain, no LangGraph. This was a deliberate choice: 3-Way Matching has a fixed, deterministic pipeline. The steps never change order, there is no dynamic tool routing, and the control flow is simple enough that a framework would add overhead without value.</p>
+            <p>The agent is built as a <strong>hand-rolled orchestrator</strong> in TypeScript, no LangChain, no LangGraph. This was a deliberate choice: 3-Way Matching has a fixed, deterministic pipeline. The steps never change order, there is no dynamic tool routing, and the control flow is simple enough that a framework would add overhead without value.</p>
 
             <div class="concept-grid">
                 <div class="concept-card">
                     <h4>Tool-per-file pattern</h4>
-                    <p>Each capability lives in its own <code>src/lib/agent/tools/</code> file — <code>extract-pdf.ts</code>, <code>lookup-po.ts</code>, <code>query-wms.ts</code>, etc. Each is a plain async function with typed inputs and Zod-validated outputs.</p>
+                    <p>Each capability lives in its own <code>src/lib/agent/tools/</code> file, <code>extract-pdf.ts</code>, <code>lookup-po.ts</code>, <code>query-wms.ts</code>, etc. Each is a plain async function with typed inputs and Zod-validated outputs.</p>
                 </div>
                 <div class="concept-card">
                     <h4>Orchestrator as a pipeline</h4>
-                    <p><code>orchestrator.ts</code> is a single <code>async function runAgent()</code> that calls tools in sequence, emitting a <code>TraceEvent</code> after each step via a callback — no agent loop, no recursion.</p>
+                    <p><code>orchestrator.ts</code> is a single <code>async function runAgent()</code> that calls tools in sequence, emitting a <code>TraceEvent</code> after each step via a callback, no agent loop, no recursion.</p>
                 </div>
                 <div class="concept-card">
                     <h4>Repository pattern</h4>
-                    <p>All DB access goes through <code>db/repo.ts</code>. The same codebase runs against SQLite locally and Neon Postgres in production — one environment variable flip, zero code changes.</p>
+                    <p>All DB access goes through <code>db/repo.ts</code>. The same codebase runs against SQLite locally and Neon Postgres in production, one environment variable flip, zero code changes.</p>
                 </div>
                 <div class="concept-card">
                     <h4>Streaming via SSE</h4>
-                    <p>Each tool call emits a <code>TraceEvent</code> that is pushed to the browser over a Server-Sent Events stream. The UI updates in real time — no polling, no WebSocket overhead.</p>
+                    <p>Each tool call emits a <code>TraceEvent</code> that is pushed to the browser over a Server-Sent Events stream. The UI updates in real time, no polling, no WebSocket overhead.</p>
                 </div>
             </div>
 
-            <pre><code>// orchestrator.ts — simplified
+            <pre><code>// orchestrator.ts, simplified
 export async function runAgent(invoiceId: string, emit: EmitFn): Promise<AgentResult> {
   const invoice  = await getInvoiceById(invoiceId)
   await checkDuplicate(invoice.invoice_number)   // fast, no API
@@ -281,8 +281,8 @@ export async function runAgent(invoiceId: string, emit: EmitFn): Promise<AgentRe
     <!-- SECTION 3: VISION EXTRACTION -->
     <div class="section">
         <div class="container">
-            <div class="section-num">03 — Vision-Based Extraction</div>
-            <h2>Reading invoices the way a human would — including messy ones</h2>
+            <div class="section-num">03: Vision-Based Extraction</div>
+            <h2>Reading invoices the way a human would: including messy ones</h2>
 
             <p>The first tool call is the hardest: turning an unstructured invoice image into a structured JSON object. The agent sends the raw PDF or image file to <strong>Gemini 2.5 Flash</strong> as base64-encoded inline data, along with a schema-anchored extraction prompt. The response is validated with a Zod schema before any downstream tool sees it.</p>
 
@@ -292,12 +292,12 @@ const result = await model.generateContent([
   { inlineData: { mimeType, data: base64 } } // raw file bytes
 ])
 
-// Zod validates the response — rejects any hallucinated fields
+// Zod validates the response, rejects any hallucinated fields
 return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></pre>
 
             <div class="callout">
                 <strong>Why Gemini multimodal over a dedicated OCR service</strong>
-                <span>Dedicated OCR services extract text but miss context — they can't infer that a handwritten note says "5% loyalty discount applied" or that a crumpled scan with low contrast still has a readable PO number. Gemini natively understands layout, tables, annotations, and partial text.</span>
+                <span>Dedicated OCR services extract text but miss context, they can't infer that a handwritten note says "5% loyalty discount applied" or that a crumpled scan with low contrast still has a readable PO number. Gemini natively understands layout, tables, annotations, and partial text.</span>
             </div>
 
             <p>The 12 test scenarios cover 5 invoice variants: clean digital PDF, scanned document, phone photo, handwritten annotation, and crumpled/degraded. All 5 formats are tested against the same extraction schema to prove robustness.</p>
@@ -307,10 +307,10 @@ return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></
     <!-- SECTION 4: TOOL-BASED MATCHING -->
     <div class="section">
         <div class="container">
-            <div class="section-num">04 — Tool-Based Matching</div>
+            <div class="section-num">04: Tool-Based Matching</div>
             <h2>Five typed tools that query real data sources</h2>
 
-            <p>After extraction, the orchestrator runs a sequence of typed tool calls. Each tool is a pure async function — no side effects, no shared state, easy to test in isolation.</p>
+            <p>After extraction, the orchestrator runs a sequence of typed tool calls. Each tool is a pure async function, no side effects, no shared state, easy to test in isolation.</p>
 
             <div class="concept-grid">
                 <div class="concept-card">
@@ -327,13 +327,13 @@ return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></
                 </div>
                 <div class="concept-card">
                     <h4>check_duplicate</h4>
-                    <p>Fast pre-check against <code>match_results</code> by <code>invoice_number</code>. Fires before any LLM call — if the invoice was already processed, it is immediately flagged as DUPLICATE at near-zero cost.</p>
+                    <p>Fast pre-check against <code>match_results</code> by <code>invoice_number</code>. Fires before any LLM call, if the invoice was already processed, it is immediately flagged as DUPLICATE at near-zero cost.</p>
                 </div>
             </div>
 
             <div class="callout" style="border-left-color: #10b981;">
                 <strong>Multi-line item matching</strong>
-                <span>POs and WMS receipts contain 1–3 SKUs each. The agent compares every line item individually — a quantity shortage on SKU-A while SKU-B matches correctly still flags the invoice, and the specific impacted SKU is highlighted in the UI.</span>
+                <span>POs and WMS receipts contain 1–3 SKUs each. The agent compares every line item individually, a quantity shortage on SKU-A while SKU-B matches correctly still flags the invoice, and the specific impacted SKU is highlighted in the UI.</span>
             </div>
         </div>
     </div>
@@ -341,7 +341,7 @@ return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></
     <!-- SECTION 5: DECISION LOGIC -->
     <div class="section">
         <div class="container">
-            <div class="section-num">05 — Decision Logic</div>
+            <div class="section-num">05: Decision Logic</div>
             <h2>Deterministic rules + LLM-generated explanation</h2>
 
             <p>The final <code>reason_and_decide</code> step combines two things: a <strong>deterministic rule engine</strong> that catches every known mismatch type, and a <strong>Gemini call</strong> that writes a plain-English explanation of exactly what was found and why.</p>
@@ -349,19 +349,19 @@ return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></
             <table class="decision-table">
                 <tr><th>Condition detected</th><th>Decision</th></tr>
                 <tr><td>All quantities and prices match</td><td><span class="badge badge-green">APPROVED</span></td></tr>
-                <tr><td>WMS received qty &lt; invoiced qty</td><td><span class="badge badge-red">FLAGGED — SHORTAGE</span></td></tr>
-                <tr><td>Invoice unit price &gt; PO agreed price</td><td><span class="badge badge-red">FLAGGED — PRICE MISMATCH</span></td></tr>
-                <tr><td>Line item not present in PO</td><td><span class="badge badge-red">FLAGGED — UNAUTHORIZED ITEMS</span></td></tr>
-                <tr><td>Same invoice number previously processed</td><td><span class="badge badge-red">FLAGGED — DUPLICATE</span></td></tr>
-                <tr><td>Tax totals don't match line-item arithmetic</td><td><span class="badge badge-red">FLAGGED — TAX MISMATCH</span></td></tr>
-                <tr><td>Currency conversion involved</td><td><span class="badge badge-red">FLAGGED — FX CONVERSION</span></td></tr>
-                <tr><td>Vendor name mismatch beyond fuzzy threshold</td><td><span class="badge badge-red">FLAGGED — VENDOR MISMATCH</span></td></tr>
-                <tr><td>Confidence below threshold / ambiguous</td><td><span class="badge badge-amber">ESCALATED — HUMAN REVIEW</span></td></tr>
+                <tr><td>WMS received qty &lt; invoiced qty</td><td><span class="badge badge-red">FLAGGED, SHORTAGE</span></td></tr>
+                <tr><td>Invoice unit price &gt; PO agreed price</td><td><span class="badge badge-red">FLAGGED, PRICE MISMATCH</span></td></tr>
+                <tr><td>Line item not present in PO</td><td><span class="badge badge-red">FLAGGED, UNAUTHORIZED ITEMS</span></td></tr>
+                <tr><td>Same invoice number previously processed</td><td><span class="badge badge-red">FLAGGED, DUPLICATE</span></td></tr>
+                <tr><td>Tax totals don't match line-item arithmetic</td><td><span class="badge badge-red">FLAGGED, TAX MISMATCH</span></td></tr>
+                <tr><td>Currency conversion involved</td><td><span class="badge badge-red">FLAGGED, FX CONVERSION</span></td></tr>
+                <tr><td>Vendor name mismatch beyond fuzzy threshold</td><td><span class="badge badge-red">FLAGGED, VENDOR MISMATCH</span></td></tr>
+                <tr><td>Confidence below threshold / ambiguous</td><td><span class="badge badge-amber">ESCALATED, HUMAN REVIEW</span></td></tr>
             </table>
 
             <div class="callout">
                 <strong>Why deterministic rules AND an LLM?</strong>
-                <span>The rules catch every mismatch reliably — the LLM cannot be trusted to do arithmetic on its own. But rules produce cryptic output: <em>"SHORTAGE on SKU MON-27Q: invoiced 50, received 48"</em>. The LLM turns that into auditable prose that an Accounts Payable (AP) clerk can attach to a dispute ticket: <em>"Invoice CSP-2024-2201 claims 50 units of the 27-inch QHD monitor (SKU MON-27Q) at $320 each, but the WMS receipt records only 48 units received at dock, a shortfall of 2 units valued at $640…"</em></span>
+                <span>The rules catch every mismatch reliably, the LLM cannot be trusted to do arithmetic on its own. But rules produce cryptic output: <em>"SHORTAGE on SKU MON-27Q: invoiced 50, received 48"</em>. The LLM turns that into auditable prose that an Accounts Payable (AP) clerk can attach to a dispute ticket: <em>"Invoice CSP-2024-2201 claims 50 units of the 27-inch QHD monitor (SKU MON-27Q) at $320 each, but the WMS receipt records only 48 units received at dock, a shortfall of 2 units valued at $640…"</em></span>
             </div>
         </div>
     </div>
@@ -369,10 +369,10 @@ return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></
     <!-- SECTION 6: LIVE UI -->
     <div class="section">
         <div class="container">
-            <div class="section-num">06 — Live Streaming UI</div>
-            <h2>Watching the agent think — in real time</h2>
+            <div class="section-num">06: Live Streaming UI</div>
+            <h2>Watching the agent think: in real time</h2>
 
-            <p>The UI is a Next.js 14 App Router application. When a user clicks an invoice card, the browser opens a <strong>Server-Sent Events</strong> connection to <code>/api/agent/stream</code>. Every tool call in the orchestrator emits a <code>TraceEvent</code> that is pushed down the stream immediately — the trace panel updates step-by-step as the agent works.</p>
+            <p>The UI is a Next.js 14 App Router application. When a user clicks an invoice card, the browser opens a <strong>Server-Sent Events</strong> connection to <code>/api/agent/stream</code>. Every tool call in the orchestrator emits a <code>TraceEvent</code> that is pushed down the stream immediately, the trace panel updates step-by-step as the agent works.</p>
 
             <div class="concept-grid">
                 <div class="concept-card">
@@ -381,7 +381,7 @@ return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></
                 </div>
                 <div class="concept-card">
                     <h4>Agent Trace Panel</h4>
-                    <p>Live log of every tool call — function name, inputs, and output summary. Steps flip from "running" to "done" in-place with animations. Matches exactly what <code>orchestrator.ts</code> emits.</p>
+                    <p>Live log of every tool call, function name, inputs, and output summary. Steps flip from "running" to "done" in-place with animations. Matches exactly what <code>orchestrator.ts</code> emits.</p>
                 </div>
                 <div class="concept-card">
                     <h4>Decision Output Panel</h4>
@@ -393,7 +393,7 @@ return ExtractedInvoiceSchema.parse(JSON.parse(result.response.text()))</code></
                 </div>
             </div>
 
-            <pre><code>// SSE stream consumer — client side
+            <pre><code>// SSE stream consumer, client side
 const reader = res.body.getReader()
 while (true) {
   const { done, value } = await reader.read()
@@ -411,8 +411,8 @@ while (true) {
     <!-- SECTION 7: EVAL FRAMEWORK -->
     <div class="section">
         <div class="container">
-            <div class="section-num">07 — Evaluation Framework</div>
-            <h2>Proving the agent is reliable — with numbers</h2>
+            <div class="section-num">07: Evaluation Framework</div>
+            <h2>Proving the agent is reliable: with numbers</h2>
 
             <p>Every AI demo should have an eval suite. This one runs automatically: hit "Run Eval" and the agent processes all 12 scenarios fresh, then computes a full report against ground-truth labels defined in <code>data/scenarios.json</code>.</p>
 
@@ -427,11 +427,11 @@ while (true) {
                 </div>
                 <div class="concept-card">
                     <h4>3×3 Confusion Matrix</h4>
-                    <p>Heat-map grid of actual vs predicted class. Green diagonal = correct. Red off-diagonal = specific error type — e.g. ESCALATED misclassified as APPROVED tells you the agent isn't conservative enough.</p>
+                    <p>Heat-map grid of actual vs predicted class. Green diagonal = correct. Red off-diagonal = specific error type, e.g. ESCALATED misclassified as APPROVED tells you the agent isn't conservative enough.</p>
                 </div>
                 <div class="concept-card">
                     <h4>p50 / p95 Latency</h4>
-                    <p>Latency percentiles across all 12 runs. p95 catches outliers — a single slow scenario (e.g. handwritten OCR) can dominate average but is invisible without the percentile view.</p>
+                    <p>Latency percentiles across all 12 runs. p95 catches outliers, a single slow scenario (e.g. handwritten OCR) can dominate average but is invisible without the percentile view.</p>
                 </div>
             </div>
 
@@ -445,15 +445,15 @@ while (true) {
     <!-- SECTION 8: EXPLORER & ESCALATIONS -->
     <div class="section">
         <div class="container">
-            <div class="section-num">08 — Database Explorer & Escalations</div>
+            <div class="section-num">08: Database Explorer & Escalations</div>
             <h2>ERP-style data visibility baked into the demo</h2>
 
-            <p>One of the goals was to make the data behind the agent visible — to show that this isn't a black box but a system you could wire into a real supply chain. Two dedicated views provide that transparency.</p>
+            <p>One of the goals was to make the data behind the agent visible, to show that this isn't a black box but a system you could wire into a real supply chain. Two dedicated views provide that transparency.</p>
 
             <div class="concept-grid">
                 <div class="concept-card">
                     <h4>Database Explorer</h4>
-                    <p>Browse all Purchase Orders, WMS receipts, and processed invoices in ERP-style header/detail rows — one header per document, then one row per line item. Non-approved invoices show a ⚠ badge on the specific impacted SKUs.</p>
+                    <p>Browse all Purchase Orders, WMS receipts, and processed invoices in ERP-style header/detail rows, one header per document, then one row per line item. Non-approved invoices show a ⚠ badge on the specific impacted SKUs.</p>
                 </div>
                 <div class="concept-card">
                     <h4>Escalations View</h4>
@@ -468,7 +468,7 @@ while (true) {
     <!-- SECTION 9: BYOI -->
     <div class="section">
         <div class="container">
-            <div class="section-num">09 — Bring Your Own Invoice</div>
+            <div class="section-num">09: Bring Your Own Invoice</div>
             <h2>Upload any real invoice and watch the agent find a flaw</h2>
 
             <p>Beyond the 12 pre-seeded scenarios, users can upload any invoice PDF, JPEG, PNG, or WEBP. The system:</p>
@@ -481,8 +481,8 @@ while (true) {
             </ul>
 
             <div class="callout" style="border-left-color: #ef4444;">
-                <strong>Subtle orchestrator bug — and how it was fixed</strong>
-                <span>An early version re-extracted the uploaded PDF during the agent run, which caused the agent to read the <em>original</em> PO reference from the document (e.g. "PO-2024-0005") and find the wrong PO in the database — making the injected discrepancy invisible. The fix: BYOI invoices skip PDF re-extraction entirely and use the line items already stored in the DB, with the synthetic BYOI PO reference reconstructed from the <code>scenario_id</code>.</span>
+                <strong>Subtle orchestrator bug, and how it was fixed</strong>
+                <span>An early version re-extracted the uploaded PDF during the agent run, which caused the agent to read the <em>original</em> PO reference from the document (e.g. "PO-2024-0005") and find the wrong PO in the database, making the injected discrepancy invisible. The fix: BYOI invoices skip PDF re-extraction entirely and use the line items already stored in the DB, with the synthetic BYOI PO reference reconstructed from the <code>scenario_id</code>.</span>
             </div>
 
             <p>Uploaded files are written to <code>/tmp</code> (Vercel's only writable directory) and deleted immediately after processing. They are never committed to git or persisted beyond the request.</p>
@@ -492,7 +492,7 @@ while (true) {
     <!-- SECTION 10: DEPLOYMENT & OBSERVABILITY -->
     <div class="section">
         <div class="container">
-            <div class="section-num">10 — Deployment & Observability</div>
+            <div class="section-num">10: Deployment & Observability</div>
             <h2>Production-grade on a $0/month budget</h2>
 
             <div class="concept-grid">
@@ -502,11 +502,11 @@ while (true) {
                 </div>
                 <div class="concept-card">
                     <h4>Neon Postgres</h4>
-                    <p>Serverless Postgres — scales to zero between runs, autoscales on load. The same repo runs against SQLite locally via a single env-var switch.</p>
+                    <p>Serverless Postgres, scales to zero between runs, autoscales on load. The same repo runs against SQLite locally via a single env-var switch.</p>
                 </div>
                 <div class="concept-card">
                     <h4>Langfuse observability</h4>
-                    <p>Every agent run creates a Langfuse trace with one span per tool call. The decision panel includes a direct "View Trace" link that opens the full trace in Langfuse — token counts, latency, inputs, outputs.</p>
+                    <p>Every agent run creates a Langfuse trace with one span per tool call. The decision panel includes a direct "View Trace" link that opens the full trace in Langfuse, token counts, latency, inputs, outputs.</p>
                 </div>
                 <div class="concept-card">
                     <h4>Abuse protection</h4>
@@ -521,7 +521,7 @@ while (true) {
         <div class="callout" style="display:inline-block; text-align:left; max-width:600px; margin-bottom: 0;">
             <strong>Links</strong>
             <span>
-                🌐 <a href="https://fastpay-ai.mezapps.com" target="_blank">Live demo — fastpay-ai.mezapps.com</a> &nbsp;·&nbsp;
+                🌐 <a href="https://fastpay-ai.mezapps.com" target="_blank">Live demo, fastpay-ai.mezapps.com</a> &nbsp;·&nbsp;
                 💻 <a href="https://github.com/manumezog/3Way-InvoiceMatching-Agent" target="_blank">GitHub repo</a>
             </span>
         </div>

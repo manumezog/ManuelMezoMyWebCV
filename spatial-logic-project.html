@@ -161,7 +161,7 @@
 
     <!-- ── HERO ── -->
     <div class="hero">
-        <div class="hero-label">📦 Part II — Multi-Object Tracking & Spatial Logic (ByteTrack + OpenCV)</div>
+        <div class="hero-label">📦 Part II: Multi-Object Tracking & Spatial Logic (ByteTrack + OpenCV)</div>
         <h1>Advanced Spatial Logic: Real-Time Object Tracking & Counting on Edge Devices</h1>
         <p>Building memory-driven, spatial intelligence layers on top of raw deep learning predictions to enable conveyor belt pick-and-place automation.</p>
         <div class="tech-pills">
@@ -189,12 +189,12 @@
     <!-- ── SECTION 1: CONTEXT ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">01 — Project Context & Challenge</div>
+            <div class="section-num">01: Project Context & Challenge</div>
             <h2>Advanced Spatial Logic: Throughput Counting & Zone Monitoring</h2>
 
             <div class="callout" style="border-left-color: #6366f1;">
                 <strong>Two-Part Vision System (Part II of II)</strong>
-                <span>This project is the decision-making layer of a two-part edge vision system. While <strong>Part II (this page)</strong> details the temporal memory tracking and custom 2D polygon boundaries, <strong>Part I</strong> covers the foundational dataset creation and deep network custom training. Explore <a href="yolo-project.html" style="font-weight: 700; text-decoration: underline;">🎯 Part I — Custom YOLOv8 Object Detection</a>.</span>
+                <span>This project is the decision-making layer of a two-part edge vision system. While <strong>Part II (this page)</strong> details the temporal memory tracking and custom 2D polygon boundaries, <strong>Part I</strong> covers the foundational dataset creation and deep network custom training. Explore <a href="yolo-project.html" style="font-weight: 700; text-decoration: underline;">🎯 Part I, Custom YOLOv8 Object Detection</a>.</span>
             </div>
 
             <p>Raw deep learning models like YOLO are excellent detectors, but they operate as static frame-by-frame snapshot engines. They are completely temporal-blind: they lack <strong>"memory."</strong> To successfully automate a physical conveyor belt, knowing that an item exists in a single frame is not enough. The automation layer needs to verify if an object identified in Frame A is the exact same piece in Frame B, measure the total volume of objects moving past a threshold (throughput), and pinpoint the exact moment an item enters the robot's coordinates (pick-zone).</p>
@@ -216,7 +216,7 @@
     <!-- ── SECTION 2: TRACKING ENGINE ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">02 — The Tracking Engine</div>
+            <div class="section-num">02: The Tracking Engine</div>
             <h2>Giving AI "Memory" via Multi-Object Tracking</h2>
             <p>The foundation of spatial logic is identity tracking. We integrated <strong>ByteTrack</strong> directly with our fine-tuned YOLOv8 model. Unlike generic trackers that throw away low-confidence detection boxes (often leading to tracking loss when items are partially blocked or shadowed), ByteTrack exploits association logic across every single detection box, matching low-score detections to existing trajectories using Kalman filters.</p>
             <p>By comparing the Intersect-over-Union (IoU) of boxes across frames, ByteTrack assigns a <strong>persistent, unique ID</strong> to every detected item. This ID remains tied to the physical object as long as it is in the camera's field of view. This "memory" is what prevents the throughput counter from double-counting the same item, and it provides a smooth, continuous path of coordinates that a robotic arm can easily follow.</p>
@@ -240,7 +240,7 @@ for box in results[0].boxes:
     <!-- ── SECTION 3: APPLICATION 1 ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">03 — Application 1: Zone-Based Monitoring</div>
+            <div class="section-num">03: Application 1: Zone-Based Monitoring</div>
             <h2>Polygon Boundary Logic for Robotic Workspace Gates</h2>
             <p>With unique IDs successfully assigned, we implemented virtual bounding zones to simulate industrial robotic workspace boundaries. Rather than using simple rectangular bounding boxes, we engineered support for <strong>arbitrary 2D polygons</strong> to model complex, real-world pick-zones or machine exclusion spaces.</p>
             <p>Using OpenCV's mathematical vectors, we defined a custom coordinates array representing the green "Pick Zone." In each frame, the centroid $(C_x, C_y)$ of each active track ID is computed. We then call the <code>cv2.pointPolygonTest</code> algorithm:</p>
@@ -267,7 +267,7 @@ if dist >= 0:
     <!-- ── SECTION 4: APPLICATION 2 ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">04 — Application 2: Throughput Measurement</div>
+            <div class="section-num">04: Application 2: Throughput Measurement</div>
             <h2>Tripwire Logic for High-Speed Production Analytics</h2>
             <p>The second application is a high-speed **tripwire throughput counter**. This is designed to replace traditional optoelectronic sensors, with the added capability of classifying exactly what kind of product crossed the line.</p>
             <p>The system defines a linear threshold using two points. As items move from left to right down the conveyor belt, the tracking engine records the history of their coordinates. By comparing the previous X-coordinate of a specific object ID to the X-coordinate of the tripwire line, the system detects a threshold crossing. Once crossed, the object's ID is registered in a "counted set" to prevent duplicate tracking, and the global throughput count is updated instantly.</p>
@@ -285,7 +285,7 @@ if dist >= 0:
     <!-- ── SECTION 5: KEY LEARNINGS ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">05 — Key Learnings & Scalability</div>
+            <div class="section-num">05: Key Learnings & Scalability</div>
             <h2>Industrial Efficacy and Edge Deployment Potential</h2>
             <p>This project highlights that the real value of deep learning in industrial contexts is unlocked by clever post-processing algorithms. By keeping our vision pipeline lightweight and computationally efficient, we achieve robust spatial intelligence that scales easily to standard hardware.</p>
             

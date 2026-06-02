@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Chat Agent — LangChain RAG + FastAPI | Manuel Mezo</title>
+    <title>Portfolio Chat Agent: LangChain RAG + FastAPI | Manuel Mezo</title>
     <meta name="description" content="End-to-end RAG chat agent built with LangChain, ChromaDB, Gemini and FastAPI. Covers document loading, embeddings, vector search, conversational memory and production deployment.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -179,8 +179,8 @@
     <!-- HERO -->
     <div class="hero">
         <div class="hero-label">🤖 LangChain · RAG · FastAPI</div>
-        <h1>Portfolio Chat Agent — End-to-End RAG with LangChain</h1>
-        <p>Built a production-ready conversational AI agent from scratch — then went beyond the tutorial: redesigned the entire knowledge base after discovering that retrieval quality depends far more on input data design than on pipeline code.</p>
+        <h1>Portfolio Chat Agent: End-to-End RAG with LangChain</h1>
+        <p>Built a production-ready conversational AI agent from scratch, then went beyond the tutorial: redesigned the entire knowledge base after discovering that retrieval quality depends far more on input data design than on pipeline code.</p>
         <div class="tech-pills">
             <span class="pill">LangChain</span>
             <span class="pill">ChromaDB</span>
@@ -209,7 +209,7 @@
     <!-- SECTION 1: CONTEXT -->
     <div class="section">
         <div class="container">
-            <div class="section-num">01 — Context & Objective</div>
+            <div class="section-num">01: Context & Objective</div>
             <h2>Why build this? A hands-on LangChain learning project</h2>
 
             <div class="callout" style="border-left-color: #6366f1;">
@@ -217,17 +217,17 @@
                 <span>The chat agent is embedded in this portfolio. Click the 💬 button at the bottom-right corner to ask it anything about my background, experience, and projects.</span>
             </div>
 
-            <p>The goal was to learn <strong>LangChain hands-on</strong> by building something real and immediately useful: a chat agent for this portfolio that can answer questions about my education, professional experience, and projects — grounded entirely in my own documents (CV, thesis presentations, project write-ups).</p>
+            <p>The goal was to learn <strong>LangChain hands-on</strong> by building something real and immediately useful: a chat agent for this portfolio that can answer questions about my education, professional experience, and projects, grounded entirely in my own documents (CV, thesis presentations, project write-ups).</p>
             <p>Rather than following a tutorial, the project was built end-to-end in a single day, covering every layer of the stack: document ingestion, vector search, conversational memory, API design, security, and cloud deployment.</p>
 
             <div class="metrics-grid">
                 <div class="metric-card"><div class="metric-val">1,042</div><div class="metric-label">Knowledge chunks indexed (v2)</div></div>
                 <div class="metric-card"><div class="metric-val">10</div><div class="metric-label">Source documents (incl. 5 synthetic)</div></div>
-                <div class="metric-card"><div class="metric-val">17</div><div class="metric-label">STAR stories — clean prose</div></div>
+                <div class="metric-card"><div class="metric-val">17</div><div class="metric-label">STAR stories, clean prose</div></div>
             </div>
 
             <div class="media-block">
-                <img src="project-portfolio-chat-agent.png" alt="Portfolio Chat Agent — live chat widget on cv.manuelmezo.com">
+                <img src="project-portfolio-chat-agent.png" alt="Portfolio Chat Agent: live chat widget on cv.manuelmezo.com">
                 <p class="media-caption">The chat widget live on cv.manuelmezo.com, powered by a FastAPI backend deployed on HF Spaces.</p>
             </div>
         </div>
@@ -236,22 +236,22 @@
     <!-- SECTION 1b: KNOWLEDGE BASE OVERHAUL -->
     <div class="section">
         <div class="container">
-            <div class="section-num">01b — The Real Lesson: Data Quality</div>
-            <h2>Why the first version failed — and what we did about it</h2>
+            <div class="section-num">01b: The Real Lesson: Data Quality</div>
+            <h2>Why the first version failed: and what we did about it</h2>
 
             <p>After deploying the initial version, the agent gave poor, vague, or hallucinated answers to most interesting questions. The pipeline code was correct. The problem was the data going into it.</p>
 
             <div class="callout" style="border-left-color: #ef4444;">
                 <strong>The "garbage in, garbage out" problem in RAG</strong>
-                <span>You can build a perfect retrieval pipeline — correct chunking, right embedding model, well-tuned similarity search — and still get poor answers if the source documents are not designed for retrieval. This is the most important lesson this project taught me, and it's under-covered in RAG tutorials.</span>
+                <span>You can build a perfect retrieval pipeline, correct chunking, right embedding model, well-tuned similarity search, and still get poor answers if the source documents are not designed for retrieval. This is the most important lesson this project taught me, and it's under-covered in RAG tutorials.</span>
             </div>
 
             <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 16px;">What was wrong with v1</h3>
 
             <table class="compare-table">
                 <tr>
-                    <th>v1 — What we had</th>
-                    <th>v2 — What we built</th>
+                    <th>v1, What we had</th>
+                    <th>v2, What we built</th>
                 </tr>
                 <tr>
                     <td><strong>Presentation slides (PPT → PDF)</strong><br>Bullet fragments, no prose, minimal text per page. A slide saying "→ improved DEA 300 to 90bps" is meaningless without context.</td>
@@ -262,8 +262,8 @@
                     <td><strong>17 hand-authored STAR stories in prose</strong><br>Each story is a self-contained narrative unit. The splitter keeps full Situation → Task → Action → Result coherent per chunk.</td>
                 </tr>
                 <tr>
-                    <td><strong>No cross-cutting summaries</strong><br>No single document could answer "What is Manuel's working style?" — that answer lives across 17 stories, not in any one chunk.</td>
-                    <td><strong>Synthetic summary documents</strong><br>Dedicated files for professional summary, technical skills taxonomy, and personality/approach — designed to answer exactly those high-level questions.</td>
+                    <td><strong>No cross-cutting summaries</strong><br>No single document could answer "What is Manuel's working style?", that answer lives across 17 stories, not in any one chunk.</td>
+                    <td><strong>Synthetic summary documents</strong><br>Dedicated files for professional summary, technical skills taxonomy, and personality/approach, designed to answer exactly those high-level questions.</td>
                 </tr>
                 <tr>
                     <td><strong>Blind 500-char chunking for everything</strong><br>Character count is agnostic to document structure. A 500-char cut lands in the middle of a Result paragraph.</td>
@@ -291,12 +291,12 @@
                 <div class="doc-card">
                     <div class="doc-type">Synthetic · Skills</div>
                     <h4>technical_skills.md</h4>
-                    <p>Structured skills taxonomy with evidence per skill: not "knows Python" but "used for X, Y, Z — see projects A, B." Answers skills questions with specifics.</p>
+                    <p>Structured skills taxonomy with evidence per skill: not "knows Python" but "used for X, Y, Z, see projects A, B." Answers skills questions with specifics.</p>
                 </div>
                 <div class="doc-card">
                     <div class="doc-type">Synthetic · Personality</div>
                     <h4>personality_and_approach.md</h4>
-                    <p>7 sections on working style — each backed by a real story from the STAR document. Answers "how does Manuel approach X?" questions.</p>
+                    <p>7 sections on working style, each backed by a real story from the STAR document. Answers "how does Manuel approach X?" questions.</p>
                 </div>
                 <div class="doc-card">
                     <div class="doc-type">Synthetic · Projects</div>
@@ -339,23 +339,23 @@ def _extract_metadata_from_section(text, filepath):
     }</code></pre>
 
             <div class="callout" style="border-left-color: #22c55e;">
-                <strong>Before vs. after — a concrete example</strong>
+                <strong>Before vs. after, a concrete example</strong>
                 <span>Question: <em>"Tell me about a time Manuel dealt with a difficult stakeholder."</em><br><br>
                 <strong>v1 answer:</strong> "Manuel has worked on several professional projects, including a cross-functional project he handled until financial and implementation approval..."<br><br>
                 <strong>v2 answer:</strong> "Manuel dealt with a difficult stakeholder during a McKinsey engagement with a major European train manufacturer. The client's flagship project was 5.5 months behind schedule, accumulating €17 million in penalties. The client's operations leadership was actively hostile toward the consulting team due to negative past experiences..."</span>
             </div>
 
-            <p>The infrastructure didn't change. The answer quality improved entirely because the chunks retrieved now carry full narrative context — company, challenge, specific actions, measurable result — rather than isolated bullet fragments.</p>
+            <p>The infrastructure didn't change. The answer quality improved entirely because the chunks retrieved now carry full narrative context, company, challenge, specific actions, measurable result, rather than isolated bullet fragments.</p>
         </div>
     </div>
 
     <!-- SECTION 2: DOCUMENT LOADING -->
     <div class="section">
         <div class="container">
-            <div class="section-num">02 — Document Loading</div>
+            <div class="section-num">02: Document Loading</div>
             <h2>Turning PDFs and Word docs into LangChain Documents</h2>
 
-            <p>LangChain provides <strong>document loaders</strong> for almost every file format. Each loader reads a file and returns a list of <code>Document</code> objects — the universal unit of content in LangChain.</p>
+            <p>LangChain provides <strong>document loaders</strong> for almost every file format. Each loader reads a file and returns a list of <code>Document</code> objects, the universal unit of content in LangChain.</p>
             <p>A <code>Document</code> has two fields: <code>page_content</code> (the raw text) and <code>metadata</code> (a dict with the source path, page number, etc.). This metadata travels with the content all the way to the final answer, making it possible to cite sources.</p>
 
             <pre><code>from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader
@@ -377,11 +377,11 @@ print(docs[0].page_content)  # raw text of page 1</code></pre>
     <!-- SECTION 3: TEXT SPLITTING -->
     <div class="section">
         <div class="container">
-            <div class="section-num">03 — Text Splitting</div>
-            <h2>Why chunking matters — and how to do it right</h2>
+            <div class="section-num">03: Text Splitting</div>
+            <h2>Why chunking matters: and how to do it right</h2>
 
-            <p>LLMs and embedding models have context limits. More importantly, a full PDF page often contains multiple topics — sending the whole page as context would pollute the retrieval signal. We split each document into smaller <strong>chunks</strong> that each represent one coherent idea.</p>
-            <p><code>RecursiveCharacterTextSplitter</code> is the recommended default. It tries to split on paragraph breaks first, then sentences, then words — so chunks stay semantically coherent rather than cutting mid-sentence.</p>
+            <p>LLMs and embedding models have context limits. More importantly, a full PDF page often contains multiple topics, sending the whole page as context would pollute the retrieval signal. We split each document into smaller <strong>chunks</strong> that each represent one coherent idea.</p>
+            <p><code>RecursiveCharacterTextSplitter</code> is the recommended default. It tries to split on paragraph breaks first, then sentences, then words, so chunks stay semantically coherent rather than cutting mid-sentence.</p>
 
             <pre><code>from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -414,15 +414,15 @@ print(f"92 pages → {len(chunks)} chunks")  # 92 → 318</code></pre>
     <!-- SECTION 4: EMBEDDINGS -->
     <div class="section">
         <div class="container">
-            <div class="section-num">04 — Embeddings</div>
+            <div class="section-num">04: Embeddings</div>
             <h2>Turning text into searchable vectors</h2>
 
             <p>An <strong>embedding</strong> is a vector of numbers (e.g. 384 floats) that represents the meaning of a piece of text. The key property: semantically similar text produces vectors that are close together in that high-dimensional space.</p>
-            <p>This project uses <code>BAAI/bge-small-en-v1.5</code> — a ~90 MB model that runs <strong>entirely locally on CPU</strong> with no API calls. BGE (Beijing General Embedding) models are trained specifically for retrieval tasks, making them a better fit for RAG than general-purpose sentence similarity models like MiniLM.</p>
+            <p>This project uses <code>BAAI/bge-small-en-v1.5</code>, a ~90 MB model that runs <strong>entirely locally on CPU</strong> with no API calls. BGE (Beijing General Embedding) models are trained specifically for retrieval tasks, making them a better fit for RAG than general-purpose sentence similarity models like MiniLM.</p>
 
             <pre><code>from langchain_huggingface import HuggingFaceEmbeddings
 
-# Loads the model locally — downloads ~90MB on first run
+# Loads the model locally, downloads ~90MB on first run
 embeddings = HuggingFaceEmbeddings(
     model_name="BAAI/bge-small-en-v1.5"
 )
@@ -434,7 +434,7 @@ print(vector[:3])    # [-0.031, 0.072, -0.014, ...]</code></pre>
 
             <div class="callout">
                 <strong>Embedding model choice matters for retrieval quality</strong>
-                <span>The project started with <code>all-MiniLM-L6-v2</code> (MTEB retrieval score ~40) — a fast, general-purpose model. After reviewing benchmarks, it was upgraded to <code>BAAI/bge-small-en-v1.5</code> (MTEB retrieval ~51), which is the same size but ~25% better on retrieval tasks because it was trained specifically for that purpose. Cloud APIs like Gemini Embedding offer higher quality but add API cost and latency to every single query — not worth it when a strong local model works just as well for this use case.</span>
+                <span>The project started with <code>all-MiniLM-L6-v2</code> (MTEB retrieval score ~40), a fast, general-purpose model. After reviewing benchmarks, it was upgraded to <code>BAAI/bge-small-en-v1.5</code> (MTEB retrieval ~51), which is the same size but ~25% better on retrieval tasks because it was trained specifically for that purpose. Cloud APIs like Gemini Embedding offer higher quality but add API cost and latency to every single query, not worth it when a strong local model works just as well for this use case.</span>
             </div>
         </div>
     </div>
@@ -442,11 +442,11 @@ print(vector[:3])    # [-0.031, 0.072, -0.014, ...]</code></pre>
     <!-- SECTION 5: VECTOR STORE -->
     <div class="section">
         <div class="container">
-            <div class="section-num">05 — Vector Store</div>
-            <h2>ChromaDB — storing and searching vectors</h2>
+            <div class="section-num">05: Vector Store</div>
+            <h2>ChromaDB: storing and searching vectors</h2>
 
             <p>A <strong>vector store</strong> is a database optimised for similarity search. Given a query vector, it finds the stored vectors that are closest to it (by cosine similarity) and returns the corresponding documents.</p>
-            <p><strong>ChromaDB</strong> runs entirely locally — no server setup, no account, no cost. It persists to disk so the index survives restarts without re-embedding everything.</p>
+            <p><strong>ChromaDB</strong> runs entirely locally, no server setup, no account, no cost. It persists to disk so the index survives restarts without re-embedding everything.</p>
 
             <pre><code>from langchain_chroma import Chroma
 import uuid
@@ -473,7 +473,7 @@ print(vs._collection.count())  # 318</code></pre>
                 </div>
                 <div class="concept-card">
                     <h4>Persisting to disk</h4>
-                    <p><code>persist_directory</code> stores the SQLite database and HNSW index files locally. On subsequent runs, reload with <code>Chroma(persist_directory=...)</code> — no re-embedding needed.</p>
+                    <p><code>persist_directory</code> stores the SQLite database and HNSW index files locally. On subsequent runs, reload with <code>Chroma(persist_directory=...)</code>, no re-embedding needed.</p>
                 </div>
             </div>
         </div>
@@ -482,10 +482,10 @@ print(vs._collection.count())  # 318</code></pre>
     <!-- SECTION 6: RAG CHAIN -->
     <div class="section">
         <div class="container">
-            <div class="section-num">06 — RAG Chain & LCEL</div>
+            <div class="section-num">06: RAG Chain & LCEL</div>
             <h2>Connecting retrieval to the LLM with LangChain Expression Language</h2>
 
-            <p>With the vector store built, the next step is connecting retrieval to an LLM. LangChain's <strong>LCEL (LangChain Expression Language)</strong> uses the <code>|</code> pipe operator to chain components — conceptually similar to a Unix shell pipe.</p>
+            <p>With the vector store built, the next step is connecting retrieval to an LLM. LangChain's <strong>LCEL (LangChain Expression Language)</strong> uses the <code>|</code> pipe operator to chain components, conceptually similar to a Unix shell pipe.</p>
 
             <pre><code>from langchain_core.runnables import RunnablePassthrough, RunnableLambda
 from langchain_core.output_parsers import StrOutputParser
@@ -520,14 +520,14 @@ answer = rag_chain.invoke({"input": "What did Manuel study?"})</code></pre>
     <!-- SECTION 7: CHAT MEMORY -->
     <div class="section">
         <div class="container">
-            <div class="section-num">07 — Conversational Memory</div>
+            <div class="section-num">07: Conversational Memory</div>
             <h2>Multi-turn chat with RunnableWithMessageHistory</h2>
 
             <p>A basic RAG chain treats every question independently. If a user asks <em>"What tools did he use for it?"</em> after asking about the thesis, the retriever has no idea what "it" refers to. The fix requires two additions:</p>
 
             <ul>
-                <li><strong>Contextualize chain</strong> — a small LLM call that rewrites the question as standalone given the chat history ("What tools did Manuel use for his master thesis?")</li>
-                <li><strong>RunnableWithMessageHistory</strong> — a wrapper that loads and saves conversation history per session automatically</li>
+                <li><strong>Contextualize chain</strong>, a small LLM call that rewrites the question as standalone given the chat history ("What tools did Manuel use for his master thesis?")</li>
+                <li><strong>RunnableWithMessageHistory</strong>, a wrapper that loads and saves conversation history per session automatically</li>
             </ul>
 
             <pre><code># Step 1: rephrase ambiguous questions using history
@@ -541,7 +541,7 @@ contextualize_chain = contextualize_prompt | llm | StrOutputParser()
 def contextualize_question(inputs):
     if inputs.get("chat_history"):
         return contextualize_chain.invoke(inputs)
-    return inputs["input"]   # first message — no history, pass through
+    return inputs["input"]   # first message, no history, pass through
 
 # Step 2: wrap chain with automatic history management
 session_store = {}
@@ -560,7 +560,7 @@ conversational_rag = RunnableWithMessageHistory(
 
             <div class="callout">
                 <strong>How session IDs work</strong>
-                <span>Each conversation gets a UUID as its <code>session_id</code>. The server maps that ID to a <code>ChatMessageHistory</code> object in memory. The client stores the ID in JavaScript and sends it with every follow-up message — this is how the agent "remembers" the conversation without any login or user accounts.</span>
+                <span>Each conversation gets a UUID as its <code>session_id</code>. The server maps that ID to a <code>ChatMessageHistory</code> object in memory. The client stores the ID in JavaScript and sends it with every follow-up message, this is how the agent "remembers" the conversation without any login or user accounts.</span>
             </div>
         </div>
     </div>
@@ -568,7 +568,7 @@ conversational_rag = RunnableWithMessageHistory(
     <!-- SECTION 8: FASTAPI -->
     <div class="section">
         <div class="container">
-            <div class="section-num">08 — FastAPI Backend</div>
+            <div class="section-num">08: FastAPI Backend</div>
             <h2>Exposing the chain as a production-ready REST API</h2>
 
             <p>The RAG chain is wrapped in a <strong>FastAPI</strong> application, exposing a single <code>POST /chat</code> endpoint. FastAPI was chosen for its automatic request validation via Pydantic models, async support, and auto-generated interactive docs at <code>/docs</code>.</p>
@@ -576,7 +576,7 @@ conversational_rag = RunnableWithMessageHistory(
             <div class="concept-grid">
                 <div class="concept-card">
                     <h4>Lifespan</h4>
-                    <p>Heavy resources (vectorstore, model, chain) are loaded once at startup via the <code>@asynccontextmanager lifespan</code> pattern — not on every request.</p>
+                    <p>Heavy resources (vectorstore, model, chain) are loaded once at startup via the <code>@asynccontextmanager lifespan</code> pattern, not on every request.</p>
                 </div>
                 <div class="concept-card">
                     <h4>Pydantic validation</h4>
@@ -612,13 +612,13 @@ async def chat(request: ChatRequest, http_request: Request):
     <!-- SECTION 9: DEPLOYMENT -->
     <div class="section">
         <div class="container">
-            <div class="section-num">09 — Deployment</div>
+            <div class="section-num">09: Deployment</div>
             <h2>Docker on HF Spaces + Firebase hosting</h2>
 
             <p>The API is containerised with Docker and deployed as a <strong>Hugging Face Space</strong> (free tier, always-on). The frontend portfolio is hosted on <strong>Firebase Hosting</strong>.</p>
             <p>A key design decision: the <code>chroma_db</code> binary files are not stored in git. Instead, the knowledge base is exported as <code>knowledge_base.json</code> (plain text, version-control friendly), and the Dockerfile runs <code>build_db.py</code> at image build time to reconstruct ChromaDB from it. Updating the knowledge base is as simple as adding documents, re-running the export script, and pushing.</p>
 
-            <pre><code># Dockerfile — builds ChromaDB at image build time
+            <pre><code># Dockerfile, builds ChromaDB at image build time
 FROM python:3.11-slim
 WORKDIR /app
 COPY requirements.txt .

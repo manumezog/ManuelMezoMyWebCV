@@ -161,9 +161,9 @@
 
     <!-- ── HERO ── -->
     <div class="hero">
-        <div class="hero-label">🎯 Part I — Custom YOLOv8 Object Detection (Fine-Tuned)</div>
+        <div class="hero-label">🎯 Part I: Custom YOLOv8 Object Detection (Fine-Tuned)</div>
         <h1>Custom Object Detection & Tracking: Fine-Tuning YOLOv8 for Edge Robotics</h1>
-        <p>A complete, end-to-end machine learning pipeline — from raw video capture to real-time inference on a conveyor belt robotic system.</p>
+        <p>A complete, end-to-end machine learning pipeline, from raw video capture to real-time inference on a conveyor belt robotic system.</p>
         <div class="tech-pills">
             <span class="pill">Python</span>
             <span class="pill">YOLOv8 / Ultralytics</span>
@@ -189,16 +189,16 @@
     <!-- ── SECTION 1: CONTEXT ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">01 — Context & Objective</div>
+            <div class="section-num">01: Context & Objective</div>
             <h2>Fine-Tuning YOLOv8 for Real-Time Conveyor Belt Tracking</h2>
             
             <div class="callout" style="border-left-color: #6366f1;">
                 <strong>Two-Part Vision System (Part I of II)</strong>
-                <span>This project is the foundational component of a two-part edge vision system. While <strong>Part I (this page)</strong> focuses on custom dataset creation, Roboflow annotation, and YOLOv8 fine-tuning, <strong>Part II</strong> layers advanced tracking and OpenCV spatial boundaries on top of the model. Explore <a href="spatial-logic-project.html" style="font-weight: 700; text-decoration: underline;">📦 Part II — Multi-Object Tracking & Spatial Logic</a>.</span>
+                <span>This project is the foundational component of a two-part edge vision system. While <strong>Part I (this page)</strong> focuses on custom dataset creation, Roboflow annotation, and YOLOv8 fine-tuning, <strong>Part II</strong> layers advanced tracking and OpenCV spatial boundaries on top of the model. Explore <a href="spatial-logic-project.html" style="font-weight: 700; text-decoration: underline;">📦 Part II, Multi-Object Tracking & Spatial Logic</a>.</span>
             </div>
 
             <p>The end goal of this project is to feed a robotic arm: a vision system that can <strong>detect, classify, and track custom wooden objects</strong> moving on a physical conveyor belt, at real-time inference speeds, and with sufficient positional accuracy to guide pick-and-place operations. The conveyor belt system is <strong>fully 3D printed in PETG</strong>, utilizing a modular, open-source design from <a href="https://makerworld.com/en/models/192994-conveyor-belt-fully-3d-printed#profileId-944530" target="_blank">MakerWorld</a>.</p>
-            <p>The target objects for recognition are the wooden game pieces from the <strong>Catan board game</strong> (see reference image below). These four custom object classes — <strong>Church, House, Bar,</strong> and <strong>Dice</strong> — are non-standard, small-scale, and visually similar in certain lighting conditions. No existing pre-trained model has ever seen them. This rules out any zero-shot approach and demands a purpose-built, fine-tuned model.</p>
+            <p>The target objects for recognition are the wooden game pieces from the <strong>Catan board game</strong> (see reference image below). These four custom object classes, <strong>Church, House, Bar,</strong> and <strong>Dice</strong>, are non-standard, small-scale, and visually similar in certain lighting conditions. No existing pre-trained model has ever seen them. This rules out any zero-shot approach and demands a purpose-built, fine-tuned model.</p>
             
             <div class="media-block">
                 <img src="catan_board.jpg" alt="Catan board game showing the wooden game pieces" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>catan_board.jpg</code> in this folder</div>'">
@@ -207,7 +207,7 @@
 
             <div class="callout">
                 <strong>Project Objective</strong>
-                <span>Build a robust, high-speed computer vision model capable of detecting, classifying, and tracking custom wooden shapes on a moving conveyor belt to guide a robotic arm — using the smallest viable YOLO architecture for edge deployment.</span>
+                <span>Build a robust, high-speed computer vision model capable of detecting, classifying, and tracking custom wooden shapes on a moving conveyor belt to guide a robotic arm, using the smallest viable YOLO architecture for edge deployment.</span>
             </div>
             <div class="metrics-grid">
                 <div class="metric-card"><div class="metric-val">4</div><div class="metric-label">Custom Classes</div></div>
@@ -220,10 +220,10 @@
     <!-- ── SECTION 2: BASELINE ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">02 — The Baseline Problem</div>
+            <div class="section-num">02: The Baseline Problem</div>
             <h2>Zero-Shot Limitations of Pre-Trained YOLOv8</h2>
-            <p>The first step of any robust ML project is establishing a baseline — understanding exactly what the off-the-shelf model <em>cannot</em> do. Running the base <code>YOLOv8n</code> (Nano) model on our conveyor belt scene produced spectacularly wrong results.</p>
-            <p>The model — trained on COCO's 80 generic classes — had no concept of a "Church" shaped wooden block. Instead, it mapped visual features to the nearest object in its training distribution, confidently misclassifying the wooden shapes as <strong>"scissors," "surfboards,"</strong> and <strong>"knives."</strong> A human hand in the scene was tagged as a <strong>"person."</strong> Bounding boxes were erratic, appearing and disappearing frame-to-frame with no temporal consistency.</p>
+            <p>The first step of any robust ML project is establishing a baseline, understanding exactly what the off-the-shelf model <em>cannot</em> do. Running the base <code>YOLOv8n</code> (Nano) model on our conveyor belt scene produced spectacularly wrong results.</p>
+            <p>The model, trained on COCO's 80 generic classes, had no concept of a "Church" shaped wooden block. Instead, it mapped visual features to the nearest object in its training distribution, confidently misclassifying the wooden shapes as <strong>"scissors," "surfboards,"</strong> and <strong>"knives."</strong> A human hand in the scene was tagged as a <strong>"person."</strong> Bounding boxes were erratic, appearing and disappearing frame-to-frame with no temporal consistency.</p>
             <div class="callout">
                 <strong>Key Insight</strong>
                 <span>Pre-trained models are highly capable within their training distribution, but they cannot generalize to domain-specific, custom object classes without targeted fine-tuning on representative data. Zero-shot performance on this task was 0% useful accuracy.</span>
@@ -241,10 +241,10 @@
     <!-- ── SECTION 3: DATASET ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">03 — Dataset Creation & Annotation</div>
+            <div class="section-num">03: Dataset Creation & Annotation</div>
             <h2>Building a Custom Dataset from Scratch</h2>
-            <p>With no existing dataset for these objects, the entire training corpus had to be built from scratch. The approach was pragmatic: <strong>capture video of the actual physical setup</strong> — same lighting, same camera angle, same conveyor belt surface — and extract frames at a rate that captures sufficient class diversity without redundancy.</p>
-            <p>Frames were extracted from a recording of the actual conveyor belt scene. This ensures the model trains on the exact domain it will be deployed in — a critical practice that eliminates domain shift between training and inference.</p>
+            <p>With no existing dataset for these objects, the entire training corpus had to be built from scratch. The approach was pragmatic: <strong>capture video of the actual physical setup</strong>, same lighting, same camera angle, same conveyor belt surface, and extract frames at a rate that captures sufficient class diversity without redundancy.</p>
+            <p>Frames were extracted from a recording of the actual conveyor belt scene. This ensures the model trains on the exact domain it will be deployed in, a critical practice that eliminates domain shift between training and inference.</p>
             <p>The raw frames were imported into <strong>Roboflow</strong>, where each object instance was manually annotated by drawing precise bounding boxes and assigning class labels. Each annotation becomes a ground truth data point that the model learns to replicate.</p>
 
             <div class="two-col">
@@ -268,9 +268,9 @@
     <!-- ── SECTION 4: AUGMENTATION ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">04 — Data Augmentation Strategy</div>
+            <div class="section-num">04: Data Augmentation Strategy</div>
             <h2>Simulating Real-World Physical Constraints</h2>
-            <p>A fundamental challenge in custom dataset training is <strong>overfitting</strong>: a small dataset causes the model to memorize training examples rather than learning generalizable features. The solution is data augmentation — synthetically expanding the dataset by applying controlled transformations.</p>
+            <p>A fundamental challenge in custom dataset training is <strong>overfitting</strong>: a small dataset causes the model to memorize training examples rather than learning generalizable features. The solution is data augmentation, synthetically expanding the dataset by applying controlled transformations.</p>
             <p>To ensure robust generalizations, the augmentation and preprocessing strategy was configured directly in <strong>Roboflow</strong> to mirror the specific physical constraints of the physical conveyor belt environment:</p>
             
             <div class="media-block">
@@ -279,13 +279,13 @@
             </div>
 
             <ul style="margin: 24px 0 24px 20px; color: var(--secondary); line-height: 2;">
-                <li><strong>Dataset Split</strong> — 94% Train (129 images) and 6% Validation (8 images), structured to optimize validation signals for custom tracking.</li>
-                <li><strong>Preprocessing</strong> — Auto-Orient applied, and all images stretched to a uniform <strong>640x640</strong> canvas matching YOLO's native size.</li>
-                <li><strong>Outputs per training example</strong> — 3x expansion factor, generating synthetic variations to multiply the training distribution.</li>
-                <li><strong>Rotation (Between -15° and +15°)</strong> — Simulates arbitrary orientations of wooden blocks as they are placed or roll slightly onto the moving belt.</li>
-                <li><strong>Brightness (Between -25% and +25%)</strong> — Models physical changes in ambient light in different environments and times of day.</li>
-                <li><strong>Blur (Up to 1.5px)</strong> — Accounts for motion blur introduced by the physical velocity of the conveyor belt.</li>
-                <li><strong>Noise (Up to 1.49% of pixels)</strong> — Replicates sensor gain and camera artifacts to make the model invariant to hardware noise.</li>
+                <li><strong>Dataset Split</strong>, 94% Train (129 images) and 6% Validation (8 images), structured to optimize validation signals for custom tracking.</li>
+                <li><strong>Preprocessing</strong>, Auto-Orient applied, and all images stretched to a uniform <strong>640x640</strong> canvas matching YOLO's native size.</li>
+                <li><strong>Outputs per training example</strong>, 3x expansion factor, generating synthetic variations to multiply the training distribution.</li>
+                <li><strong>Rotation (Between -15° and +15°)</strong>, Simulates arbitrary orientations of wooden blocks as they are placed or roll slightly onto the moving belt.</li>
+                <li><strong>Brightness (Between -25% and +25%)</strong>, Models physical changes in ambient light in different environments and times of day.</li>
+                <li><strong>Blur (Up to 1.5px)</strong>, Accounts for motion blur introduced by the physical velocity of the conveyor belt.</li>
+                <li><strong>Noise (Up to 1.49% of pixels)</strong>, Replicates sensor gain and camera artifacts to make the model invariant to hardware noise.</li>
             </ul>
 
             <div class="media-block">
@@ -298,9 +298,9 @@
     <!-- ── SECTION 5: TRAINING ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">05 — Model Training & Evaluation</div>
+            <div class="section-num">05: Model Training & Evaluation</div>
             <h2>Fine-Tuning with Ultralytics YOLOv8</h2>
-            <p>Training was executed on <strong>Google Colab</strong> using a GPU runtime, leveraging the Ultralytics YOLOv8 framework. The chosen architecture was <strong>YOLOv8 Nano (YOLOv8n)</strong> — the smallest model in the YOLO8 family, deliberately selected to maximize inference speed on the target edge hardware while still achieving sufficient accuracy for the task.</p>
+            <p>Training was executed on <strong>Google Colab</strong> using a GPU runtime, leveraging the Ultralytics YOLOv8 framework. The chosen architecture was <strong>YOLOv8 Nano (YOLOv8n)</strong>, the smallest model in the YOLO8 family, deliberately selected to maximize inference speed on the target edge hardware while still achieving sufficient accuracy for the task.</p>
 
             <pre><code># Fine-tuning command (Ultralytics CLI)
 yolo task=detect mode=train \
@@ -320,13 +320,13 @@ yolo task=detect mode=train \
                 </div>
                 <div class="media-block" style="margin:0">
                     <img src="confusion_matrix_normalized.png" alt="Normalized confusion matrix showing per-class detection accuracy" onerror="this.parentElement.innerHTML='<div style=\'background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:60px;text-align:center;color:var(--secondary)\'>📁 Place <code>confusion_matrix_normalized.png</code> in this folder</div>'">
-                    <p class="media-caption">Normalized Confusion Matrix. Church: 1.00, Bar: 0.93, House: 0.92, Dice: 0.50 — the lower Dice score reflects class imbalance (57 vs 195–276 instances for other classes).</p>
+                    <p class="media-caption">Normalized Confusion Matrix. Church: 1.00, Bar: 0.93, House: 0.92, Dice: 0.50, the lower Dice score reflects class imbalance (57 vs 195–276 instances for other classes).</p>
                 </div>
             </div>
 
             <div class="callout">
                 <strong>Reading the Confusion Matrix</strong>
-                <span>Church achieves perfect recall (1.00). Bar and House score 0.93 and 0.92 respectively — excellent for a small custom dataset. The Dice class at 0.50 is expected given only 57 training instances; its confusion with the background indicates it needs more training data in the next iteration, not a model architecture change.</span>
+                <span>Church achieves perfect recall (1.00). Bar and House score 0.93 and 0.92 respectively, excellent for a small custom dataset. The Dice class at 0.50 is expected given only 57 training instances; its confusion with the background indicates it needs more training data in the next iteration, not a model architecture change.</span>
             </div>
 
             <div class="metrics-grid">
@@ -350,10 +350,10 @@ yolo task=detect mode=train \
     <!-- ── SECTION 6: DEPLOYMENT ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">06 — Deployment & Multi-Object Tracking</div>
+            <div class="section-num">06: Deployment & Multi-Object Tracking</div>
             <h2>Real-Time Inference with Persistent Object IDs</h2>
             <p>The fine-tuned <code>.pt</code> weight file was deployed locally using <strong>OpenCV</strong> for camera feed capture and the Ultralytics inference API for frame-by-frame detection. The key upgrade over basic detection is the addition of a <strong>multi-object tracking algorithm</strong>.</p>
-            <p>Rather than detecting objects independently in each frame (which produces flickering boxes and no temporal consistency), a tracking algorithm like <strong>ByteTrack</strong> assigns a persistent <em>tracking ID</em> to each detected object across frames. This means the system knows that object <em>#3</em> (a "House") at position X in frame 150 is the same object at position X+5 in frame 151 — enabling trajectory prediction and confident hand-off to the robotic arm controller.</p>
+            <p>Rather than detecting objects independently in each frame (which produces flickering boxes and no temporal consistency), a tracking algorithm like <strong>ByteTrack</strong> assigns a persistent <em>tracking ID</em> to each detected object across frames. This means the system knows that object <em>#3</em> (a "House") at position X in frame 150 is the same object at position X+5 in frame 151, enabling trajectory prediction and confident hand-off to the robotic arm controller.</p>
 
             <pre><code># Inference with tracking
 from ultralytics import YOLO
@@ -373,7 +373,7 @@ while cap.isOpened():
                     <source src="live new scenario test after training augmented100e.mp4" type="video/mp4">
                     <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e.mp4</code> in this directory to view.</p>
                 </video>
-                <p class="media-caption">Final deployed model. The fine-tuned YOLOv8n accurately classifies custom wooden objects, assigns persistent tracking IDs (blue text), and maintains high confidence scores even while the user interacts with the scene — demonstrating robustness to partial occlusion.</p>
+                <p class="media-caption">Final deployed model. The fine-tuned YOLOv8n accurately classifies custom wooden objects, assigns persistent tracking IDs (blue text), and maintains high confidence scores even while the user interacts with the scene, demonstrating robustness to partial occlusion.</p>
             </div>
 
             <div class="callout">

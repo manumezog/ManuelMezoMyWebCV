@@ -189,9 +189,9 @@
     <!-- ── SECTION 1: VLA ARCHITECTURE ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">01 — Context & VLA Architecture</div>
+            <div class="section-num">01: Context & VLA Architecture</div>
             <h2>Bridging Cloud AI and Edge Robotics: The VLA Architecture</h2>
-            <p>Traditional computer vision pipelines in robotics—like fine-tuned YOLO object detectors—are exceptional at identifying pre-defined classes within a closed environment. However, they lack open-ended semantic reasoning. A YOLO system knows <em>what</em> a red block is, but it cannot infer that a user saying "Pick up the item that is usually found in a casino" refers to a red dice.</p>
+            <p>Traditional computer vision pipelines in robotics, like fine-tuned YOLO object detectors, are exceptional at identifying pre-defined classes within a closed environment. However, they lack open-ended semantic reasoning. A YOLO system knows <em>what</em> a red block is, but it cannot infer that a user saying "Pick up the item that is usually found in a casino" refers to a red dice.</p>
             <p>To overcome this limitation, I transitioned the 4-axis robotic arm from a rigid local detector to a <strong>Vision-Language-Action (VLA)</strong> reasoning pipeline. By combining large cloud-based multimodal intelligence with custom edge inverse kinematics, the robotic arm gains the reasoning capacity to interpret complex instructions, contextualize its physical environment, and decide its own actions dynamically.</p>
             
             <div class="callout">
@@ -219,7 +219,7 @@
     <!-- ── SECTION 2: HARDWARE & INTERFACE ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">02 — Hardware Setup & The Interface</div>
+            <div class="section-num">02: Hardware Setup & The Interface</div>
             <h2>Separation of Heavy Reasoning and Low-Latency Edge Execution</h2>
             <p>The physical system was engineered using a custom 3D-printed <strong>EEZYbotARM MK2</strong> (4-axis configuration) driven by high-torque MG996R servo motors. To achieve fluid, reliable movements, the workspace uses a dedicated overhead workspace camera calibrated to capture the absolute coordinate grid.</p>
             <p>Rather than equipping the robotic arm with a heavy onboard GPU, the architecture implements a strict boundary: **Cloud-based semantic reasoning** (multimodal API calls) takes care of the heavy classification, while the **edge microcontroller (ESP8266)** focuses entirely on low-latency microsecond servo angle execution via high-speed UDP wireless links.</p>
@@ -242,7 +242,7 @@
     <!-- ── SECTION 3: DEMONSTRATION ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">03 — Demonstration of VLA in Action</div>
+            <div class="section-num">03: Demonstration of VLA in Action</div>
             <h2>Zero-Shot Semantic Inference & Dynamic Trajectory Control</h2>
             <p>The core breakthrough of the VLA approach is its ability to perform high-level zero-shot reasoning. In the demonstration below, the robotic arm is commanded to: <strong>"Pick up the item that is usually found in a casino."</strong></p>
             <p>Unlike pre-programmed computer vision databases, the system does not look for a label named "casino". Instead, Gemini performs contextual inference, correctly deduces that the **dice** is the target item, isolates its visual boundaries, and feeds coordinates to the edge translation scripts to coordinate a flawless pick-and-place actuation sequence.</p>
@@ -260,7 +260,7 @@
     <!-- ── SECTION 4: CHALLENGES ── -->
     <div class="section">
         <div class="container">
-            <div class="section-num">04 — Challenges & Future Optimization</div>
+            <div class="section-num">04: Challenges & Future Optimization</div>
             <h2>Engineering Challenges in Edge AI-Robotic Integration</h2>
             <p>Bridging cloud inference with mechanical edge execution introduced several technical hurdles, solved through custom optimization layers:</p>
             
