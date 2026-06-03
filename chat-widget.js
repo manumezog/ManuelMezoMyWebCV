@@ -20,11 +20,13 @@
 
 (function () {
   // ── Config ────────────────────────────────────────────────
-  // Change this to your deployed API URL when you go to production
   const API_URL = "https://manumezog-portfolio-chat-agent.hf.space/chat";
+  const TTS_URL = "https://manumezog-portfolio-chat-agent.hf.space/tts";
 
   // ── State ─────────────────────────────────────────────────
   let sessionId = null;   // null until first message is sent
+  let ttsEnabled = true;  // auto-play on by default; toggled by mute button
+  let currentAudio = null; // track playing audio so we can stop it
 
   // ── Inject HTML ───────────────────────────────────────────
   document.body.insertAdjacentHTML("beforeend", `
@@ -33,6 +35,7 @@
     <div id="chat-widget-panel">
       <div id="chat-widget-header">
         <span>Ask about Manuel</span>
+        <button id="chat-widget-mute" title="Mute voice">🔊</button>
         <button id="chat-widget-close" title="Close">✕</button>
       </div>
       <div id="chat-widget-messages">
@@ -53,13 +56,25 @@
   const btn      = document.getElementById("chat-widget-btn");
   const panel    = document.getElementById("chat-widget-panel");
   const closeBtn = document.getElementById("chat-widget-close");
+  const muteBtn  = document.getElementById("chat-widget-mute");
   const messages = document.getElementById("chat-widget-messages");
   const input    = document.getElementById("chat-widget-input");
   const sendBtn  = document.getElementById("chat-widget-send");
 
   // ── Toggle panel ──────────────────────────────────────────
   btn.addEventListener("click", () => panel.classList.toggle("open"));
-  closeBtn.addEventListener("click", () => panel.classList.remove("open"));
+  closeBtn.addEventListener("click", () => {
+    panel.classList.remove("open");
+    stopAudio();
+  });
+
+  // ── Mute toggle ───────────────────────────────────────────
+  muteBtn.addEventListener("click", () => {
+    ttsEnabled = !ttsEnabled;
+    muteBtn.textContent = ttsEnabled ? "🔊" : "🔇";
+    muteBtn.title = ttsEnabled ? "Mute voice" : "Unmute voice";
+    if (!ttsEnabled) stopAudio();
+  });
 
   // ── Send on Enter key ─────────────────────────────────────
   input.addEventListener("keydown", (e) => {
@@ -137,6 +152,34 @@
     return div;
   }
 
+  // ── TTS helpers ──────────────────────────────────────────
+  function stopAudio() {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+  }
+
+  async function speakText(text) {
+    if (!ttsEnabled) return;
+    stopAudio();
+    try {
+      const resp = await fetch(TTS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+      if (!resp.ok) return; // fail silently — voice is enhancement, not critical
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      currentAudio = new Audio(url);
+      currentAudio.onended = () => { URL.revokeObjectURL(url); currentAudio = null; };
+      if (ttsEnabled) currentAudio.play();
+    } catch (_) {
+      // TTS errors never break the chat
+    }
+  }
+
   // ── Main send function ────────────────────────────────────
   async function sendMessage() {
     const text = input.value.trim();
@@ -171,6 +214,7 @@
 
       typing.innerHTML = renderMarkdown(data.answer);
       typing.classList.remove("typing");
+      speakText(data.answer); // fire-and-forget; respects mute state
 
     } catch (err) {
       typing.textContent = "Sorry, I couldn't reach the server. Is the API running?";
