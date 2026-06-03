@@ -40,8 +40,7 @@
       </div>
       <div id="chat-widget-messages">
         <div class="chat-msg bot">
-          Hi! I'm Manuel's AI assistant. Ask me anything about his education,
-          experience, or projects.
+          Hi! I'm Manuel's AI assistant. Ask me anything about his education, experience, or projects. I'll read my answers aloud — click the 🔊 button to mute.
         </div>
       </div>
       <div id="chat-widget-input-row">
