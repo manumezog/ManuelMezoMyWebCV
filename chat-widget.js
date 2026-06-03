@@ -164,19 +164,23 @@
     if (!ttsEnabled) return;
     stopAudio();
     try {
+      console.log("[TTS] fetching", TTS_URL);
       const resp = await fetch(TTS_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
       });
-      if (!resp.ok) return; // fail silently — voice is enhancement, not critical
+      console.log("[TTS] response status", resp.status);
+      if (!resp.ok) { console.warn("[TTS] non-ok response", resp.status); return; }
       const blob = await resp.blob();
+      console.log("[TTS] blob size", blob.size, blob.type);
       const url = URL.createObjectURL(blob);
       currentAudio = new Audio(url);
       currentAudio.onended = () => { URL.revokeObjectURL(url); currentAudio = null; };
-      if (ttsEnabled) currentAudio.play();
-    } catch (_) {
-      // TTS errors never break the chat
+      const playPromise = currentAudio.play();
+      if (playPromise) playPromise.catch(e => console.warn("[TTS] play() blocked:", e));
+    } catch (e) {
+      console.error("[TTS] error:", e);
     }
   }
 
