@@ -272,10 +272,9 @@ if dist >= 0:
             <p>This allows the system to register precisely when objects enter the pick area, incrementing a live 'IN ZONE' monitor and feeding exact localized coordinates directly to the robot arm's actuation system.</p>
 
             <div class="media-block">
-                <video controls preload="metadata">
-                    <source src="videos/live new scenario test after training augmented100e target zone counter.mp4" type="video/mp4">
-                    <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e target zone counter.mp4</code> in this directory to view.</p>
-                </video>
+                <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; border:1px solid var(--border); box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                    <iframe src="https://www.youtube.com/embed/S_NSafXIt18" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" title="Zone counter demo"></iframe>
+                </div>
                 <p class="media-caption">Real-time zone tracking. The system draws a virtual green polygon and successfully increments the 'IN ZONE' counter only when the tracked centroids of the fine-tuned classes enter the designated area.</p>
             </div>
         </div>
@@ -290,10 +289,9 @@ if dist >= 0:
             <p>The system defines a linear threshold using two points. As items move from left to right down the conveyor belt, the tracking engine records the history of their coordinates. By comparing the previous X-coordinate of a specific object ID to the X-coordinate of the tripwire line, the system detects a threshold crossing. Once crossed, the object's ID is registered in a "counted set" to prevent duplicate tracking, and the global throughput count is updated instantly.</p>
 
             <div class="media-block">
-                <video controls preload="metadata">
-                    <source src="videos/live new scenario test after training augmented100e line counter.mp4" type="video/mp4">
-                    <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>live new scenario test after training augmented100e line counter.mp4</code> in this directory to view.</p>
-                </video>
+                <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:12px; border:1px solid var(--border); box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                    <iframe src="https://www.youtube.com/embed/_PzGVlsVIRk" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" title="Line counter demo"></iframe>
+                </div>
                 <p class="media-caption">Real-time throughput counting. A virtual red tripwire is established. As the multi-object tracker maintains the ID of the moving items, the top-left 'COUNT' updates precisely as each centroid crosses the threshold.</p>
             </div>
         </div>

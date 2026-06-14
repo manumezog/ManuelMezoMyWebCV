@@ -265,10 +265,11 @@
             <p>Unlike pre-programmed computer vision databases, the system does not look for a label named "casino". Instead, Gemini performs contextual inference, correctly deduces that the **dice** is the target item, isolates its visual boundaries, and feeds coordinates to the edge translation scripts to coordinate a flawless pick-and-place actuation sequence.</p>
 
             <div class="media-block">
-                <video autoplay loop muted playsinline controls>
-                    <source src="videos/RoboArm-VLA-demo.mp4" type="video/mp4">
-                    <p style="text-align:center; padding: 40px; color: var(--secondary);">📽️ Video file not found locally. Place <code>RoboArm-VLA-demo.mp4</code> in this directory to view.</p>
-                </video>
+                <div style="max-width:360px; margin:0 auto;">
+                    <div style="position:relative; padding-bottom:177.78%; height:0; overflow:hidden; border-radius:12px; border:1px solid var(--border); box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                        <iframe src="https://www.youtube.com/embed/AdYfxQT8Uag" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" title="RoboArm VLA Demo"></iframe>
+                    </div>
+                </div>
                 <p class="media-caption">Live demonstration of the VLA integration. The system successfully interprets a complex voice command, uses Gemini to locate the target object, and executes the physical retrieval via the local kinematics engine.</p>
             </div>
         </div>
