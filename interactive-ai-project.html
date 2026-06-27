@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Support Agent: End-to-End on InteractiveAI | Manuel Mezo</title>
+    <meta name="description" content="AI-powered SaaS customer support agent built on the InteractiveAI platform. Covers the full lifecycle: Build context with policies and routines, Connect tools and secrets, Deploy via Interactive Agent, Govern with traces, and Improve with datasets.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;
+            --secondary: #4b5563;
+            --bg: #ffffff;
+            --card-bg: #f9fafb;
+            --border: #e5e7eb;
+            --accent: #0284c7;
+            --accent-grad: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            --iai-red: #E80F13;
+            --iai-grad: linear-gradient(135deg, #E80F13 0%, #991b1b 100%);
+            --code-bg: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; color: var(--primary); background: var(--bg); line-height: 1.7; }
+        a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s ease; }
+        a:hover { color: #0369a1; text-decoration: underline; }
+
+        .nav-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-bar a { text-decoration: none; font-weight: 600; color: var(--secondary); font-size: 0.9rem; transition: color 0.2s; }
+        .nav-bar a:hover { color: var(--accent); }
+        .nav-logo { font-weight: 800; font-size: 1rem; color: var(--primary) !important; }
+
+        .hero {
+            background: var(--bg);
+            padding: 120px 40px 80px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-label {
+            display: inline-block;
+            background: var(--iai-grad);
+            color: #fff;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; max-width: 900px; margin-left: auto; margin-right: auto; color: var(--primary); letter-spacing: -1px; }
+        .hero p { font-size: 1.3rem; color: var(--secondary); max-width: 700px; margin: 0 auto 30px; }
+        .tech-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .pill {
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.8rem; font-weight: 600;
+            padding: 6px 16px; border-radius: 20px;
+        }
+        .pill.iai {
+            background: var(--iai-grad);
+        }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+        .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+        .section:last-of-type { border-bottom: none; }
+
+        .section-num {
+            display: inline-block;
+            background: var(--iai-grad); -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+        .section p { color: var(--secondary); margin-bottom: 16px; font-size: 1rem; }
+        .section p:last-child { margin-bottom: 0; }
+
+        .callout {
+            background: var(--card-bg); border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0;
+        }
+        .callout.iai { border-left-color: var(--iai-red); }
+        .callout.green { border-left-color: #22c55e; }
+        .callout.purple { border-left-color: #6366f1; }
+        .callout strong { display: block; margin-bottom: 6px; color: var(--primary); font-size: 0.95rem; }
+        .callout span { color: var(--secondary); font-size: 0.95rem; }
+
+        /* Pipeline */
+        .pipeline { display: flex; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+        .pipeline-step {
+            flex: 1; min-width: 100px;
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 16px 12px; text-align: center; position: relative;
+        }
+        .pipeline-step.active-step {
+            background: var(--iai-grad);
+        }
+        .pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+        .pipeline-step:last-child { border-radius: 0 10px 10px 0; }
+        .pipeline-step:not(:last-child)::after {
+            content: '→'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--iai-red); font-size: 1.1rem; font-weight: 700; z-index: 2;
+        }
+        .pipeline-step .step-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .pipeline-step .step-label { font-size: 0.72rem; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* Concept grid */
+        .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+        @media (max-width: 640px) { .concept-grid { grid-template-columns: 1fr; } }
+        .concept-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+        }
+        .concept-card h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 8px; color: var(--primary); }
+        .concept-card p { font-size: 0.9rem; color: var(--secondary); margin: 0; }
+        .concept-card .card-tag {
+            display: inline-block; font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            color: var(--iai-red); margin-bottom: 6px;
+        }
+
+        /* Metrics */
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+        .metric-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .metric-val { font-size: 2rem; font-weight: 800; background: var(--iai-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-label { font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-top: 4px; }
+        @media (max-width: 500px) { .metrics-grid { grid-template-columns: 1fr 1fr; } }
+
+        /* Code */
+        pre {
+            background: var(--code-bg); color: #e2e8f0;
+            border-radius: 10px; padding: 20px 24px;
+            font-size: 0.85rem; overflow-x: auto;
+            margin: 20px 0; line-height: 1.6;
+        }
+        code { font-family: 'Courier New', monospace; }
+        p code, li code {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 6px;
+            font-family: 'Courier New', monospace; font-size: 0.85em; color: var(--primary);
+        }
+
+        ul { color: var(--secondary); padding-left: 20px; margin: 16px 0; }
+        ul li { margin-bottom: 8px; font-size: 1rem; }
+
+        /* Media */
+        .media-block { margin: 32px 0; }
+        .media-block img {
+            width: 100%; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: block;
+        }
+        .media-caption { margin-top: 10px; font-size: 0.85rem; color: var(--secondary); font-style: italic; text-align: center; }
+
+        /* Agent embed */
+        .agent-embed-wrapper {
+            margin: 32px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            background: #0a0a0a;
+        }
+        .agent-embed-header {
+            background: linear-gradient(90deg, #111827, #1e293b);
+            padding: 12px 20px;
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .agent-embed-header .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .agent-embed-header .dot.red { background: #ef4444; }
+        .agent-embed-header .dot.yellow { background: #eab308; }
+        .agent-embed-header .dot.green { background: #22c55e; }
+        .agent-embed-header .url-bar {
+            flex: 1; background: rgba(255,255,255,0.08); border-radius: 6px;
+            padding: 4px 12px; color: #94a3b8; font-size: 0.75rem;
+            font-family: 'Courier New', monospace;
+        }
+        .agent-embed-iframe {
+            width: 100%; height: 550px; border: none; display: block;
+            background: #fff;
+        }
+
+        /* Lifecycle stepper */
+        .lifecycle-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 28px 0; }
+        @media (max-width: 768px) { .lifecycle-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 500px) { .lifecycle-grid { grid-template-columns: 1fr 1fr; } }
+        .lifecycle-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px; text-align: center;
+            transition: all 0.2s;
+        }
+        .lifecycle-card:hover {
+            border-color: var(--iai-red); transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(232,15,19,0.1);
+        }
+        .lifecycle-card .lc-icon { font-size: 1.6rem; margin-bottom: 6px; }
+        .lifecycle-card .lc-title { font-size: 0.8rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .lifecycle-card .lc-desc { font-size: 0.72rem; color: var(--secondary); margin-top: 4px; }
+
+        /* Talking point cards */
+        .tp-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin: 28px 0; }
+        .tp-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+            display: flex; gap: 16px; align-items: flex-start;
+        }
+        .tp-num {
+            background: var(--iai-grad); color: #fff;
+            min-width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
+        }
+        .tp-card h4 { font-size: 0.95rem; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+        .tp-card p { font-size: 0.9rem; color: var(--secondary); margin: 0; }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%); color: #fff;
+            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+            padding: 14px 35px; border-radius: 50px;
+            transition: all 0.3s ease; margin: 50px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); color: #fff; text-decoration: none; }
+
+        footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 18px; height: 52px; }
+            .hero { padding: 70px 18px 50px; }
+            .hero h1 { font-size: 2rem; letter-spacing: -0.5px; line-height: 1.2; }
+            .hero p { font-size: 1rem; }
+            .container { padding: 0 18px; }
+            .section { padding: 50px 0; }
+            .section h2 { font-size: 1.4rem; }
+            .pipeline { flex-direction: column; gap: 2px; }
+            .pipeline-step { min-width: unset; border-radius: 10px !important; }
+            .pipeline-step:not(:last-child)::after { display: none; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            pre { font-size: 0.78rem; padding: 14px 16px; }
+            .back-btn { margin: 30px 0; padding: 12px 24px; font-size: 0.85rem; }
+            footer { padding: 24px 18px; }
+            .agent-embed-iframe { height: 400px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">← Manuel Mezo</a>
+        <a href="index.html#projects">AI Projects</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-label">🤖 InteractiveAI Platform · Full Lifecycle</div>
+        <h1>SaaS Support Agent: End-to-End on InteractiveAI</h1>
+        <p>Built a production AI customer support agent covering every stage of the InteractiveAI platform lifecycle: Build context, Connect tools, Deploy as an Interactive Agent, Govern with traces, and Improve with datasets.</p>
+        <div class="tech-pills">
+            <span class="pill iai">InteractiveAI</span>
+            <span class="pill">YAML Policies</span>
+            <span class="pill">Routines</span>
+            <span class="pill">Glossary</span>
+            <span class="pill">MCP Tools</span>
+            <span class="pill">Traces</span>
+            <span class="pill">Datasets</span>
+        </div>
+    </div>
+
+    <!-- PIPELINE -->
+    <div class="container">
+        <div class="pipeline" style="margin-top: 50px;">
+            <div class="pipeline-step"><div class="step-icon">🏗️</div><div class="step-label">Build</div></div>
+            <div class="pipeline-step"><div class="step-icon">🔗</div><div class="step-label">Connect</div></div>
+            <div class="pipeline-step active-step"><div class="step-icon">🚀</div><div class="step-label">Deploy</div></div>
+            <div class="pipeline-step"><div class="step-icon">👁️</div><div class="step-label">Govern</div></div>
+            <div class="pipeline-step"><div class="step-icon">📈</div><div class="step-label">Improve</div></div>
+        </div>
+    </div>
+
+    <!-- SECTION 01: CONTEXT & OBJECTIVE -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">01: Context & Objective</div>
+            <h2>A hands-on learning project for the InteractiveAI platform</h2>
+
+            <p>InteractiveAI is the <strong>operating platform</strong> for building, deploying, and managing production AI systems. It provides end-to-end infrastructure for the <strong>complete agentic AI lifecycle</strong>: from tracing LLM interactions and managing prompts to evaluating output quality and monitoring performance across development and production environments.</p>
+
+            <p>This project was designed as a focused, hands-on exercise to learn the platform's architecture by building something real: a <strong>fictional SaaS customer support agent</strong> that can onboard users, answer technical questions, and handle mock ticket data — all while enforcing brand rules.</p>
+
+            <div class="callout iai">
+                <strong>Why this project matters</strong>
+                <span>The InteractiveAI platform is structured around five core lifecycle stages — <strong>Build, Connect, Deploy, Govern, Improve</strong>. This project touches every single one, giving end-to-end experience with the platform's architecture in a single focused build.</span>
+            </div>
+
+            <div class="lifecycle-grid">
+                <div class="lifecycle-card">
+                    <div class="lc-icon">🏗️</div>
+                    <div class="lc-title">Build</div>
+                    <div class="lc-desc">Define agent behaviour</div>
+                </div>
+                <div class="lifecycle-card">
+                    <div class="lc-icon">🔗</div>
+                    <div class="lc-title">Connect</div>
+                    <div class="lc-desc">Integrations & secrets</div>
+                </div>
+                <div class="lifecycle-card">
+                    <div class="lc-icon">🚀</div>
+                    <div class="lc-title">Deploy</div>
+                    <div class="lc-desc">Production infrastructure</div>
+                </div>
+                <div class="lifecycle-card">
+                    <div class="lc-icon">👁️</div>
+                    <div class="lc-title">Govern</div>
+                    <div class="lc-desc">Observability & tracing</div>
+                </div>
+                <div class="lifecycle-card">
+                    <div class="lc-icon">📈</div>
+                    <div class="lc-title">Improve</div>
+                    <div class="lc-desc">Evaluate & iterate</div>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-val">5</div><div class="metric-label">Platform lifecycle stages covered</div></div>
+                <div class="metric-card"><div class="metric-val">4</div><div class="metric-label">Context components built</div></div>
+                <div class="metric-card"><div class="metric-val">~3h</div><div class="metric-label">End-to-end build time</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 02: BUILD -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">02: Build — Defining Agent Context</div>
+            <h2>Decoupling application logic from behavioral context</h2>
+
+            <p>InteractiveAI's architecture fundamentally <strong>separates what the agent does</strong> (routines) <strong>from how it behaves</strong> (policies). The <code>Build > Context</code> section is where you define all four components that shape the agent's personality, knowledge, and workflows.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <div class="card-tag">YAML</div>
+                    <h4>Policy — Behavior Rulebook</h4>
+                    <p>Condition → action rules matched against every turn. Encodes safety, compliance, tone, and business rules that apply across all routines. Our agent has a rule: <em>"never guess if the info isn't provided."</em></p>
+                </div>
+                <div class="concept-card">
+                    <div class="card-tag">YAML</div>
+                    <h4>Routine — Workflow Graph</h4>
+                    <p>Graphs of chat, tool, and fork nodes connected by transitions. Our support routine branches on billing vs. technical vs. onboarding intents, rendered as an interactive visual diagram in the platform.</p>
+                </div>
+                <div class="concept-card">
+                    <div class="card-tag">JSON</div>
+                    <h4>Glossary — Domain Terms</h4>
+                    <p>Injects domain vocabulary into every turn. We defined terms like "ProTiers," "DataSync Module," and "Quota Shield" so the agent understands product-specific jargon.</p>
+                </div>
+                <div class="concept-card">
+                    <div class="card-tag">Markdown</div>
+                    <h4>Macro — Reusable Templates</h4>
+                    <p>Text blocks interpolated into routine chat nodes via <code>${macro-id}</code>. Our greeting macro uses <code>{{user_name}}</code> for personalized welcome messages.</p>
+                </div>
+            </div>
+
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 16px;">Sample: Policy YAML</h3>
+            <pre><code># policy: support-guardrails
+name: support-guardrails
+description: Core behavioral rules for the SaaS support agent
+
+conditions:
+  - type: always  # applies to every turn
+
+actions:
+  - type: instruct
+    content: |
+      You are a helpful, technically-precise SaaS support agent.
+      - Always be professional and empathetic.
+      - NEVER guess or fabricate answers. If information is not
+        available in your context, say so clearly.
+      - Cite the specific product feature or documentation
+        when answering technical questions.
+      - If the user appears frustrated, acknowledge their
+        frustration before providing a solution.</code></pre>
+
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 16px;">Sample: Routine YAML with branching logic</h3>
+            <pre><code># routine: customer-support-flow
+name: customer-support-flow
+description: Main support routine with intent-based branching
+
+nodes:
+  - id: greeting
+    type: chat
+    content: "${welcome-greeting}"
+    transitions:
+      - target: billing-help
+        condition: "user asks about billing, pricing, or invoices"
+      - target: technical-help
+        condition: "user asks a technical question"
+      - target: onboarding
+        condition: "user is new or asks about getting started"
+
+  - id: billing-help
+    type: chat
+    content: |
+      I'd be happy to help with your billing question.
+      Let me pull up your account details.
+    transitions:
+      - target: resolve
+        condition: "user confirms issue is resolved"
+
+  - id: technical-help
+    type: chat
+    content: |
+      Let me look into that technical issue for you.
+      Can you share any error messages or steps to reproduce?
+    transitions:
+      - target: resolve
+        condition: "user confirms issue is resolved"
+      - target: escalate
+        condition: "issue requires engineering escalation"
+
+  - id: onboarding
+    type: chat
+    content: |
+      Welcome! I'll walk you through getting started
+      with our platform. Let's begin with setup.
+
+  - id: escalate
+    type: tool
+    tool: support-tools:create_ticket
+    content: "Creating a support ticket for the engineering team."
+
+  - id: resolve
+    type: chat
+    content: "Glad I could help! Is there anything else?"</code></pre>
+
+            <div class="callout purple">
+                <strong>Architecture insight</strong>
+                <span>The platform renders routines as interactive visual diagrams, making it easy to trace conversation paths and debug unexpected agent behavior. Policies sit on top of routines — they fire on <em>every</em> turn regardless of which routine node is active, acting as guardrails across the entire agent.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 03: CONNECT -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">03: Connect — Tools & Secrets</div>
+            <h2>External integrations and secure credential management</h2>
+
+            <p>The <strong>Connect</strong> section handles everything the agent needs to interact with the outside world: tool servers (via MCP), a knowledge base for retrieval grounding, and a secrets manager for API keys and credentials.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>🔧 MCP Tool Servers</h4>
+                    <p>Tools are functions the agent calls at runtime, served by your MCP servers. We set up a mock tool for fetching user profiles and creating support tickets. Each tool is namespaced (e.g., <code>support-tools:get_user</code>).</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🔐 Secrets Manager</h4>
+                    <p>Project-scoped secrets store API keys and credentials securely. Secrets are injected as environment variables at deployment time — the agent code never sees raw keys. We added a dummy API key to demonstrate the flow.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>📚 Knowledge Base</h4>
+                    <p>Retrieval grounding via pgvector or an external HTTP search endpoint. The agent searches this on every turn to ground answers in actual documentation rather than hallucinating.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🤖 LLM Router</h4>
+                    <p>The agent uses two independent model lanes — <strong>chat</strong> (customer-facing) and <strong>evaluation</strong> (internal decisions) — each with its own primary and fallback. The lanes never cross.</p>
+                </div>
+            </div>
+
+            <div class="callout green">
+                <strong>Security detail worth mentioning</strong>
+                <span>API keys and secrets are scoped to the <strong>Project level</strong>, not the Organization level. This means different projects within the same org have fully isolated credential namespaces — a significant enterprise security pattern. The Secrets Manager uses bundle secrets that are auto-attached during first deployment.</span>
+            </div>
+
+            <pre><code># Mock tool server declaration in the agent manifest
+mcps:
+  - name: support-tools
+    url: https://my-mcp-server.example.com
+    api_key:
+      env_ref: SUPPORT_TOOLS_API_KEY   # resolves from Secrets Manager
+    tools:
+      - name: get_user
+        description: "Fetch user profile by email or ID"
+      - name: create_ticket
+        description: "Create a support ticket for engineering escalation"</code></pre>
+        </div>
+    </div>
+
+    <!-- SECTION 04: DEPLOY -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">04: Deploy — Interactive Agent</div>
+            <h2>From configuration to running service in 5 steps</h2>
+
+            <p>The <strong>Interactive Agent</strong> deployment is where agent configurations become running services. The platform's deployment wizard walks through five steps: Identity, Endpoint, Runtime, Schedule, and Review.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>📋 Step 1: Identity</h4>
+                    <p>Agent configuration name, instance name (locked once live), container image, and image version from the operator catalog.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🌐 Step 2: Endpoint</h4>
+                    <p>Toggle public URL on/off. When enabled, the agent gets a publicly reachable hostname — ours is <code>test-agent-1xmcc8.interactive.ai</code>.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>⚙️ Step 3: Runtime</h4>
+                    <p>Environment variables, Router API Key (outbound LLM billing), Agent API Key (inbound auth), and project secrets attachment.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>📅 Step 4: Schedule</h4>
+                    <p>Optional uptime windows with cron-like expressions (e.g., <code>Mon-Fri 09:00-18:00</code>) and IANA timezone. Scale to zero outside the window to save cost.</p>
+                </div>
+            </div>
+
+            <div class="callout iai">
+                <strong>First deploy secret</strong>
+                <span>On first deploy, the platform auto-creates a <strong>bundle secret</strong> named <code>router-&lt;instance-name&gt;</code> containing the Router API Key, Agent API Key, and platform credentials. This bundle is attached automatically even if you skip the Secrets step — a great reliability pattern.</span>
+            </div>
+
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 16px;">Try the live agent</h3>
+            <p>The agent is deployed and running at its public endpoint. Interact with it below — it's the same agent served by InteractiveAI's built-in chat UI:</p>
+
+            <div class="agent-embed-wrapper">
+                <div class="agent-embed-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <div class="url-bar">test-agent-1xmcc8.interactive.ai</div>
+                </div>
+                <iframe 
+                    src="https://test-agent-1xmcc8.interactive.ai" 
+                    class="agent-embed-iframe"
+                    title="InteractiveAI SaaS Support Agent - Live Demo"
+                    allow="clipboard-write"
+                    loading="lazy">
+                </iframe>
+            </div>
+            <p class="media-caption">Live InteractiveAI agent — sign in with the Agent API Key to start a conversation.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 05: GOVERN -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">05: Govern — Observability & Tracing</div>
+            <h2>Complete visibility into what the AI system is doing</h2>
+
+            <p>The <strong>Govern</strong> section is where enterprise AI platforms shine — and it's a critical interview topic. Every agent interaction generates a hierarchical trace that you can inspect in detail.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>🔍 Sessions</h4>
+                    <p>Each conversation is a session. Navigate to <code>Govern > Sessions</code> to see every user interaction, with timestamps, message counts, and status.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>📊 Traces</h4>
+                    <p>Hierarchical call traces show the full execution flow. Open a trace to see <strong>which tool was called</strong>, how long each step took (latency), and how many <strong>tokens were consumed</strong>.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🔬 Observations</h4>
+                    <p>Individual steps within a trace. Each observation captures the inputs, outputs, model used, duration, and token usage — the atomic unit of debugging.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>⭐ Scores</h4>
+                    <p>Attach quality scores (manual or automated) to traces and observations. Enables trend tracking: is the agent getting better or worse over time?</p>
+                </div>
+            </div>
+
+            <div class="callout green">
+                <strong>Debugging workflow</strong>
+                <span>When something goes wrong: <strong>(1)</strong> Find the session in Govern → Sessions. <strong>(2)</strong> Open the trace to see the full execution flow. <strong>(3)</strong> Drill into specific observations to see exact tool inputs/outputs. <strong>(4)</strong> Check token counts and latency to identify bottlenecks. This is the exact flow an FDE would walk a customer through.</span>
+            </div>
+
+            <pre><code># Using the InteractiveAI SDK to retrieve traces programmatically
+from interactive_ai import InteractiveAI
+
+client = InteractiveAI()
+
+# List recent traces for debugging
+traces = client.traces.list(
+    project_id="my-project",
+    limit=10,
+    order_by="created_at",
+    order="desc"
+)
+
+for trace in traces:
+    print(f"Trace: {trace.id}")
+    print(f"  Duration: {trace.duration_ms}ms")
+    print(f"  Tokens: {trace.total_tokens}")
+    print(f"  Status: {trace.status}")
+    
+    # Drill into observations
+    for obs in trace.observations:
+        print(f"    [{obs.type}] {obs.name}: {obs.duration_ms}ms")</code></pre>
+        </div>
+    </div>
+
+    <!-- SECTION 06: IMPROVE -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">06: Improve — Datasets & Evaluation</div>
+            <h2>Systematic quality evaluation and regression testing</h2>
+
+            <p>The <strong>Improve</strong> section closes the loop: take real production traces, turn them into test cases, and run evaluations before shipping changes. This is how you ensure <strong>zero regressions</strong> when updating prompts or context.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>📋 Datasets</h4>
+                    <p>Navigate to <code>Improve > Datasets</code> and create a test suite. Map user inputs to expected agent outputs. Each dataset item is a regression test for your agent.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🔄 Trace-to-Dataset Pipeline</h4>
+                    <p>Go to a successful production trace in Govern, click <strong>"Add to Dataset"</strong>, and map the user's input + agent's output into your test suite. Real conversations become regression tests.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🧪 Experiments</h4>
+                    <p>Run your dataset against different agent configurations. Compare results side-by-side to validate that a new policy or routine doesn't break existing behavior.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>📝 Annotations</h4>
+                    <p>Add human annotations to traces and observations. Comments on specific agent responses create an audit trail and inform future prompt tuning.</p>
+                </div>
+            </div>
+
+            <div class="callout purple">
+                <strong>The production feedback loop</strong>
+                <span>The killer feature: production traces feed directly into test datasets. When you update a policy or add a routine, you run the dataset to verify <em>every known-good conversation</em> still works. This is the enterprise answer to "how do you test prompt changes?" — and it's a key differentiator to articulate in an interview.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 07: INTERVIEW TALKING POINTS -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">07: Key Architectural Insights</div>
+            <h2>Notable design choices and architectural decisions</h2>
+
+            <p>The project was designed to build familiarity with InteractiveAI's architectural decisions — highlighting the robustness of the platform's abstractions and design patterns.</p>
+
+            <div class="tp-grid">
+                <div class="tp-card">
+                    <div class="tp-num">1</div>
+                    <div>
+                        <h4>Decoupled Context Architecture</h4>
+                        <p>InteractiveAI separates <strong>what</strong> the agent does (routines) from <strong>how</strong> it behaves (policies). Policies fire on every turn as guardrails; routines define conversation flows. This means you can change tone rules without touching workflow logic, and vice versa.</p>
+                    </div>
+                </div>
+                <div class="tp-card">
+                    <div class="tp-num">2</div>
+                    <div>
+                        <h4>Dual-Lane Model Architecture</h4>
+                        <p>The agent uses two independent model lanes — <strong>chat</strong> (customer-facing) and <strong>evaluation</strong> (internal decisions like routing) — each with primary and fallback models. The lanes never cross, ensuring customer-facing responses are never contaminated by internal reasoning.</p>
+                    </div>
+                </div>
+                <div class="tp-card">
+                    <div class="tp-num">3</div>
+                    <div>
+                        <h4>Enterprise Governance from Day 1</h4>
+                        <p>Every turn generates a hierarchical trace with token counts, latency, tool calls, and model selections. This isn't an add-on — it's baked into the platform architecture. Customers can answer "what did the agent do and why?" for any interaction.</p>
+                    </div>
+                </div>
+                <div class="tp-card">
+                    <div class="tp-num">4</div>
+                    <div>
+                        <h4>Production-to-Test Pipeline</h4>
+                        <p>The <code>Govern → Improve</code> flow lets teams convert real production traces into regression test datasets. This solves the hardest problem in enterprise AI: "how do you ensure prompt changes don't break things?" Answer: run the dataset before shipping.</p>
+                    </div>
+                </div>
+                <div class="tp-card">
+                    <div class="tp-num">5</div>
+                    <div>
+                        <h4>Security-First Credential Model</h4>
+                        <p>One shared bearer token authenticates all flows (inbound messages, outbound webhooks, callbacks). Secrets are project-scoped, never org-scoped. Bundle secrets are auto-created on first deploy. HMAC signatures protect third-party webhooks. The security model is designed for enterprise compliance.</p>
+                    </div>
+                </div>
+                <div class="tp-card">
+                    <div class="tp-num">6</div>
+                    <div>
+                        <h4>Multiple Integration Surfaces</h4>
+                        <p>Seven documented traffic flows cover every integration shape: SDK conversations (polling or webhook), autonomous triggers with typed JSON, third-party webhook entry, MCP tool calls, and knowledge base retrieval. This allows mapping the right pattern to any architecture.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LINKS + BACK BUTTON -->
+    <div class="container" style="text-align:center;">
+        <div class="callout" style="display:inline-block; text-align:left; max-width:600px; margin-bottom: 0;">
+            <strong>Resources</strong>
+            <span>
+                📖 <a href="https://docs.interactive.ai" target="_blank">InteractiveAI Documentation</a> &nbsp;·&nbsp;
+                🤖 <a href="https://test-agent-1xmcc8.interactive.ai/chat/" target="_blank">Live Agent Endpoint</a> &nbsp;·&nbsp;
+                🏗️ <a href="https://docs.interactive.ai/agents/guides/quickstart" target="_blank">Quickstart Guide</a>
+            </span>
+        </div>
+        <br>
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+    </div>
+
+    <footer>
+        <p>© <span id="year"></span> Manuel Mezo · <a href="index.html">cv.manuelmezo.com</a></p>
+    </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <link rel="stylesheet" href="chat-widget.css">
+    <script src="chat-widget.js"></script>
+
+    <!-- Floating InteractiveAI Red Agent Bubble -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const rightPos = window.innerWidth <= 768 ? "90px" : "100px";
+
+            document.body.insertAdjacentHTML("beforeend", `
+                <button id="iai-widget-btn" title="Chat with InteractiveAI" style="
+                    position: fixed;
+                    bottom: 30px;
+                    right: ${rightPos};
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    background: #E80F13;
+                    color: white;
+                    border: none;
+                    box-shadow: 0 4px 15px rgba(232, 15, 19, 0.4);
+                    font-size: 24px;
+                    cursor: pointer;
+                    z-index: 1000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: transform 0.2s;
+                ">
+                    <img src="https://interactive.ai/icon.svg" alt="InteractiveAI" style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
+                </button>
+
+                <div id="iai-widget-panel" style="
+                    position: fixed;
+                    bottom: 110px;
+                    right: 30px;
+                    width: min(400px, calc(100vw - 60px));
+                    height: min(600px, calc(100vh - 140px));
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                    z-index: 1000;
+                    display: none;
+                    flex-direction: column;
+                    overflow: hidden;
+                    border: 2px solid #E80F13;
+                ">
+                    <div style="background: #E80F13; color: white; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <img src="https://interactive.ai/icon.svg" alt="" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
+                            <span>InteractiveAI Agent</span>
+                        </div>
+                        <div>
+                            <a href="https://test-agent-1xmcc8.interactive.ai/chat/" target="_blank" title="Open in new tab (if login is blocked)" style="color: white; text-decoration: none; margin-right: 12px; font-size: 16px;">↗️</a>
+                            <button id="iai-widget-close" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px;">✕</button>
+                        </div>
+                    </div>
+                    <iframe src="https://test-agent-1xmcc8.interactive.ai/chat/" style="width: 100%; flex: 1; border: none;" allow="clipboard-write"></iframe>
+                </div>
+            `);
+
+            const iaiBtn = document.getElementById('iai-widget-btn');
+            const iaiPanel = document.getElementById('iai-widget-panel');
+            const iaiClose = document.getElementById('iai-widget-close');
+
+            iaiBtn.addEventListener('click', () => {
+                iaiPanel.style.display = iaiPanel.style.display === 'none' ? 'flex' : 'none';
+            });
+
+            iaiClose.addEventListener('click', () => {
+                iaiPanel.style.display = 'none';
+            });
+
+            iaiBtn.addEventListener('mouseenter', () => iaiBtn.style.transform = 'scale(1.05)');
+            iaiBtn.addEventListener('mouseleave', () => iaiBtn.style.transform = 'scale(1)');
+        });
+    </script>
+</body>
+</html>
