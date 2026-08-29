@@ -3,9 +3,13 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaaS Support Agent: End-to-End on InteractiveAI | Manuel Mezo</title>
-    <meta name="description" content="AI-powered SaaS customer support agent built on the InteractiveAI platform. Covers the full lifecycle: Build context with policies and routines, Connect tools and secrets, Deploy via Interactive Agent, Govern with traces, and Improve with datasets.">
+    <title>Support Agent: End-to-End on InteractiveAI | Manuel Mezo</title>
+    <meta name="description" content="AI-powered customer support agent built on the InteractiveAI platform. Covers the full lifecycle: Build context with policies and routines, Connect tools and secrets, Deploy via Interactive Agent, Govern with traces, and Improve with datasets.">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    </script>
     <style>
         :root {
             --primary: #111827;
@@ -262,8 +266,8 @@
     <!-- HERO -->
     <div class="hero">
         <div class="hero-label">🤖 InteractiveAI Platform · Full Lifecycle</div>
-        <h1>SaaS Support Agent: End-to-End on InteractiveAI</h1>
-        <p>Built a production AI customer support agent covering every stage of the InteractiveAI platform lifecycle: Build context, Connect tools, Deploy as an Interactive Agent, Govern with traces, and Improve with datasets.</p>
+        <h1>Support Agent: End-to-End on InteractiveAI</h1>
+        <p>Configured and deployed an AI customer support agent exploring the complete InteractiveAI platform lifecycle: Build context, Connect tools, Deploy via Interactive Agent, Govern with traces, and Improve with datasets.</p>
         <div class="tech-pills">
             <span class="pill iai">InteractiveAI</span>
             <span class="pill">YAML Policies</span>
@@ -349,22 +353,22 @@
                 <div class="concept-card">
                     <div class="card-tag">YAML</div>
                     <h4>Policy — Behavior Rulebook</h4>
-                    <p>Condition → action rules matched against every turn. Encodes safety, compliance, tone, and business rules that apply across all routines. Our agent has a rule: <em>"never guess if the info isn't provided."</em></p>
+                    <p>Condition → action rules matched against every turn. Encodes safety, compliance, tone, and business rules that apply across all routines (e.g. <em>"never guess if the info isn't provided."</em>).</p>
                 </div>
                 <div class="concept-card">
                     <div class="card-tag">YAML</div>
                     <h4>Routine — Workflow Graph</h4>
-                    <p>Graphs of chat, tool, and fork nodes connected by transitions. Our support routine branches on billing vs. technical vs. onboarding intents, rendered as an interactive visual diagram in the platform.</p>
+                    <p>Graphs of chat, tool, and fork nodes connected by transitions. These define the branching logic for intents like billing, technical support, or onboarding.</p>
                 </div>
                 <div class="concept-card">
                     <div class="card-tag">JSON</div>
                     <h4>Glossary — Domain Terms</h4>
-                    <p>Injects domain vocabulary into every turn. We defined terms like "ProTiers," "DataSync Module," and "Quota Shield" so the agent understands product-specific jargon.</p>
+                    <p>Injects domain vocabulary into every turn. Used to define product-specific jargon so the agent understands the exact terminology used by customers.</p>
                 </div>
                 <div class="concept-card">
                     <div class="card-tag">Markdown</div>
                     <h4>Macro — Reusable Templates</h4>
-                    <p>Text blocks interpolated into routine chat nodes via <code>${macro-id}</code>. Our greeting macro uses <code>{{user_name}}</code> for personalized welcome messages.</p>
+                    <p>Text blocks interpolated into routine chat nodes via <code>${macro-id}</code>. Used for personalized greetings or standardized disclosure texts.</p>
                 </div>
             </div>
 
@@ -458,15 +462,15 @@ nodes:
             <div class="concept-grid">
                 <div class="concept-card">
                     <h4>🔧 MCP Tool Servers</h4>
-                    <p>Tools are functions the agent calls at runtime, served by your MCP servers. We set up a mock tool for fetching user profiles and creating support tickets. Each tool is namespaced (e.g., <code>support-tools:get_user</code>).</p>
+                    <p>Tools are functions the agent calls at runtime, served by your MCP servers. The platform allows connecting external APIs for fetching user profiles or creating support tickets in Zendesk/Jira.</p>
                 </div>
                 <div class="concept-card">
                     <h4>🔐 Secrets Manager</h4>
-                    <p>Project-scoped secrets store API keys and credentials securely. Secrets are injected as environment variables at deployment time — the agent code never sees raw keys. We added a dummy API key to demonstrate the flow.</p>
+                    <p>Project-scoped secrets store API keys and credentials securely. Secrets are injected as environment variables at deployment time — the agent code never sees raw keys.</p>
                 </div>
                 <div class="concept-card">
                     <h4>📚 Knowledge Base</h4>
-                    <p>Retrieval grounding via pgvector or an external HTTP search endpoint. The agent searches this on every turn to ground answers in actual documentation rather than hallucinating.</p>
+                    <p>Retrieval grounding via pgvector or an external HTTP search endpoint. The agent can search this on every turn to ground answers in actual documentation rather than hallucinating.</p>
                 </div>
                 <div class="concept-card">
                     <h4>🤖 LLM Router</h4>
@@ -638,57 +642,50 @@ for trace in traces:
         </div>
     </div>
 
-    <!-- SECTION 07: INTERVIEW TALKING POINTS -->
+    <!-- SECTION 07: ARCHITECTURE & SECURITY -->
     <div class="section">
         <div class="container">
-            <div class="section-num">07: Key Architectural Insights</div>
-            <h2>Notable design choices and architectural decisions</h2>
+            <div class="section-num">07: Architecture & Security</div>
+            <h2>Frontend Integration & Cross-Origin Security</h2>
 
-            <p>The project was designed to build familiarity with InteractiveAI's architectural decisions — highlighting the robustness of the platform's abstractions and design patterns.</p>
+            <p>Integrating third-party enterprise platforms into a portfolio site introduces real-world security challenges. I designed this implementation to bypass modern browser cookie restrictions while maintaining a seamless user experience.</p>
 
-            <div class="tp-grid">
-                <div class="tp-card">
-                    <div class="tp-num">1</div>
-                    <div>
-                        <h4>Decoupled Context Architecture</h4>
-                        <p>InteractiveAI separates <strong>what</strong> the agent does (routines) from <strong>how</strong> it behaves (policies). Policies fire on every turn as guardrails; routines define conversation flows. This means you can change tone rules without touching workflow logic, and vice versa.</p>
-                    </div>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>🔒 The Third-Party Cookie Problem</h4>
+                    <p>Modern browsers (Chrome, Safari) block cross-origin cookies in <code>&lt;iframe&gt;</code> embeds (SameSite=Lax/Strict). This breaks authentication when embedding the InteractiveAI test portal directly inside a standard web page widget.</p>
                 </div>
-                <div class="tp-card">
-                    <div class="tp-num">2</div>
-                    <div>
-                        <h4>Dual-Lane Model Architecture</h4>
-                        <p>The agent uses two independent model lanes — <strong>chat</strong> (customer-facing) and <strong>evaluation</strong> (internal decisions like routing) — each with primary and fallback models. The lanes never cross, ensuring customer-facing responses are never contaminated by internal reasoning.</p>
-                    </div>
+                <div class="concept-card">
+                    <h4>🛡️ The Sized Popup Solution</h4>
+                    <p>Instead of a fragile iframe or a complex reverse proxy, I engineered a <strong>Sized Popup Widget</strong>. Clicking the red floating bubble spawns a new OS-level window sized exactly like a widget. The browser treats it as a top-level secure context, allowing cookies to flow perfectly while preserving the "widget" feel.</p>
                 </div>
-                <div class="tp-card">
-                    <div class="tp-num">3</div>
-                    <div>
-                        <h4>Enterprise Governance from Day 1</h4>
-                        <p>Every turn generates a hierarchical trace with token counts, latency, tool calls, and model selections. This isn't an add-on — it's baked into the platform architecture. Customers can answer "what did the agent do and why?" for any interaction.</p>
-                    </div>
-                </div>
-                <div class="tp-card">
-                    <div class="tp-num">4</div>
-                    <div>
-                        <h4>Production-to-Test Pipeline</h4>
-                        <p>The <code>Govern → Improve</code> flow lets teams convert real production traces into regression test datasets. This solves the hardest problem in enterprise AI: "how do you ensure prompt changes don't break things?" Answer: run the dataset before shipping.</p>
-                    </div>
-                </div>
-                <div class="tp-card">
-                    <div class="tp-num">5</div>
-                    <div>
-                        <h4>Security-First Credential Model</h4>
-                        <p>One shared bearer token authenticates all flows (inbound messages, outbound webhooks, callbacks). Secrets are project-scoped, never org-scoped. Bundle secrets are auto-created on first deploy. HMAC signatures protect third-party webhooks. The security model is designed for enterprise compliance.</p>
-                    </div>
-                </div>
-                <div class="tp-card">
-                    <div class="tp-num">6</div>
-                    <div>
-                        <h4>Multiple Integration Surfaces</h4>
-                        <p>Seven documented traffic flows cover every integration shape: SDK conversations (polling or webhook), autonomous triggers with typed JSON, third-party webhook entry, MCP tool calls, and knowledge base retrieval. This allows mapping the right pattern to any architecture.</p>
-                    </div>
-                </div>
+            </div>
+
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 32px 0 16px;">Integration Architecture Diagram</h3>
+            <div class="mermaid" style="background: var(--code-bg); padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                sequenceDiagram
+                    autonumber
+                    actor User
+                    participant Portfolio as cv.manuelmezo.com
+                    participant Widget as Sized Popup Window
+                    participant IAI as test-agent-1xmcc8
+                    participant Router as InteractiveAI Router
+                    
+                    User->>Portfolio: Clicks red floating bubble
+                    Portfolio->>Widget: window.open(url, width=400, height=600)
+                    Note over Widget: Top-Level Secure Context
+                    Widget->>IAI: GET /chat/
+                    IAI-->>Widget: Returns React App + Login UI
+                    User->>Widget: Enters Agent API Key
+                    Widget->>IAI: POST /login (Sets First-Party Cookie)
+                    IAI-->>Widget: 200 OK + Session Token
+                    Widget->>Router: WebSocket / Streaming Chat
+                    Router-->>Widget: AI Response
+            </div>
+
+            <div class="callout purple">
+                <strong>Why not a Reverse Proxy?</strong>
+                <span>I initially prototyped a Firebase Cloud Function reverse proxy to trick the browser into thinking the API was first-party. However, since the InteractiveAI portal is a compiled React app that uses absolute URLs for its internal API calls, the proxy broke client-side routing. The sized popup is the most robust, enterprise-ready fallback for external developer portals.</span>
             </div>
         </div>
     </div>
@@ -731,7 +728,6 @@ for trace in traces:
                     color: white;
                     border: none;
                     box-shadow: 0 4px 15px rgba(232, 15, 19, 0.4);
-                    font-size: 24px;
                     cursor: pointer;
                     z-index: 1000;
                     display: flex;
@@ -741,46 +737,21 @@ for trace in traces:
                 ">
                     <img src="https://interactive.ai/icon.svg" alt="InteractiveAI" style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
                 </button>
-
-                <div id="iai-widget-panel" style="
-                    position: fixed;
-                    bottom: 110px;
-                    right: 30px;
-                    width: min(400px, calc(100vw - 60px));
-                    height: min(600px, calc(100vh - 140px));
-                    background: white;
-                    border-radius: 12px;
-                    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-                    z-index: 1000;
-                    display: none;
-                    flex-direction: column;
-                    overflow: hidden;
-                    border: 2px solid #E80F13;
-                ">
-                    <div style="background: #E80F13; color: white; padding: 12px; font-weight: bold; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <img src="https://interactive.ai/icon.svg" alt="" style="width: 20px; height: 20px; filter: brightness(0) invert(1);">
-                            <span>InteractiveAI Agent</span>
-                        </div>
-                        <div>
-                            <a href="https://test-agent-1xmcc8.interactive.ai/chat/" target="_blank" title="Open in new tab (if login is blocked)" style="color: white; text-decoration: none; margin-right: 12px; font-size: 16px;">↗️</a>
-                            <button id="iai-widget-close" style="background: none; border: none; color: white; cursor: pointer; font-size: 16px;">✕</button>
-                        </div>
-                    </div>
-                    <iframe src="https://test-agent-1xmcc8.interactive.ai/chat/" style="width: 100%; flex: 1; border: none;" allow="clipboard-write"></iframe>
-                </div>
             `);
 
             const iaiBtn = document.getElementById('iai-widget-btn');
-            const iaiPanel = document.getElementById('iai-widget-panel');
-            const iaiClose = document.getElementById('iai-widget-close');
 
             iaiBtn.addEventListener('click', () => {
-                iaiPanel.style.display = iaiPanel.style.display === 'none' ? 'flex' : 'none';
-            });
-
-            iaiClose.addEventListener('click', () => {
-                iaiPanel.style.display = 'none';
+                const width = 400;
+                const height = 650;
+                const left = window.screen.width - width - 50;
+                const top = window.screen.height - height - 100;
+                
+                window.open(
+                    "https://test-agent-1xmcc8.interactive.ai/chat/", 
+                    "InteractiveAIWidget", 
+                    `width=${width},height=${height},left=${left},top=${top},resizable=no,scrollbars=yes,status=no,toolbar=no,menubar=no,location=no`
+                );
             });
 
             iaiBtn.addEventListener('mouseenter', () => iaiBtn.style.transform = 'scale(1.05)');

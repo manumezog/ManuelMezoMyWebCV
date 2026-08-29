@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "source": "functions"
+  },
   "hosting": {
     "public": ".",
     "ignore": [
@@ -8,6 +11,29 @@
       "archive/**"
     ],
     "maxVersions": 5,
+    "rewrites": [
+      {
+        "source": "/chat/**",
+        "run": {
+          "serviceId": "iaiproxy",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/_next/**",
+        "run": {
+          "serviceId": "iaiproxy",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/sessions/**",
+        "run": {
+          "serviceId": "iaiproxy",
+          "region": "us-central1"
+        }
+      }
+    ],
     "headers": [
       {
         "source": "**/*.@(jpg|jpeg|gif|png|webp|svg|mp4|pdf)",

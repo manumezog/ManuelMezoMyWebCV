@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autonomous AI Podcast Pipeline: Python + Gemini TTS | Manuel Mezo</title>
+    <meta name="description" content="Autonomous end-to-end podcast generation and publishing pipeline. Fetches tech articles, curates stories, writes script, generates TTS audio, mixes music, and publishes RSS.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;
+            --secondary: #4b5563;
+            --bg: #ffffff;
+            --card-bg: #f9fafb;
+            --border: #e5e7eb;
+            --accent: #0284c7;
+            --accent-grad: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            --code-bg: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; color: var(--primary); background: var(--bg); line-height: 1.7; }
+        a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s ease; }
+        a:hover { color: #0369a1; text-decoration: underline; }
+
+        .nav-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-bar a { text-decoration: none; font-weight: 600; color: var(--secondary); font-size: 0.9rem; transition: color 0.2s; }
+        .nav-bar a:hover { color: var(--accent); }
+        .nav-logo { font-weight: 800; font-size: 1rem; color: var(--primary) !important; }
+
+        .hero {
+            background: var(--bg);
+            padding: 120px 40px 80px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-label {
+            display: inline-block;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            color: #fff;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; max-width: 900px; margin-left: auto; margin-right: auto; color: var(--primary); letter-spacing: -1px; }
+        .hero p { font-size: 1.3rem; color: var(--secondary); max-width: 700px; margin: 0 auto 30px; }
+        .tech-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .pill {
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.8rem; font-weight: 600;
+            padding: 6px 16px; border-radius: 20px;
+        }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+        .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+        .section:last-of-type { border-bottom: none; }
+
+        .section-num {
+            display: inline-block;
+            background: var(--accent-grad); -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+        .section p { color: var(--secondary); margin-bottom: 16px; font-size: 1rem; }
+        .section p:last-child { margin-bottom: 0; }
+
+        .callout {
+            background: var(--card-bg); border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0;
+        }
+        .callout strong { display: block; margin-bottom: 6px; color: var(--primary); font-size: 0.95rem; }
+        .callout span { color: var(--secondary); font-size: 0.95rem; }
+
+        .media-block { margin: 32px 0; }
+        .media-block img {
+            width: 100%; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: block;
+        }
+        .media-caption { margin-top: 10px; font-size: 0.85rem; color: var(--secondary); font-style: italic; text-align: center; }
+
+        .pipeline { display: flex; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+        .pipeline-step {
+            flex: 1; min-width: 120px;
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 16px 12px; text-align: center; position: relative;
+        }
+        .pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+        .pipeline-step:last-child { border-radius: 0 10px 10px 0; }
+        .pipeline-step:not(:last-child)::after {
+            content: '→'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--accent); font-size: 1.1rem; font-weight: 700; z-index: 2;
+        }
+        .pipeline-step .step-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .pipeline-step .step-label { font-size: 0.72rem; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+        .metric-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .metric-val { font-size: 2rem; font-weight: 800; background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-label { font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-top: 4px; }
+        @media (max-width: 500px) { .metrics-grid { grid-template-columns: 1fr; } }
+
+        pre {
+            background: var(--code-bg); color: #e2e8f0;
+            border-radius: 10px; padding: 20px 24px;
+            font-size: 0.85rem; overflow-x: auto;
+            margin: 20px 0; line-height: 1.6;
+        }
+        code { font-family: 'Courier New', monospace; }
+        p code, li code {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 6px;
+            font-family: 'Courier New', monospace; font-size: 0.85em; color: var(--primary);
+        }
+
+        .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+        @media (max-width: 640px) { .concept-grid { grid-template-columns: 1fr; } }
+        .concept-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+        }
+        .concept-card h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 8px; color: var(--primary); }
+        .concept-card p { font-size: 0.9rem; color: var(--secondary); margin: 0; }
+
+        ul { color: var(--secondary); padding-left: 20px; margin: 16px 0; }
+        ul li { margin-bottom: 8px; font-size: 1rem; }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%); color: #fff;
+            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+            padding: 14px 35px; border-radius: 50px;
+            transition: all 0.3s ease; margin: 50px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); color: #fff; text-decoration: none; }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px; text-align: center;
+            color: var(--secondary); font-size: 0.9rem;
+        }
+        footer a { color: var(--secondary); }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-logo">Manuel Mezo</a>
+        <a href="index.html#projects">← Projects</a>
+    </div>
+
+    <div class="hero">
+        <div class="hero-label">Automated Content Creation</div>
+        <h1>Autonomous AI Podcast Pipeline</h1>
+        <p>An end-to-end automated system using Python, Gemini, and Windows Task Scheduler to discover tech news, draft two-host conversational scripts, synthesize studio-quality speech, and publish RSS feeds.</p>
+        <div class="tech-pills">
+            <span class="pill">Python</span>
+            <span class="pill">Gemini TTS (Generate Content)</span>
+            <span class="pill">ArXiv & News APIs</span>
+            <span class="pill">Cloudflare R2</span>
+            <span class="pill">GitHub Pages (RSS)</span>
+            <span class="pill">Task Scheduler (S4U)</span>
+        </div>
+    </div>
+
+    <!-- PIPELINE ARCHITECTURE -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">01: System Pipeline</div>
+            <h2>Modular Orchestration Flow</h2>
+            <p>The system runs automatically twice a week. In each execution, it processes a series of sequential pipeline stages, storing intermediate checkpoints to handle rate limits and API retries gracefully.</p>
+            
+            <div class="pipeline">
+                <div class="pipeline-step">
+                    <div class="step-icon">🔍</div>
+                    <div class="step-label">1. Discovery</div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-icon">🎯</div>
+                    <div class="step-label">2. Curation</div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-icon">✍️</div>
+                    <div class="step-label">3. Scripting</div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-icon">🗣️</div>
+                    <div class="step-label">4. Speech Synthesis</div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-icon">🎵</div>
+                    <div class="step-label">5. Music Mix</div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-icon">📡</div>
+                    <div class="step-label">6. Publish</div>
+                </div>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Idempotency Guards</h4>
+                    <p>Each stage stores its output as a JSON checkpoint. If a later stage fails (e.g. hitting network rate limits during TTS), retries resume exactly from the point of failure without repeating heavy API calls.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>Seen URL Store</h4>
+                    <p>An incremental storage system (<code>seen_urls.json</code>) tracks all processed URLs to ensure the same papers or tech news articles are never covered twice.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENT DISCOVERY & CURATION -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">02: Discovery & AI Curation</div>
+            <h2>Extracting & filtering tech trends autonomously</h2>
+            <p>Stage 1 dynamically queries the <strong>ArXiv API</strong> (filtering for Computer Science AI/ML/Robotics categories) and the <strong>NewsAPI</strong>. Discovered items are checked against the seen store and consolidated.</p>
+            <p>Stage 2 utilizes <strong>Gemini 2.5 Flash</strong> to rate the discovered stories on impact, relevance, and interest. Only the highest-scoring papers are curated for the episode.</p>
+
+            <pre><code># Stage 2 Curation Prompt fragment
+prompt = (
+    "Analyze the following list of newly discovered papers. For each, assign an impact score 1-10 "
+    "evaluating its relevance to developers interested in real-world robotics and generative AI. "
+    "Provide a 1-sentence reasoning for the score. Return as a clean JSON list."
+)</code></pre>
+        </div>
+    </div>
+
+    <!-- SCRIPT WRITING -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">03: Dialog Script Writing</div>
+            <h2>Generating engaging conversational scripts</h2>
+            <p>Using the curated stories list, <strong>Gemini 2.5 Flash</strong> writes a podcast script featuring two hosts, <strong>Alex</strong> and <strong>Sam</strong>. The output script is generated in markdown format, using speaker tags to separate lines.</p>
+
+            <div class="callout">
+                <strong>Sample Dialogue Output:</strong>
+                <span>
+                    <strong>[Alex]</strong>: "Welcome back to The Robotics Brief. Sam, have you seen the new procedural driving simulators?"<br>
+                    <strong>[Sam]</strong>: "Oh absolutely, Alex. Procedural synthesis is saving thousands of hours of manual asset design..."
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPEECH SYNTHESIS & MUSIC MIXING -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">04: Studio-Quality TTS & Audio Stitches</div>
+            <h2>Leveraging Gemini TTS and FFMpeg</h2>
+            <p>Stage 4 parses the conversational script, breaks it down into individual speaker chunks, and executes high-fidelity speech synthesis using the <code>gemini-2.5-flash-preview-tts</code> API. <strong>Alex</strong> uses a male voice profile, and <strong>Sam</strong> uses a female voice profile.</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>Dynamic Rate Limiting</h4>
+                    <p>TTS processes 50+ audio clips per episode. The synthesis engine implements exponential backoff to handle quota restrictions and 429 errors seamlessly.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>FFMpeg Stitches & Soundbeds</h4>
+                    <p>All chunks are stitched using FFMpeg. The system automatically layers intro/outro musical soundbeds, fading them in and out dynamically based on the audio timestamp.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PUBLISHING -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">05: Publishing & RSS Generation</div>
+            <h2>Deploying to Cloudflare R2 and GitHub Pages</h2>
+            <p>Once quality-checked (verifying file size, duration, and minimum script word count), the final MP3 is uploaded to a <strong>Cloudflare R2 Bucket</strong> (S3 compatible API) via <code>boto3</code>.</p>
+            <p>The publisher then automatically:</p>
+            <ul>
+                <li>Calls Gemini (with <code>thinking_budget=0</code> to prevent truncation) to generate a punchy episode title and full 3-4 sentence show notes.</li>
+                <li>Fetches the existing RSS feed (<code>feed.xml</code>) from GitHub via REST APIs.</li>
+                <li>Prepends the new episode item, maintaining compliance with iTunes and Spotify standards.</li>
+                <li>Pushes the updated feed back to GitHub Pages, which triggers automatic ingestion on major platforms.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- TASK SCHEDULER & CRON DEPLOYMENT -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">06: Background Infrastructure</div>
+            <h2>Fail-proof Windows Task Scheduler execution</h2>
+            <p>A key operational hurdle was running the heavy pipeline reliably on user environments when the desktop session is locked or logged out. The pipeline script is wrapped in a batch script executed via <strong>Windows Task Scheduler</strong> with specialized settings:</p>
+
+            <pre><code># Task Scheduler S4U Logon Configuration via PowerShell
+$principal = New-ScheduledTaskPrincipal `
+    -UserId "LAPTOP-9RM75SJK\manum" `
+    -LogonType S4U `
+    -RunLevel Limited</code></pre>
+
+            <div class="callout">
+                <strong>Why S4U Logon was critical</strong>
+                <span>Unlike 'Interactive' logon types which pause if the PC is locked, S4U (Service For User) utilizes token-based execution. This guarantees the pipeline runs precisely on Wednesdays and Saturdays at 08:00 AM, waking network interfaces and executing using the local Anaconda Python installation.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- LINKS + BACK BUTTON -->
+    <div class="container" style="text-align:center;">
+        <div class="callout" style="display:inline-block; text-align:left; max-width:600px; margin-bottom: 0;">
+            <strong>Project Assets & Live Links</strong>
+            <span>
+                🎧 <a href="https://pub-4462e924d1fb405a91da5291a177d44b.r2.dev/2026-08-29.mp3" target="_blank">Listen to the latest episode</a> &nbsp;·&nbsp;
+                📡 <a href="https://manumezog.github.io/podcast-feed/feed.xml" target="_blank">Podcast RSS Feed XML</a> &nbsp;·&nbsp;
+                🌐 <a href="https://www.cv.manuelmezo.com/" target="_blank">Live Web CV</a>
+            </span>
+        </div>
+        <br>
+        <a href="index.html" class="back-btn">← Back to Portfolio</a>
+    </div>
+
+    <footer>
+        <p>© <span id="year"></span> Manuel Mezo · <a href="index.html">cv.manuelmezo.com</a></p>
+    </footer>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
