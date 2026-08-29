@@ -40,6 +40,7 @@ A self-contained static site — no build tools, no framework. One `index.html` 
 
 | Page | Project |
 |---|---|
+| `podcast-pipeline-project.html` | Autonomous AI Podcast Pipeline — Python, Gemini TTS, RSS publishing, Windows Task Scheduler |
 | `portfolio-chat-agent-project.html` | RAG chat agent — LangChain, ChromaDB, Gemini, FastAPI |
 | `robotic-arm-vla-project.html` | VLA robotic arm — Gemini 1.5 Pro, voice commands |
 | `yolo-project.html` | YOLOv8 fine-tuning — custom dataset, Roboflow, 97% mAP |
@@ -64,6 +65,7 @@ The site includes a live **RAG chat agent** (💬 button, bottom-right) that ans
 ```
 ManuelMezoMyWebCV/
 ├── index.html                          # Main single-page site
+├── podcast-pipeline-project.html       # Autonomous AI Podcast project page
 ├── portfolio-chat-agent-project.html   # RAG chat agent project page
 ├── robotic-arm-vla-project.html        # Robotic arm project page
 ├── yolo-project.html                   # YOLOv8 fine-tuning project page
