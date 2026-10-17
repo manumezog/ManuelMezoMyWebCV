@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacienda-ESP-RAG: Matryoshka MRL & Hybrid Edge Legal RAG | Manuel Mezo</title>
+    <meta name="description" content="Production Legal RAG & Matryoshka Representation Learning (MRL) benchmark over 36,053 Spanish Binding Tax Rulings (1.05 GB). Cuts vector RAM by 83.3% (768D to 128D) using EmbeddingGemma, Supabase pgvector halfvec, and <2ms Local SQLite Hydration on an NVIDIA Jetson Orin Nano.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #111827;
+            --secondary: #4b5563;
+            --bg: #ffffff;
+            --card-bg: #f9fafb;
+            --border: #e5e7eb;
+            --accent: #0284c7;
+            --accent-grad: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+            --code-bg: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; color: var(--primary); background: var(--bg); line-height: 1.7; }
+        a { color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.2s ease; }
+        a:hover { color: #0369a1; text-decoration: underline; }
+
+        .nav-bar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px; height: 56px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-bar a { text-decoration: none; font-weight: 600; color: var(--secondary); font-size: 0.9rem; transition: color 0.2s; }
+        .nav-bar a:hover { color: var(--accent); }
+        .nav-logo { font-weight: 800; font-size: 1rem; color: var(--primary) !important; }
+
+        .hero {
+            background: var(--bg);
+            padding: 110px 40px 75px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .hero-label {
+            display: inline-block;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            color: #fff;
+            font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.18; margin-bottom: 20px; max-width: 940px; margin-left: auto; margin-right: auto; color: var(--primary); letter-spacing: -1px; }
+        .hero p { font-size: 1.22rem; color: var(--secondary); max-width: 780px; margin: 0 auto 28px; }
+        .hero-links {
+            display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 28px;
+        }
+        .hero-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 24px; border-radius: 50px; font-size: 0.9rem; font-weight: 700;
+            text-decoration: none !important; transition: all 0.25s ease;
+        }
+        .hero-btn.primary {
+            background: var(--accent-grad); color: #fff;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.28);
+        }
+        .hero-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(14, 165, 233, 0.4); color: #fff; }
+        .hero-btn.secondary {
+            background: var(--card-bg); color: var(--primary); border: 1px solid var(--border);
+        }
+        .hero-btn.secondary:hover { background: #f3f4f6; transform: translateY(-2px); color: var(--primary); }
+
+        .tech-pills { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .pill {
+            background: linear-gradient(90deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-size: 0.8rem; font-weight: 600;
+            padding: 6px 16px; border-radius: 20px;
+        }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+        .section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+        .section:last-of-type { border-bottom: none; }
+
+        .section-num {
+            display: inline-block;
+            background: var(--accent-grad); -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 0.8rem; font-weight: 800; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .section h2 { font-size: 1.7rem; font-weight: 800; margin-bottom: 20px; line-height: 1.3; }
+        .section h3 { font-size: 1.2rem; font-weight: 700; margin: 28px 0 12px; color: var(--primary); }
+        .section p { color: var(--secondary); margin-bottom: 16px; font-size: 1rem; }
+        .section p:last-child { margin-bottom: 0; }
+
+        .callout {
+            background: var(--card-bg); border-left: 4px solid var(--accent);
+            border-radius: 0 10px 10px 0; padding: 18px 22px; margin: 24px 0;
+        }
+        .callout strong { display: block; margin-bottom: 6px; color: var(--primary); font-size: 0.95rem; }
+        .callout span { color: var(--secondary); font-size: 0.95rem; }
+
+        .media-block { margin: 32px 0; }
+        .media-block img {
+            width: 100%; border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: block;
+        }
+        .media-caption { margin-top: 10px; font-size: 0.85rem; color: var(--secondary); font-style: italic; text-align: center; }
+
+        .pipeline { display: flex; gap: 0; margin: 28px 0; flex-wrap: wrap; }
+        .pipeline-step {
+            flex: 1; min-width: 115px;
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 16px 12px; text-align: center; position: relative;
+        }
+        .pipeline-step:first-child { border-radius: 10px 0 0 10px; }
+        .pipeline-step:last-child { border-radius: 0 10px 10px 0; }
+        .pipeline-step:not(:last-child)::after {
+            content: '→'; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+            color: var(--accent); font-size: 1.1rem; font-weight: 700; z-index: 2;
+        }
+        .pipeline-step .step-icon { font-size: 1.5rem; margin-bottom: 6px; }
+        .pipeline-step .step-label { font-size: 0.72rem; font-weight: 700; color: #e5e7eb; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 28px 0; }
+        .metric-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .metric-val { font-size: 2rem; font-weight: 800; background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .metric-label { font-size: 0.8rem; color: var(--secondary); font-weight: 600; margin-top: 4px; }
+
+        pre {
+            background: var(--code-bg); color: #e2e8f0;
+            border-radius: 10px; padding: 20px 24px;
+            font-size: 0.85rem; overflow-x: auto;
+            margin: 20px 0; line-height: 1.6;
+        }
+        code { font-family: 'Courier New', monospace; }
+        p code, li code, td code {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 4px; padding: 2px 6px;
+            font-family: 'Courier New', monospace; font-size: 0.85em; color: var(--primary);
+        }
+
+        .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 28px 0; }
+        @media (max-width: 640px) { .concept-grid { grid-template-columns: 1fr; } }
+        .concept-card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px;
+        }
+        .concept-card h4 { font-size: 0.95rem; font-weight: 800; margin-bottom: 8px; color: var(--primary); }
+        .concept-card p { font-size: 0.9rem; color: var(--secondary); margin: 0; }
+
+        .arch-steps { display: flex; flex-direction: column; gap: 16px; margin: 28px 0; }
+        .arch-step {
+            display: flex; gap: 20px; align-items: flex-start;
+            background: var(--card-bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px 24px;
+        }
+        .arch-step-num {
+            min-width: 36px; height: 36px;
+            background: var(--accent-grad); color: #fff;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.85rem; flex-shrink: 0; margin-top: 2px;
+        }
+        .arch-step-body h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: var(--primary); }
+        .arch-step-body p { font-size: 0.92rem; color: var(--secondary); margin: 0; }
+
+        .compare-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.92rem; }
+        .compare-table th { padding: 12px 16px; text-align: left; font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; text-transform: uppercase; }
+        .compare-table th:first-child { background: #fee2e2; color: #991b1b; border-radius: 8px 0 0 0; }
+        .compare-table th:last-child  { background: #dcfce7; color: #166534; border-radius: 0 8px 0 0; }
+        .compare-table td { padding: 12px 16px; border-top: 1px solid var(--border); vertical-align: top; color: var(--secondary); }
+        .compare-table td:first-child { background: #fff5f5; }
+        .compare-table td:last-child  { background: #f0fdf4; }
+        .compare-table tr:last-child td:first-child { border-radius: 0 0 0 8px; }
+        .compare-table tr:last-child td:last-child  { border-radius: 0 0 8px 0; }
+
+        .decision-table { width: 100%; border-collapse: collapse; margin: 24px 0; font-size: 0.9rem; }
+        .decision-table th { background: var(--card-bg); padding: 12px 16px; text-align: left; font-weight: 700; border: 1px solid var(--border); color: var(--primary); }
+        .decision-table td { padding: 11px 16px; border: 1px solid var(--border); color: var(--secondary); }
+        .decision-table tr:nth-child(even) td { background: #fafafa; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .badge-green { background: rgba(16,185,129,0.12); color: #059669; }
+        .badge-blue  { background: rgba(14,165,233,0.12); color: #0284c7; }
+        .badge-amber { background: rgba(245,158,11,0.12); color: #d97706; }
+
+        ul { color: var(--secondary); padding-left: 20px; margin: 16px 0; }
+        ul li { margin-bottom: 8px; font-size: 1rem; }
+
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(90deg, #111827 0%, #374151 100%); color: #fff;
+            text-decoration: none; font-weight: 700; font-size: 0.9rem;
+            padding: 14px 35px; border-radius: 50px;
+            transition: all 0.3s ease; margin: 50px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .back-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); color: #fff; text-decoration: none; }
+
+        footer { text-align: center; padding: 40px; color: var(--secondary); font-size: 0.85rem; border-top: 1px solid var(--border); }
+
+        @media (max-width: 768px) {
+            .nav-bar { padding: 0 18px; height: 52px; }
+            .hero { padding: 70px 18px 50px; }
+            .hero h1 { font-size: 2rem; letter-spacing: -0.5px; line-height: 1.2; }
+            .hero p { font-size: 1rem; }
+            .container { padding: 0 18px; }
+            .section { padding: 50px 0; }
+            .section h2 { font-size: 1.4rem; }
+            .pipeline { flex-direction: column; gap: 2px; }
+            .pipeline-step { min-width: unset; border-radius: 10px !important; }
+            .pipeline-step:not(:last-child)::after { display: none; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            .decision-table, .compare-table { font-size: 0.8rem; }
+            .decision-table th, .decision-table td, .compare-table th, .compare-table td { padding: 8px 10px; }
+            pre { font-size: 0.78rem; padding: 14px 16px; }
+            .back-btn { margin: 30px 0; padding: 12px 24px; font-size: 0.85rem; }
+            footer { padding: 24px 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-logo">← Manuel Mezo</a>
+        <a href="index.html#projects">GenAI Projects</a>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-label">🪆 Matryoshka MRL · Hybrid Edge/Cloud RAG · Spanish Tax Law</div>
+        <h1>Hacienda-ESP-RAG: Matryoshka Vector Compression &amp; Hybrid Edge Hydration over 36,053 Tax Rulings</h1>
+        <p>How to index 10 years of Spanish Binding Tax Rulings (1.05 GB) on a $0/month cloud footprint by slicing Google EmbeddingGemma vectors by 83.3% (768D → 128D) and hydrating full legal texts in &lt;2ms from a local NVIDIA Jetson Orin Nano.</p>
+
+        <div class="hero-links">
+            <a href="https://hacienda.mezapps.com" target="_blank" class="hero-btn primary">🚀 Try Live Benchmark App ↗</a>
+            <a href="https://github.com/manumezog/hacienda-ESP-rag" target="_blank" class="hero-btn secondary">💻 GitHub Repository →</a>
+            <a href="https://api-hacienda.mezapps.com/docs" target="_blank" class="hero-btn secondary">⚡ Live API Docs (Swagger) ↗</a>
+        </div>
+
+        <div class="tech-pills">
+            <span class="pill">EmbeddingGemma (Matryoshka MRL)</span>
+            <span class="pill">Supabase pgvector (halfvec)</span>
+            <span class="pill">NVIDIA Jetson Orin Nano (CUDA)</span>
+            <span class="pill">SQLite Local Hydration</span>
+            <span class="pill">FastAPI</span>
+            <span class="pill">Gemini 3.8 Flash</span>
+            <span class="pill">Next.js 16</span>
+            <span class="pill">Cloudflare Zero Trust</span>
+        </div>
+    </div>
+
+    <!-- PIPELINE -->
+    <div class="container">
+        <div class="pipeline" style="margin-top: 50px;">
+            <div class="pipeline-step"><div class="step-icon">🏛️</div><div class="step-label">PETETE Scraper</div></div>
+            <div class="pipeline-step"><div class="step-icon">✂️</div><div class="step-label">4.5k Chunking</div></div>
+            <div class="pipeline-step"><div class="step-icon">🪆</div><div class="step-label">MRL Slice + L2</div></div>
+            <div class="pipeline-step"><div class="step-icon">☁️</div><div class="step-label">pgvector halfvec</div></div>
+            <div class="pipeline-step"><div class="step-icon">⚡</div><div class="step-label">&lt;2ms Hydrate</div></div>
+            <div class="pipeline-step"><div class="step-icon">🧠</div><div class="step-label">Gemini Synthesis</div></div>
+            <div class="pipeline-step"><div class="step-icon">⚖️</div><div class="step-label">Side-by-Side UI</div></div>
+        </div>
+    </div>
+
+    <!-- SECTION 1: EXECUTIVE SUMMARY -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">01: Executive Summary &amp; Problem Statement</div>
+            <h2>Why Standard Cloud RAG Breaks at 36,053 Legal Rulings</h2>
+
+            <div class="callout" style="border-left-color: #0ea5e9;">
+                <strong>Interactive Live Laboratory (Spanish &amp; English)</strong>
+                <span>Test the live side-by-side benchmark at <a href="https://hacienda.mezapps.com" target="_blank">hacienda.mezapps.com</a> or inspect the edge OpenAPI specification at <a href="https://api-hacienda.mezapps.com/docs" target="_blank">api-hacienda.mezapps.com/docs</a>. Toggle between <strong>ES</strong> and <strong>EN</strong> in the header to query and receive grounded legal synthesis in either language.</span>
+            </div>
+
+            <p>When a taxpayer or tax advisor asks an LLM a question about Spanish tax law (<em>IRPF, IVA, Impuesto sobre Sociedades, Sucesiones</em>), standard models frequently hallucinate repealed articles or confuse general statutes with binding administrative doctrine. In Spain, the <strong>Dirección General de Tributos (DGT)</strong> issues <strong>Binding Tax Rulings (<em>Consultas Vinculantes</em>)</strong> that legally bind the Tax Agency (AEAT).</p>
+            <p>However, building a production Retrieval-Augmented Generation (RAG) system over a full decade of official rulings (<strong>2016–2026: 36,053 documents, 1.05 GB of raw legal text</strong>) immediately hits two architectural walls:</p>
+            <ul>
+                <li><strong>The Cloud Storage &amp; RAM Wall:</strong> Splitting 1.05 GB of dense legal prose into standard 500-character chunks produces over <strong>1.5 million vectors</strong>. Storing 1.5M <code>float32(768)</code> embeddings alongside raw text requires <strong>&gt;6 GB of dedicated Vector RAM</strong>, immediately blowing past cloud free tiers (such as Supabase's 500 MB limit) into $70–$150/month managed vector database instances.</li>
+                <li><strong>The Legal Context Fragmentation Problem:</strong> A single DGT ruling spans 5 to 15 pages structured into <em>Antecedentes de Hecho</em> (facts), <em>Normativa Aplicable</em> (statutes), and <em>Contestación</em> (binding legal conclusion). Retrieving isolated 500-character snippets gives the LLM the facts without the ruling, or the ruling without the conditions.</li>
+            </ul>
+
+            <div class="metrics-grid">
+                <div class="metric-card"><div class="metric-val">36,053</div><div class="metric-label">Official DGT Binding Tax Rulings (2016–2026)</div></div>
+                <div class="metric-card"><div class="metric-val">-83.3%</div><div class="metric-label">Vector RAM Saved via Matryoshka 128D Slicing</div></div>
+                <div class="metric-card"><div class="metric-val">&lt; 2 ms</div><div class="metric-label">Local SQLite Cold-Storage Text Hydration</div></div>
+                <div class="metric-card"><div class="metric-val">0 MB</div><div class="metric-label">Raw Legal Text Stored in Cloud Vector DB</div></div>
+                <div class="metric-card"><div class="metric-val">276 MB</div><div class="metric-label">Total Cloud Footprint (Fits 500 MB Free Tier)</div></div>
+                <div class="metric-card"><div class="metric-val">1.05 GB</div><div class="metric-label">Full Legal Corpus Hosted on Edge NVMe</div></div>
+            </div>
+
+            <div class="media-block">
+                <img src="images/project-hacienda-rag.png" alt="Hacienda-ESP-RAG interactive side-by-side Matryoshka benchmark live at hacienda.mezapps.com">
+                <p class="media-caption">The live educational benchmark at hacienda.mezapps.com comparing full 768D vector retrieval against Matryoshka-sliced 128D, 256D, and 512D embeddings in real time.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2: DATA ENGINEERING & SCRAPING -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">02: Data Engineering &amp; Corpus Design</div>
+            <h2>Scraping 10 Years of Spanish Tax Doctrine &amp; High-Signal Legal Chunking</h2>
+
+            <p>The official Spanish Ministry of Finance doctrine database (<strong>PETETE / Knosys</strong>) has no public REST API or bulk dataset export. It relies on stateful server-side sessions and legacy HTML forms. To build a complete, reproducible legal corpus from 2016 to 2026, I engineered a custom asynchronous scraping and ingestion pipeline (<code>src/scraper/dgt_scraper.py</code>):</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>⚡ Async Range Scraping &amp; Deduplication</h4>
+                    <p>Built with <code>httpx.AsyncClient</code> and <code>BeautifulSoup4</code> using exponential backoff and year/ID range partitioning. Multiple worker nodes scraped multi-year slices in parallel and merged them via <code>merge_db.py</code> using deterministic <code>SHA-256</code> content hashes into a single <code>SQLite WAL</code> database.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>📐 High-Signal 4,500-Char Legal Chunks</h4>
+                    <p>Instead of micro-chunking, documents are segmented into <strong>4,500-character blocks</strong> (~1,000 tokens) with a 500-character overlap, stripping repetitive administrative headers so each chunk preserves complete statutory citations and legal reasoning chains.</p>
+                </div>
+            </div>
+
+            <h3>Contextual Header Injection</h3>
+            <p>When a long ruling is split into multiple chunks, secondary chunks normally lose awareness of which ruling number, tax date, or governing body they belong to. Before computing embeddings on the GPU, the chunker dynamically injects a rich metadata header into every single fragment:</p>
+
+<pre><code># Dynamic contextual prefix injected into every 4,500-char legal chunk before GPU embedding
+header_prefix = (
+    f"[Consulta Vinculante DGT {num_consulta} | "
+    f"Fecha Salida: {fecha_salida} | "
+    f"Órgano: {organo} | "
+    f"Normativa: {normativa[:180]}]\n"
+)
+enriched_chunk_text = header_prefix + clean_legal_body</code></pre>
+
+            <p>This single data-engineering decision reduced total vector rows from an estimated ~500,000 down to <strong>~150,000 high-density chunks</strong> while dramatically improving retrieval precision for specific statutory articles (e.g., <em>Artículo 38.1 Ley 35/2006 LIRPF</em>).</p>
+        </div>
+    </div>
+
+    <!-- SECTION 3: MATRYOSHKA REPRESENTATION LEARNING (MRL) -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">03: Matryoshka Representation Learning (MRL)</div>
+            <h2>The "Russian Doll" Effect: Cutting Vector Memory by 83.3% Without Re-Indexing</h2>
+
+            <p>In traditional embedding models (such as <code>text-embedding-ada-002</code> or standard BERT derivatives), semantic information is distributed uniformly across all 768 or 1,536 vector dimensions. Dropping the last 80% of coordinates destroys the vector's meaning.</p>
+            <p><strong>Matryoshka Representation Learning (MRL)</strong>—used to train Google's <code>EmbeddingGemma</code>—optimizes a nested multi-scale loss function across prefixes of the vector (<code>128D ⊂ 256D ⊂ 512D ⊂ 768D</code>) simultaneously during training. Just like nested Russian dolls, the neural network is forced to pack the highest-variance semantic concepts (the core tax type, transaction structure, and statutory article) into the <strong>first 128 dimensions</strong>, while dimensions <code>129..768</code> encode progressively finer syntactic nuances.</p>
+
+            <table class="decision-table">
+                <thead>
+                    <tr>
+                        <th>Vector Configuration</th>
+                        <th>Active Dimensions</th>
+                        <th>Bytes / Chunk (<code>float16</code>)</th>
+                        <th>RAM for 150k Chunks</th>
+                        <th>Memory Saved</th>
+                        <th>Role in Legal Retrieval</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Full Vector (Baseline)</strong></td>
+                        <td><code>768D (100%)</code></td>
+                        <td>1,536 Bytes</td>
+                        <td>~230.4 MB</td>
+                        <td><span class="badge badge-blue">Baseline (0%)</span></td>
+                        <td>Maximum nuance across all coordinates</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Matryoshka Large</strong></td>
+                        <td><code>512D (66.7%)</code></td>
+                        <td>1,024 Bytes</td>
+                        <td>~153.6 MB</td>
+                        <td><span class="badge badge-green">-33.3% RAM</span></td>
+                        <td>Near-100% Top-10 overlap with full 768D</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Matryoshka Medium</strong></td>
+                        <td><code>256D (33.3%)</code></td>
+                        <td>512 Bytes</td>
+                        <td>~76.8 MB</td>
+                        <td><span class="badge badge-green">-66.7% RAM</span></td>
+                        <td>High semantic recall at 1/3 memory cost</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Matryoshka Core (Ultra-Compact)</strong></td>
+                        <td><code>128D (16.7%)</code></td>
+                        <td><strong>256 Bytes</strong></td>
+                        <td><strong>~38.4 MB</strong></td>
+                        <td><span class="badge badge-green"><strong>-83.3% RAM</strong></span></td>
+                        <td>Captures core tax doctrine &amp; reaches identical LLM legal conclusions</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>The Mathematical Catch: Why L2 Re-Normalization is Mandatory</h3>
+            <p>A full 768-dimensional embedding generated by <code>EmbeddingGemma</code> lies on the surface of a 768D unit hypersphere ($\|v_{1:768}\|_2 = 1$). When we slice the vector to its first $d \in \{128, 256, 512\}$ coordinates, the truncated vector $v_{1:d}$ falls <em>inside</em> the $d$-dimensional unit sphere ($\|v_{1:d}\|_2 &lt; 1$). To preserve exact cosine similarity ordering via inner-product / cosine operators in <code>pgvector</code>, both the query vector and the database sub-vector must be <strong>L2 re-normalized</strong> after slicing:</p>
+
+<pre><code>def slice_and_normalize_mrl(vec_768: list[float], dim: int) -> list[float]:
+    """
+    Matryoshka (MRL) prefix truncation + L2 hypersphere re-normalization.
+    Ensures exact cosine geometry in R^dim after slicing from R^768.
+    """
+    sliced = vec_768[:dim]
+    norm = math.sqrt(sum(x * x for x in sliced))
+    if norm > 0:
+        return [x / norm for x in sliced]
+    return sliced</code></pre>
+
+            <p>On the cloud side, rather than duplicating tables for 128D, 256D, 512D, and 768D, we store a single <code>halfvec(768)</code> (16-bit float) column in <strong>Supabase PostgreSQL</strong> and perform dynamic SQL sub-vector slicing inside our custom RPC function:</p>
+
+<pre><code>-- Dynamic Matryoshka slicing inside PostgreSQL pgvector (0 duplicate storage)
+CASE
+    WHEN match_dimensions = 128 THEN
+        1 - (subvector(c.embedding, 1, 128)::halfvec(128) &lt;=&gt; query_embedding::halfvec(128))
+    WHEN match_dimensions = 256 THEN
+        1 - (subvector(c.embedding, 1, 256)::halfvec(256) &lt;=&gt; query_embedding::halfvec(256))
+    WHEN match_dimensions = 512 THEN
+        1 - (subvector(c.embedding, 1, 512)::halfvec(512) &lt;=&gt; query_embedding::halfvec(512))
+    ELSE
+        1 - (c.embedding &lt;=&gt; query_embedding::halfvec(768))
+END AS similarity</code></pre>
+        </div>
+    </div>
+
+    <!-- SECTION 4: HYBRID EDGE + CLOUD ARCHITECTURE -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">04: Hybrid Edge + Cloud ("Local Hydration")</div>
+            <h2>Zero Text in the Cloud: Pairing Supabase pgvector with a Local NVIDIA Jetson Orin Nano</h2>
+
+            <p>Even after compressing embeddings with <code>halfvec</code> and Matryoshka slicing, uploading 1.05 GB of raw legal text into a managed cloud Postgres database would immediately exceed the 500 MB Free Tier limit. To keep cloud recurring costs at <strong>$0.00/month</strong> while serving full 15-page rulings, I designed a <strong>Hybrid Edge + Cloud "Local Hydration" Architecture</strong>:</p>
+
+            <table class="compare-table">
+                <thead>
+                    <tr>
+                        <th>❌ Naive Cloud-Only RAG ($70–$150/mo)</th>
+                        <th>✅ Hybrid Edge + Cloud Local Hydration ($0/mo)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Stores <code>float32(768)</code> vectors + 1.05 GB of raw text chunks directly inside Cloud Postgres (&gt;3.5 GB total database size).</td>
+                        <td>Cloud Supabase stores <strong>ONLY</strong> <code>chunk_id</code> + <code>halfvec</code> numbers (<strong>0 bytes of text in the cloud</strong>; ~276 MB total footprint).</td>
+                    </tr>
+                    <tr>
+                        <td>Transfers 45,000+ characters of legal text over the WAN on every Top-10 vector search query.</td>
+                        <td>Supabase returns 10 lightweight integer IDs + cosine scores over the network in a few kilobytes.</td>
+                    </tr>
+                    <tr>
+                        <td>Truncates context to the matched 500-char snippet, starving the LLM of the full ruling's conditions.</td>
+                        <td><strong>NVIDIA Jetson Orin Nano</strong> hydrates both the matched chunk and the <strong>entire 15-page ruling</strong> in <strong>&lt;2 ms</strong> from local NVMe SQLite.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="arch-steps">
+                <div class="arch-step">
+                    <div class="arch-step-num">1</div>
+                    <div class="arch-step-body">
+                        <h4>GPU Query Embedding on NVIDIA Jetson Orin Nano</h4>
+                        <p>When a user submits a tax question on <code>hacienda.mezapps.com</code>, the request reaches the Jetson Orin Nano via Cloudflare Tunnel. Local <strong>Ollama (CUDA)</strong> computes the 768D <code>EmbeddingGemma</code> vector once on the Jetson's Ampere GPU, then slices and L2-normalizes the selected Matryoshka prefix (<code>128D</code>, <code>256D</code>, or <code>512D</code>).</p>
+                    </div>
+                </div>
+                <div class="arch-step">
+                    <div class="arch-step-num">2</div>
+                    <div class="arch-step-body">
+                        <h4>Parallel Cloud Vector Search (768D vs MRL 128D)</h4>
+                        <p>The FastAPI backend dispatches both the full <code>768D</code> vector and the Matryoshka <code>128D</code> vector concurrently via <code>ThreadPoolExecutor</code> to Supabase <code>pgvector</code>, retrieving the Top-10 <code>chunk_id</code>s and cosine similarity scores for each engine.</p>
+                    </div>
+                </div>
+                <div class="arch-step">
+                    <div class="arch-step-num">3</div>
+                    <div class="arch-step-body">
+                        <h4>Sub-2ms Local SQLite Cold-Storage Hydration</h4>
+                        <p>With the 20 integer <code>chunk_id</code>s in hand, the Jetson executes a single indexed primary-key <code>JOIN</code> against its local 1.05 GB <code>hacienda_rag.db</code> file on disk. In <strong>1.2 to 2.5 milliseconds</strong>, it hydrates the exact chunk text, the complete full-length <em>Contestación Vinculante</em>, metadata, dates, and cited statutes.</p>
+                    </div>
+                </div>
+                <div class="arch-step">
+                    <div class="arch-step-num">4</div>
+                    <div class="arch-step-body">
+                        <h4>Parallel Grounded Legal Synthesis (Gemini 3.8 Flash)</h4>
+                        <p>Both hydrated legal contexts (768D and 128D) are sent in parallel to <code>gemini-2.5-flash</code> with a strict zero-hallucination system prompt requiring explicit citations of <em>Consultas Vinculantes (Vxxxx-xx)</em> and statutory articles, allowing the user to verify that the 128D (-83.3% RAM) model reaches the exact same legal conclusion.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5: CYBERSECURITY & EDGE HARDENING -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">05: Production Hardening &amp; Cybersecurity</div>
+            <h2>Exposing a Physical Home-Lab GPU Server Safely to the Public Internet</h2>
+
+            <p>Because the backend runs 24/7 on a physical <strong>NVIDIA Jetson Orin Nano</strong> inside a residential network and invokes paid LLM synthesis APIs, exposing it publicly required defense-in-depth engineering across the network, application, and OS layers:</p>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4>🛡️ Cloudflare Zero Trust Named Tunnel</h4>
+                    <p>Zero open ports (<code>80/443/8000</code>) on the home router. An outbound-only <code>cloudflared</code> systemd daemon connects the Jetson to Cloudflare's edge (<code>api-hacienda.mezapps.com</code>), providing automatic TLS termination and DDoS mitigation while hiding the residential IP.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>⏱️ Dual Sliding-Window IP Rate Limiter</h4>
+                    <p>Custom in-memory middleware inspects the cryptographic <code>CF-Connecting-IP</code> header to enforce a two-tier quota: <strong>10 requests/minute</strong> (protecting the Jetson's 8 GB shared GPU RAM) and <strong>200 requests/day per IP</strong> (preventing automated scraping or Gemini API wallet exhaustion).</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🧱 XML Prompt-Injection Sandboxing</h4>
+                    <p>User queries are strictly capped at <code>max_length=1500</code> characters via Pydantic validation and wrapped inside isolated <code>&lt;user_query&gt;</code> XML tags. The system prompt explicitly instructs the model to treat everything inside <code>&lt;user_query&gt;</code> as untrusted tax facts, neutralizing instruction-override attacks.</p>
+                </div>
+                <div class="concept-card">
+                    <h4>🔒 OS-Level Read-Only SQLite (<code>?mode=ro</code>)</h4>
+                    <p>The FastAPI worker connects to the 1.05 GB legal database using a strict SQLite URI with <code>?mode=ro</code>. Even in the theoretical event of an application-level vulnerability, the database file descriptor is locked read-only by the Linux kernel.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 6: BILINGUAL UX & CITATION VERIFICATION -->
+    <div class="section">
+        <div class="container">
+            <div class="section-num">06: Interactive UX &amp; Legal Verification</div>
+            <h2>Designed for Both Engineers &amp; Non-Technical Visitors (ES / EN)</h2>
+
+            <p>Most RAG benchmarks are static Jupyter notebooks. I built the frontend (<a href="https://hacienda.mezapps.com" target="_blank">hacienda.mezapps.com</a>) in <strong>Next.js 16 (App Router) + Tailwind CSS</strong> as an interactive, self-explanatory laboratory:</p>
+            <ul>
+                <li><strong>Interactive Matryoshka Slicing Bar:</strong> Visitors can switch dynamically between <code>128D (17% vector size)</code>, <code>256D (33%)</code>, and <code>512D (67%)</code> and watch the active memory bar, byte footprint per chunk, and Recall@10 overlap update live against the <code>768D (100%)</code> baseline.</li>
+                <li><strong>Cross-Lingual Legal Synthesis (ES / EN Toggle):</strong> International recruiters and engineers who don't speak Spanish can switch the interface to <strong>English (EN)</strong>. Curated real-world tax scenarios (from startup corporate tax rates to Beckham Law impatriate rules and primary residence reinvestment) are translated into natural English, and the backend instructs Gemini to write the legal explanation in English while preserving exact Spanish statutory references.</li>
+                <li><strong>Anti-Hallucination Citation Modal (<code>📄 Vxxxx-xx</code>):</strong> Every binding ruling cited in the AI's response is parsed via regex into an interactive badge. Clicking any <code>📄 V0714-26</code> pill opens a modal displaying the <strong>complete official text of the ruling</strong> hydrated directly from the Jetson's SQLite database, with the exact chunk retrieved by the vector engine highlighted in context.</li>
+                <li><strong>Mobile-First 3-Way Tab Switcher:</strong> On smartphones, comparing two wide RAG columns side-by-side is unreadable. A sticky mobile tab bar (<code>🪆 128D (-83%)</code> | <code>🔵 768D (100%)</code> | <code>⚖️ Both</code>) and a swipe-friendly bottom-sheet modal make the full benchmark effortless to explore on mobile devices.</li>
+            </ul>
+
+            <a href="index.html#projects" class="back-btn">← Back to Portfolio</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Manuel Mezo · <a href="index.html">cv.manuelmezo.com</a> · <a href="https://hacienda.mezapps.com" target="_blank">Live App</a> · <a href="https://github.com/manumezog/hacienda-ESP-rag" target="_blank">GitHub</a></p>
+    </footer>
+
+</body>
+</html>
